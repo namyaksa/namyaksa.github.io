@@ -1,2 +1,2 @@
 # namyaksa.github.io
-Paran Pharmacy is not afraid of CHANGE!
+Paran is not afraid of CHANGE!
