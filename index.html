@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>파란약국 - 맞춤형 동물약 상담 가이드</title>
+    <style>
+        :root {
+            --primary-color: #2b6cb0;
+            --secondary-color: #ebf8ff;
+            --accent-color: #e53e3e;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7fafc;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            -webkit-user-select: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin: 0 0 10px 0;
+        }
+
+        header p {
+            color: #718096;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-group {
+            background: var(--secondary-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .input-box {
+            width: 100%;
+            max-width: 200px;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .input-box:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 15px;
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        .mdr1-trigger {
+            text-decoration: underline;
+            cursor: pointer;
+            color: #c53030;
+            margin-right: 4px;
+        }
+
+        .mdr1-trigger:hover {
+            color: #e53e3e;
+        }
+
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-label {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .radio-label input {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+
+        .radio-label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .radio-label.active {
+            border-color: var(--primary-color);
+            background-color: #ebf8ff;
+            color: var(--primary-color);
+        }
+
+        .result-box {
+            border: 2px solid #cbd5e0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+            background-color: #fff;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .recommend-tag {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .mdr1-warning {
+            background-color: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            color: #c53030;
+            font-weight: bold;
+        }
+
+        /* 💡 모바일 가로 스크롤을 위한 컨테이너 속성 추가 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 */
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            table-layout: auto; /* 고정 너비 해제하여 컨텐츠 크기에 맞춤 */
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            text-align: center;
+            vertical-align: middle;
+            /* 💡 글자가 좁아서 아래로 쪼개지는 현상 방지 (한 줄로 유지) */
+            white-space: nowrap; 
+        }
+
+        th {
+            background-color: #f7fafc;
+            color: #4a5568;
+            font-weight: bold;
+        }
+
+        /* 모바일 스크롤 환경을 위해 개별 컬럼 고정 가로폭 제거 */
+        th:nth-child(1) { width: auto; }
+        th:nth-child(2) { width: auto; }
+        th:nth-child(3) { width: auto; }
+        th:nth-child(4) { width: auto; }
+        th:nth-child(5) { width: auto; }
+        th:nth-child(6) { width: auto; }
+        th:nth-child(7) { width: auto; }
+
+        .drug-link {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 15px;
+            text-decoration: underline;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px;
+        }
+
+        .price-text {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 14px;
+        }
+
+        .cycle-text {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 13px;
+            background-color: #f7fafc;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #edf2f7;
+            display: inline-block; /* 정렬 최적화 */
+            text-align: left;
+        }
+
+        .visit-btn {
+            background-color: #dd6b20;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .visit-btn:hover {
+            background-color: #c05621;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-yes { background-color: #c6f6d5; color: #22543d; }
+        .badge-no { background-color: #fed7d7; color: #742a2a; }
+        .badge-warn { background-color: #feebc8; color: #744210; }
+
+        .weight-color-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            width: 90%;
+            max-width: 550px;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #a0aec0;
+            cursor: pointer;
+        }
+
+        .modal-img-container {
+            width: 100%;
+            height: 200px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #4a5568;
+            display: inline-block;
+            width: 100px;
+        }
+
+        .visit-info-box {
+            background-color: #fffaf0;
+            border-left: 5px solid #dd6b20;
+            padding: 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .mdr1-info-box {
+            background-color: #fff5f5;
+            border: 1px solid #fed7d7;
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🐾 맞춤형 동물약 상담 가이드</h1>
+        <p>선택지에 따라 가장 적합하고 경제적인 약제 조합을 추천해 드립니다.</p>
+    </header>
+
+    <div class="question-group" id="step-q0">
+        <div class="section-title">Q0. 반려동물의 기본 정보를 입력해주세요.</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 15px;">
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 8px;">⚖️ 현재 몸무게 (kg)</label>
+                <input type="number" id="pet-weight" class="input-box" step="0.1" min="0.1" placeholder="0.0" oninput="checkWeight()">
+            </div>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="mdr1-check" onchange="updateCalculations()">
+            <label for="mdr1-check">
+                ⚠️ <span class="mdr1-trigger" onclick="openMdr1Modal(); event.preventDefault();">MDR1 유전자 변이</span> 위험 견종입니다 (콜리, 셔틀랜드 쉽독, 오스트레일리안 셰퍼드 등)
+            </label>
+        </div>
+    </div>
+
+    <div class="question-group" id="step-q1" style="display: none;">
+        <div class="section-title">Q1. 모기가 없어서, 저렴하게 '내부기생충(구충/조충 등)'만 구제하길 원하시나요?</div>
+        <div class="radio-grid">
+            <label class="radio-label" id="lbl-q1-yes">
+                <input type="radio" name="q1" value="yes" onclick="selectQ1('yes')">
+                💊 예 (가성비 있게 순수 내부 구충제만 우선 관리)
+            </label>
+            <label class="radio-label" id="lbl-q1-no">
+                <input type="radio" name="q1" value="no" onclick="selectQ1('no')">
+                🛡️ 아니오 (심장사상충 예방이나 외부기생충 케어 포함 희망)
+            </label>
+        </div>
+    </div>
+
+    <div class="question-group" id="step-q2" style="display: none;">
+        <div class="section-title">Q2. 야외 산책을 자주 해서 '외부기생충(진드기, 벼룩 등)'까지 완벽히 구제하길 원하시나요?</div>
+        <div class="radio-grid">
+            <label class="radio-label" id="lbl-q2-yes">
+                <input type="radio" name="q2" value="yes" onclick="selectQ2('yes')">
+                🌳 예 (풀밭 산책하면 필수, 진드기 완벽 차단)
+            </label>
+            <label class="radio-label" id="lbl-q2-no">
+                <input type="radio" name="q2" value="no" onclick="selectQ2('no')">
+                🏠 아니오 (실내 생활 위주, 외부기생충 노출 적음)
+            </label>
+        </div>
+    </div>
+
+    <div class="result-box" id="result-area">
+        <div class="recommend-tag">추천 솔루션 및 약국 방문 일정</div>
+        <div id="mdr1-warning-box" class="mdr1-warning" style="display: none;"></div>
+        <div id="recommend-desc" style="font-size: 18px; line-height: 1.6; margin-bottom: 20px; font-weight: 500;"></div>
+        <div class="section-title">💰 맞춤 약제 및 비용 선택 옵션 (몸무게 반영 기준)</div>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>제품명</th>
+                        <th>심장사상충</th>
+                        <th>벼룩/이/귀진드기</th>
+                        <th>편충 / 옴진드기</th>
+                        <th>살인진드기</th>
+                        <th>📅 권장 복용 주기</th>
+                        <th>선택 규격 / 합산 가격</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+
+        <button class="reset-btn" onclick="resetForm()">🔄 처음부터 다시 상담하기</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="drug-modal" onclick="closeModal(event, 'drug-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeModal(null, 'drug-modal')">&times;</span>
+        <div class="modal-title" id="m-title">약품 명칭</div>
+        <div class="modal-img-container">
+            <img id="m-img" src="" alt="약품 사진">
+        </div>
+        <div class="info-row"><span class="info-label">🧪 주성분:</span> <span id="m-ingredient"></span></div>
+        <div class="info-row"><span class="info-label">💊 제형:</span> <span id="m-type"></span></div>
+        <div class="info-row"><span class="info-label">💡 특장점:</span> <span id="m-feature"></span></div>
+        <div class="info-row" style="margin-top:15px; padding-top:10px; border-top:1px dashed #e2e8f0;">
+            <div id="m-price"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="visit-modal" onclick="closeModal(event, 'visit-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeModal(null, 'visit-modal')">&times;</span>
+        <div class="modal-title" id="v-title" style="color: #dd6b20;">📅 다음 약국 방문일 안내</div>
+        <div id="v-content" class="visit-info-box"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="mdr1-modal" onclick="closeModal(event, 'mdr1-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeModal(null, 'mdr1-modal')">&times;</span>
+        <div class="modal-title" style="color: #c53030;">🧬 MDR1 유전자 변이 메커니즘 안내</div>
+        <div class="mdr1-info-box">
+            MDR1 변이는 <strong>ABCB1 유전자 이상으로 인해 P-gp(P-glycoprotein) 기능이 떨어지는 것이 본질적인 문제</strong>입니다.<br><br>
+            즉, P-gp의 과활성화가 아니라 <strong>기능 저하가 원인</strong>입니다. 이로 인해 평소에는 뇌로 들어가지 않아야 할 특정 약물 성분들이 혈뇌장벽(BBB)을 통과하여 <strong>중추신경계에 과도하게 축적되며 심각한 신경 독성을 유발</strong>할 수 있으므로 약제 선택 시 각별한 주의가 필요합니다.
+        </div>
+    </div>
+</div>
+
+<script>
+    const drugDB = {
+        '드론탈플러스': { title: '드론탈 플러스 정', ingredient: '페반텔, 피란텔, 프라지콴텔', type: '정제 (알약)', feature: '선충류 및 조충류 광범위 내부 구충제', img: 'https://i.postimg.cc/90TYnBJ4/Kakao-Talk-20260708-161612725-removebg-preview.png' },
+        '파라캅S': { title: '파라캅 정 S', ingredient: '플루벤다졸, 프라지콴텔', type: '정제 (소형 알약)', feature: '5kg 미만 반려견 전용 내부 구충제', img: 'https://i.postimg.cc/vT9tNv3V/P20230406-115502322-1E470824-C07C-436A-B22D-2EE57BD77E7E-removebg-preview.png' },
+        '파라캅L': { title: '파라캅 정 L', ingredient: '플루벤다졸, 프라지콴텔', type: '정제 (대형 알약)', feature: '5kg 이상 반려견용 고함량 내부 구충제', img: 'https://i.postimg.cc/vT9tNv3V/P20230406-115502322-1E470824-C07C-436A-B22D-2EE57BD77E7E-removebg-preview.png' },
+        '하트가드': { title: '하트가드 플러스', ingredient: '이베르멕틴, 피란텔', type: '츄어블 정 (소고기 맛)', feature: '기호성이 우수한 사상충 및 내부 기생충 예방제 (6개입)', img: 'https://i.postimg.cc/D0sPMcBm/daunlodeu-1-removebg-preview-(1).png' },
+        '레볼루션': { title: '레볼루션', ingredient: '셀라멕틴', type: '스팟온 (바르는 액체)', feature: '안전성이 높은 사상충 및 외부 기생충약 (6피펫)', img: 'https://i.postimg.cc/8cWm0btP/SE-8b81c9d3-3dd7-4c5c-a3c1-c323d5df2ff7-removebg-preview.png' },
+        '애드보킷': { title: '애드보킷', ingredient: '이미다클로프리드, 모덱틴', type: '스팟온 (바르는 액체)', feature: '편충 및 피부 옴진드기 관리까지 가능한 바르는 약 (6피펫)', img: 'https://i.postimg.cc/tT8zkctJ/image-4-removebg-preview.png' },
+        '넥스카드스펙트라': { title: '넥스가드 스펙트라', ingredient: '아포라너, 밀베마이신 옥심', type: '츄어블 정 (고기맛)', feature: '심장사상충과 외부 진드기를 하나로 해결하는 올인원 (3정입)', img: 'https://i.postimg.cc/Y0gzsxbS/680x460-removebg-preview.png' },
+        '프론트라인': { title: '프론트라인 플러스', ingredient: '피프로닐, (S)-메토프렌', type: '스팟온 (바르는 외용제)', feature: '외부 기생충(진드기, 벼룩) 전용 차단제 (3피펫)', img: 'https://i.postimg.cc/90TYnBJR/daunlodeu-2-removebg-preview.png' },
+        '브라벡토': { title: '브라벡토', ingredient: '플루랄라너', type: '츄어블 정 (먹는 약)', feature: '1회 복용으로 3개월간 진드기 차단 효과 유지 (1정입)', img: 'https://i.postimg.cc/vT9tNv3T/beulabegto-sajin31-daepyo-removebg-preview.png' },
+        '다이로하트': { title: '다이로하트 정', ingredient: '이베르멕틴, 피란텔 파모산염', type: '정제 (실속형 알약)', feature: '경제적인 부담을 낮춘 대용량 심장사상충 예방약', img: 'https://i.postimg.cc/66gDbBBt/Diro-Heat-dailohateu-removebg-preview.png' },
+        '셀라이트': { title: '셀라이트', ingredient: '셀라멕틴', type: '스팟온 (바르는 액제)', feature: '국산 사상충 및 외부기생충 차단 외용제', img: 'https://i.postimg.cc/ZY21sJJz/Kakao-Talk-20260709-191724124-removebg-preview.png' },
+        '하트세이브정': { title: '하트세이브 정', ingredient: '이베르멕틴, 피란텔 파모산염', type: '정제 (소형 알약)', feature: '정밀하게 설계된 정제 타입 실속형 사상충약 (10정입)', img: 'https://i.postimg.cc/h46HZKKg/Kakao-Talk-20260709-191209954-removebg-preview.png' },
+        '하트세이브츄어블정': { title: '하트세이브 츄어블정', ingredient: '이베르멕틴, 피란텔 파모산염', type: '츄어블정 (고기맛)', feature: '간식처럼 쉽게 먹이는 실속형 츄어블 (6정입)', img: 'https://i.postimg.cc/Vsp3Zzzz/SE-6668b8fd-0f2e-4437-b0d5-cce80a253e0b-removebg-preview.png' }
+    };
+    
+    let config = { q1: '', q2: '' };
+
+    function checkWeight() {
+        const weightInput = document.getElementById('pet-weight').value;
+        if (weightInput && parseFloat(weightInput) > 0) {
+            document.getElementById('step-q1').style.display = 'block';
+            if(config.q1 !== '') generateResult();
+        } else {
+            document.getElementById('step-q1').style.display = 'none';
+            document.getElementById('step-q2').style.display = 'none';
+            document.getElementById('result-area').classList.remove('show');
+        }
+    }
+
+    function selectQ1(value) {
+        config.q1 = value;
+        document.getElementById('lbl-q1-yes').classList.remove('active');
+        document.getElementById('lbl-q1-no').classList.remove('active');
+        document.getElementById('lbl-q1-' + value).classList.add('active');
+
+        if (value === 'yes') {
+            config.q2 = 'no';
+            document.getElementById('step-q2').style.display = 'none';
+            clearQ2Selection();
+            generateResult();
+        } else {
+            document.getElementById('step-q2').style.display = 'block';
+            config.q2 = '';
+            clearQ2Selection();
+            document.getElementById('result-area').classList.remove('show');
+        }
+    }
+
+    function selectQ2(value) {
+        config.q2 = value;
+        document.getElementById('lbl-q2-yes').classList.remove('active');
+        document.getElementById('lbl-q2-no').classList.remove('active');
+        document.getElementById('lbl-q2-' + value).classList.add('active');
+        generateResult();
+    }
+
+    function clearQ2Selection() {
+        document.getElementById('lbl-q2-yes').classList.remove('active');
+        document.getElementById('lbl-q2-no').classList.remove('active');
+        document.querySelectorAll('input[name="q2"]').forEach(i => i.checked = false);
+    }
+
+    function updateCalculations() {
+        if (document.getElementById('result-area').classList.contains('show')) generateResult();
+    }
+
+    function getFutureDateString(monthsToAdd) {
+        const today = new Date();
+        today.setDate(today.getDate() + Math.round(monthsToAdd * 30.4368));
+        return `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+    }
+
+    function openVisitModal(key, drugName) {
+        const weight = parseFloat(document.getElementById('pet-weight').value) || 0;
+        let months = 3; 
+        let detail = '';
+
+        if (key === 'drontal') {
+            const times = 10 / (weight / 10);
+            months = times * 3;
+            detail = `• ${weight}kg 기준 (1회 분량: ${(weight/10).toFixed(2)}정) 총 10정 소진 시까지 가동됩니다.<br>`;
+        } else if (key === 'paracap') {
+            const dose = weight < 5 ? 1 : Math.ceil(weight / 10);
+            months = (6 / dose) * 3;
+            detail = `• 파라캅 6정 분량이 체중별 용량에 맞춰 소진되는 기준입니다.<br>`;
+        } else if (key.startsWith('diroheart')) {
+            months = key === 'diroheart_ss' ? 10 : 12;
+            detail = `• 해당 포장 수량이 매달 정기 투여로 전량 소진되는 시점입니다.<br>`;
+        } else if (key === 'heartsave_tab') { months = 10; detail = `• 10정 분량 매월 급여 기준입니다.<br>`; }
+        else if (key === 'heartsave_chew') { months = 6; detail = `• 6정 분량 매월 급여 기준입니다.<br>`; }
+        else if (['heartgard', 'revolution', 'advocate'].includes(key)) { months = 6; detail = `• 6회 공급분 소진 기준입니다.<br>`; }
+        else if (['nexgard', 'frontline', 'bravecto', 'composite_package'].includes(key)) { months = 3; detail = `• 해당 패키지의 유효 방어 능력 만료 혹은 소진 예정일입니다.<br>`; }
+
+        document.getElementById('v-title').innerText = `📅 ${drugName} 다음 방문일 확인`;
+        document.getElementById('v-content').innerHTML = `
+            <strong>🛒 정기 요법 기준 주기 안내</strong><br><br>
+            ${detail}
+            • 오늘 즉시 1회차 투약을 시작할 때, 약제가 소진되어 재방문해야 하는 권장 예정일:<br>
+            <span style="color:#e53e3e; font-weight:bold; font-size:18px; display:block; margin-top:10px;">🚀 ${getFutureDateString(months)} (${months.toFixed(1)}달 뒤)</span>
+        `;
+        document.getElementById('visit-modal').classList.add('show');
+    }
+
+    function getWeightMatchedData(weight) {
+        let res = {
+            drontal: { label: '드론탈플러스', dose: '10kg당 1정', price: '10정 18,000원', numPrice: 1800 },
+            paracap: { 
+                dbKey: weight < 5 ? '파라캅S' : '파라캅L',
+                label: weight < 5 ? '파라캅 정 S' : '파라캅 정 L', 
+                dose: weight < 5 ? 'S정 1정' : 'L정 ' + Math.ceil(weight/10) + '정', 
+                price: weight < 5 ? '1팩 3,000원' : '1팩 약 4,200원',
+                numPrice: weight < 5 ? 3000 : 4200
+            },
+            heartgard: { label: '하트가드', dose: '', price: '', numPrice: 0 },
+            revolution: { label: '레볼루션', dose: '', price: '', numPrice: 0, color: '' },
+            advocate: { label: '애드보킷', dose: '', price: '', numPrice: 0, color: '' },
+            nexgard: { label: '넥스가드 스펙트라', dose: '', price: '', numPrice: 0 },
+            frontline: { label: '프론트라인', dose: '', price: '', numPrice: 0 },
+            bravecto: { label: '브라벡토', dose: '', price: '', numPrice: 0 },
+            diroheart: { label: '다이로하트 정', dose: '', price: '', numPrice: 0, vKey: '' },
+            selite: { label: '셀라이트', dose: '', price: '', numPrice: 0 },
+            heartsaveTab: { label: '하트세이브 정', dose: '', price: '', numPrice: 0 },
+            heartsaveChew: { label: '하트세이브 츄어블정', dose: '', price: '', numPrice: 0 }
+        };
+
+        if (weight <= 5.6) { res.diroheart.dose = 'SS (~5.6kg)'; res.diroheart.price = '10정 19,000원'; res.diroheart.numPrice = 19000; res.diroheart.vKey = 'diroheart_ss'; }
+        else if (weight <= 11) { res.diroheart.dose = 'S (5.7~11kg)'; res.diroheart.price = '12정 22,000원'; res.diroheart.numPrice = 22000; res.diroheart.vKey = 'diroheart_s'; }
+        else if (weight <= 22) { res.diroheart.dose = 'M (12~22kg)'; res.diroheart.price = '12정 25,000원'; res.diroheart.numPrice = 25000; res.diroheart.vKey = 'diroheart_m'; }
+        else { res.diroheart.dose = '대형견용'; res.diroheart.price = '매장 문의'; res.diroheart.numPrice = 0; res.diroheart.vKey = 'diroheart_m'; }
+
+        if (weight <= 2.5) { res.selite.dose = '0.25ml (~2.5kg)'; res.selite.price = '1팩 30,000원'; res.selite.numPrice = 30000; }
+        else if (weight <= 5) { res.selite.dose = '60 (2.6~5kg)'; res.selite.price = '1팩 27,000원'; res.selite.numPrice = 27000; }
+        else if (weight <= 10) { res.selite.dose = '120 (5.1~10kg)'; res.selite.price = '1팩 36,000원'; res.selite.numPrice = 36000; }
+        else if (weight <= 20) { res.selite.dose = '120 (10.1~20kg)'; res.selite.price = '1팩 42,000원'; res.selite.numPrice = 42000; }
+        else { res.selite.dose = '초대형견'; res.selite.price = '매장 문의'; res.selite.numPrice = 0; }
+
+        if (weight <= 5.6) {
+            res.heartsaveTab.dose = '소형 (~5.6kg)'; res.heartsaveTab.price = '10정 15,000원'; res.heartsaveTab.numPrice = 15000;
+            res.heartsaveChew.dose = '소형 (~5.6kg)'; res.heartsaveChew.price = '6정 22,000원'; res.heartsaveChew.numPrice = 22000;
+        } else if (weight <= 11) {
+            res.heartsaveTab.dose = '중형 (5.7~11kg)'; res.heartsaveTab.price = '10정 18,000원'; res.heartsaveTab.numPrice = 18000;
+            res.heartsaveChew.dose = '중형 (5.7~11kg)'; res.heartsaveChew.price = '6정 25,000원'; res.heartsaveChew.numPrice = 25000;
+        } else if (weight <= 22) {
+            res.heartsaveTab.dose = '대형 (12~22kg)'; res.heartsaveTab.price = '10정 22,000원'; res.heartsaveTab.numPrice = 22000;
+            res.heartsaveChew.dose = '대형 (12~22kg)'; res.heartsaveChew.price = '6정 33,000원'; res.heartsaveChew.numPrice = 33000;
+        } else {
+            res.heartsaveTab.dose = '특대형'; res.heartsaveTab.price = '매장 문의'; res.heartsaveTab.numPrice = 0;
+            res.heartsaveChew.dose = '특대형'; res.heartsaveChew.price = '매장 문의'; res.heartsaveChew.numPrice = 0;
+        }
+
+        if (weight <= 11) { res.heartgard.dose = '블루 (~11kg)'; res.heartgard.price = '6개입 39,000원'; res.heartgard.numPrice = 39000; }
+        else if (weight <= 22) { res.heartgard.dose = '그린 (12~22kg)'; res.heartgard.price = '6개입 54,000원'; res.heartgard.numPrice = 54000; }
+        else { res.heartgard.dose = '브라운 (23~45kg)'; res.heartgard.price = '6개입 66,000원'; res.heartgard.numPrice = 66000; }
+
+        if (weight <= 4.5) { res.bravecto.dose = '초소형 (~4.5kg)'; res.bravecto.price = '1정 38,000원'; res.bravecto.numPrice = 38000; }
+        else if (weight <= 10) { res.bravecto.dose = '소형 (4.5~10kg)'; res.bravecto.price = '1정 42,000원'; res.bravecto.numPrice = 42000; }
+        else if (weight <= 20) { res.bravecto.dose = '중형 (10~20kg)'; res.bravecto.price = '1정 46,000원'; res.bravecto.numPrice = 46000; }
+        else { res.bravecto.dose = '대형견용'; res.bravecto.price = '1정 50,000원'; res.bravecto.numPrice = 50000; }
+
+        if (weight <= 10) { res.frontline.dose = '소형 (~10kg)'; res.frontline.price = '3개입 39,000원'; res.frontline.numPrice = 39000; }
+        else if (weight <= 20) { res.frontline.dose = '중형 (10~20kg)'; res.frontline.price = '3개입 42,000원'; res.frontline.numPrice = 42000; }
+        else { res.frontline.dose = '대형 (20~40kg)'; res.frontline.price = '3개입 45,000원'; res.frontline.numPrice = 45000; }
+
+        if (weight <= 2.5) { res.revolution.dose = '핑크 (~2.5kg)'; res.revolution.price = '6개입 72,000원'; res.revolution.numPrice = 72000; res.revolution.color = '#ff69b4'; }
+        else if (weight <= 5) { res.revolution.dose = '퍼플 (2.6~5kg)'; res.revolution.price = '6개입 84,000원'; res.revolution.numPrice = 84000; res.revolution.color = '#800080'; }
+        else if (weight <= 10) { res.revolution.dose = '브라운 (5.1~10kg)'; res.revolution.price = '6개입 90,000원'; res.revolution.numPrice = 90000; res.revolution.color = '#8b4513'; }
+        else if (weight <= 20) { res.revolution.dose = '레드 (10.1~20kg)'; res.revolution.price = '6개입 102,000원'; res.revolution.numPrice = 102000; res.revolution.color = '#ff0000'; }
+        else { res.revolution.dose = '그린 (20.1~40kg)'; res.revolution.price = '6개입 114,000원'; res.revolution.numPrice = 114000; res.revolution.color = '#008000'; }
+
+        if (weight <= 4) { res.advocate.dose = '녹색 (~4kg)'; res.advocate.price = '6개입 84,000원'; res.advocate.numPrice = 84000; res.advocate.color = '#2f855a'; }
+        else if (weight <= 10) { res.advocate.dose = '청록 (4~10kg)'; res.advocate.price = '6개입 96,000원'; res.advocate.numPrice = 96000; res.advocate.color = '#2c7a7b'; }
+        else if (weight <= 25) { res.advocate.dose = '빨강 (10~25kg)'; res.advocate.price = '6개입 114,000원'; res.advocate.numPrice = 114000; res.advocate.color = '#c53030'; }
+        else { res.advocate.dose = '보라 (25~40kg)'; res.advocate.price = '6개입 132,000원'; res.advocate.numPrice = 132000; res.advocate.color = '#6b46c1'; }
+
+        if (weight <= 3.5) { res.nexgard.dose = 'XS (2~3.5kg)'; res.nexgard.price = '3정 48,000원'; res.nexgard.numPrice = 48000; }
+        else if (weight <= 7.5) { res.nexgard.dose = 'S (3.5~7.5kg)'; res.nexgard.price = '3정 55,000원'; res.nexgard.numPrice = 55000; }
+        else if (weight <= 15) { res.nexgard.dose = 'M (7.5~15kg)'; res.nexgard.price = '3정 66,000원'; res.nexgard.numPrice = 66000; }
+        else if (weight <= 30) { res.nexgard.dose = 'L (15~30kg)'; res.nexgard.price = '3정 75,000원'; res.nexgard.numPrice = 75000; }
+        else { res.nexgard.dose = 'XL (30~60kg)'; res.nexgard.price = '3정 90,000원'; res.nexgard.numPrice = 90000; }
+
+        return res;
+    }
+
+    function generateResult() {
+        const weight = parseFloat(document.getElementById('pet-weight').value) || 0;
+        if (weight <= 0) return;
+
+        const resultArea = document.getElementById('result-area');
+        const desc = document.getElementById('recommend-desc');
+        const tbody = document.getElementById('table-body');
+        const mdr1Box = document.getElementById('mdr1-warning-box');
+        
+        resultArea.classList.add('show');
+        tbody.innerHTML = '';
+
+        const isMdr1Checked = document.getElementById('mdr1-check').checked;
+        if (isMdr1Checked) {
+            mdr1Box.innerHTML = "⚠️ MDR1 유전자 제한 안내: 이베르멕틴, 모덱틴, 밀베마이신 성분이 포함된 고위험 약제를 리스트에서 제외하고 안전한 대체 성분 약제만 표시합니다.";
+            mdr1Box.style.display = 'block';
+        } else {
+            mdr1Box.style.display = 'none';
+        }
+
+        const wData = getWeightMatchedData(weight);
+        window.currentWeightData = wData;
+
+        if (config.q1 === 'yes') {
+            desc.innerHTML = `💰 <strong>가성비 내부기생충 전용 솔루션 (현재 체중: ${weight}kg):</strong>`;
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="drug-link" onclick="openModal('드론탈플러스')">드론탈 플러스</span><br><button class="visit-btn" onclick="openVisitModal('drontal', '드론탈 플러스')">📅 방문일 확인</button></td>
+                    <td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td>
+                    <td><div class="cycle-text">📅 3달에 1번 복용</div></td>
+                    <td class="price-text">${wData.drontal.price}<br><small style="color:#718096; font-weight:normal;">(${wData.drontal.dose})</small></td>
+                </tr>
+                <tr>
+                    <td><span class="drug-link" onclick="openModal('${wData.paracap.dbKey}')">${wData.paracap.label}</span><br><button class="visit-btn" onclick="openVisitModal('paracap', '${wData.paracap.label}')">📅 방문일 확인</button></td>
+                    <td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td>
+                    <td><div class="cycle-text">📅 3달에 1번 복용</div></td>
+                    <td class="price-text">${wData.paracap.price}<br><small style="color:#718096; font-weight:normal;">(${wData.paracap.dose})</small></td>
+                </tr>
+            `;
+        } 
+        else if (config.q1 === 'no' && config.q2 === 'no') {
+            desc.innerHTML = `🏠 <strong>실내 생활 중심견 사상충 가이드 (현재 체중: ${weight}kg):</strong>`;
+            
+            if (!isMdr1Checked) {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('하트가드')">하트가드 플러스</span><br><button class="visit-btn" onclick="openVisitModal('heartgard', '하트가드 플러스')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td>
+                        <td><div class="cycle-text">📅 매달 1회 복용</div></td>
+                        <td class="price-text"><span class="weight-color-badge" style="background:#2b6cb0;">${wData.heartgard.dose}</span><br>${wData.heartgard.price}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('다이로하트')">다이로하트 정</span><br><button class="visit-btn" onclick="openVisitModal('${wData.diroheart.vKey}', '다이로하트 정')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td>
+                        <td><div class="cycle-text">📅 매달 1회 복용</div></td>
+                        <td class="price-text"><span class="weight-color-badge" style="background:#4a5568;">${wData.diroheart.dose}</span><br>${wData.diroheart.price}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('하트세이브정')">하트세이브 정</span><br><button class="visit-btn" onclick="openVisitModal('heartsave_tab', '하트세이브 정')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td>
+                        <td><div class="cycle-text">📅 매달 1회 복용</div></td>
+                        <td class="price-text"><span class="weight-color-badge" style="background:#718096;">${wData.heartsaveTab.dose}</span><br>${wData.heartsaveTab.price}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('하트세이브츄어블정')">하트세이브 츄어블</span><br><button class="visit-btn" onclick="openVisitModal('heartsave_chew', '하트세이브 츄어블정')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-no">X</span></td>
+                        <td><div class="cycle-text">📅 매달 1회 복용</div></td>
+                        <td class="price-text"><span class="weight-color-badge" style="background:#e53e3e;">${wData.heartsaveChew.dose}</span><br>${wData.heartsaveChew.price}</td>
+                    </tr>
+                `;
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="drug-link" onclick="openModal('셀라이트')">셀라이트 (바르는 약)</span><br><button class="visit-btn" onclick="openVisitModal('selite', '셀라이트 스팟온')">📅 방문일 확인</button></td>
+                    <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-warn">△</span></td>
+                    <td><div class="cycle-text">📅 매달 1회 피부 도포</div></td>
+                    <td class="price-text"><span class="weight-color-badge" style="background:#2c7a7b;">${wData.selite.dose}</span><br>${wData.selite.price}</td>
+                </tr>
+                <tr>
+                    <td><span class="drug-link" onclick="openModal('레볼루션')">레볼루션 (바르는 약)</span><br><button class="visit-btn" onclick="openVisitModal('revolution', '레볼루션')">📅 방문일 확인</button></td>
+                    <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-warn">△</span></td>
+                    <td><div class="cycle-text">📅 매달 1회 도포</div></td>
+                    <td class="price-text"><span class="weight-color-badge" style="background:${wData.revolution.color};">${wData.revolution.dose}</span><br>${wData.revolution.price}</td>
+                </tr>
+            `;
+
+            if (!isMdr1Checked) {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('애드보킷')">애드보킷 (바르는 약)</span><br><button class="visit-btn" onclick="openVisitModal('advocate', '애드보킷')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-warn">△</span></td>
+                        <td><div class="cycle-text">📅 매달 1회 도포</div></td>
+                        <td class="price-text"><span class="weight-color-badge" style="background:${wData.advocate.color};">${wData.advocate.dose}</span><br>${wData.advocate.price}</td>
+                    </tr>
+                `;
+            }
+        } 
+        else if (config.q1 === 'no' && config.q2 === 'yes') {
+            desc.innerHTML = `🌳 <strong>야외 산책 빈도가 높은 반려견용 종합 솔루션 (현재 체중: ${weight}kg):</strong>`;
+            
+            const sumBravectoHeartgard = wData.bravecto.numPrice + wData.heartgard.numPrice;
+            const sumHeartgardFrontline = wData.heartgard.numPrice + wData.frontline.numPrice;
+
+            const formatBravectoHeartgard = sumBravectoHeartgard > 0 ? `합산 팩: ${sumBravectoHeartgard.toLocaleString()}원` : '매장 문의';
+            const formatHeartgardFrontline = sumHeartgardFrontline > 0 ? `합산 팩: ${sumHeartgardFrontline.toLocaleString()}원` : '매장 문의';
+
+            if (!isMdr1Checked) {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('넥스카드스펙트라')">넥스가드 스펙트라</span><br><button class="visit-btn" onclick="openVisitModal('nexgard', '넥스가드 스펙트라')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-warn">△</span></td>
+                        <td><div class="cycle-text">📅 매달 1회 복용</div></td>
+                        <td class="price-text"><span class="weight-color-badge" style="background:#4a5568;">${wData.nexgard.dose}</span><br>${wData.nexgard.price}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('브라벡토')">브라벡토</span> + <span class="drug-link" onclick="openModal('하트가드')">하트가드</span><br><button class="visit-btn" onclick="openVisitModal('composite_package', '브라벡토+하트가드 팩')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">★ 완벽 구제</span></td>
+                        <td><div class="cycle-text">브라벡토: 3달 지속<br>하트가드: 매달 급여</div></td>
+                        <td class="price-text">
+                            <span class="weight-color-badge" style="background:#9b2c2c;">${wData.bravecto.dose} 기준</span><br>
+                            ${formatBravectoHeartgard}<br>
+                            <small style="color:#718096; font-weight:normal; font-size:11px;">(브라벡토1정 + 하트가드6정)</small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="drug-link" onclick="openModal('하트가드')">하트가드</span> +<br> <span class="drug-link" onclick="openModal('프론트라인')">프론트라인 플러스(바르는 약)</span><br><button class="visit-btn" onclick="openVisitModal('composite_package', '하트가드+프론트라인 세트')">📅 방문일 확인</button></td>
+                        <td><span class="badge badge-yes">O</span></td><td><span class="badge badge-yes">O</span></td><td><span class="badge badge-no">X</span></td><td><span class="badge badge-yes">O</span></td>
+                        <td><div class="cycle-text">두 제품 모두 매달 관리</div></td>
+                        <td class="price-text">
+                            <span class="weight-color-badge" style="background:#4a5568;">${wData.frontline.dose} 기준</span><br>
+                            ${formatHeartgardFrontline}<br>
+                            <small style="color:#718096; font-weight:normal; font-size:11px;">(하트가드6정 + 프론트라인3정)</small>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML += `
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:20px; color:#c53030; font-weight:bold; background:#fffaf0; white-space: normal;">
+                            🌳 MDR1 견종 산책용 종합 솔루션 안내:<br>
+                            본 가이드에 등록된 기존 종합 매칭(이베르멕틴/밀베마이신 조합)은 위험하므로 차단되었습니다.<br>
+                            대신 <span style="color:#2b6cb0;">[레볼루션 또는 셀라이트(사상충+외부일부)]</span>를 매달 바르시면서, 외부 진드기가 심한 달에만 <span style="color:#2b6cb0;">[프론트라인 또는 브라벡토]</span>를 병용하시는 것을 권장합니다.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    }
+
+    function openModal(key) {
+        const data = drugDB[key];
+        if (!data) return;
+
+        document.getElementById('m-title').innerText = data.title;
+        const imgEl = document.getElementById('m-img');
+        if (data.img) { imgEl.src = data.img; imgEl.style.display = 'block'; } 
+        else { imgEl.src = ''; imgEl.style.display = 'none'; }
+        
+        document.getElementById('m-ingredient').innerText = data.ingredient;
+        document.getElementById('m-type').innerText = data.type;
+        document.getElementById('m-feature').innerText = data.feature;
+
+        let currentWeight = parseFloat(document.getElementById('pet-weight').value) || 0;
+        let priceHtml = `<p style='font-size:14px; color:#e53e3e; font-weight:bold;'>⚖️ 몸무게 ${currentWeight}kg 기준 단품 세부 정보</p>`;
+        
+        if (window.currentWeightData) {
+            let mappingKey = '';
+            if(key==='드론탈플러스') mappingKey='drontal';
+            else if(key==='파라캅S' || key==='파라캅L') mappingKey='paracap';
+            else if(key==='하트가드') mappingKey='heartgard';
+            else if(key==='레볼루션') mappingKey='revolution';
+            else if(key==='애드보킷') mappingKey='advocate';
+            else if(key==='넥스카드스펙트라') mappingKey='nexgard';
+            else if(key==='프론트라인') mappingKey='frontline';
+            else if(key==='브라벡토') mappingKey='bravecto';
+            else if(key==='다이로하트') mappingKey='diroheart';
+            else if(key==='셀라이트') mappingKey='selite';
+            else if(key==='하트세이브정') mappingKey='heartsaveTab';
+            else if(key==='하트세이브츄어블정') mappingKey='heartsaveChew';
+
+            if(mappingKey && window.currentWeightData[mappingKey]) {
+                const target = window.currentWeightData[mappingKey];
+                priceHtml += `
+                    <div style="background:#f7fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <strong>권장 규격:</strong> ${target.dose}<br>
+                        <strong>기준 단가:</strong> <span style="color:#e53e3e; font-weight:bold;">${target.price}</span>
+                    </div>
+                `;
+            }
+        }
+        
+        document.getElementById('m-price').innerHTML = priceHtml;
+        document.getElementById('drug-modal').classList.add('show');
+    }
+
+    function openMdr1Modal() {
+        document.getElementById('mdr1-modal').classList.add('show');
+    }
+
+    function closeModal(event, id) {
+        if (!event || event.target.classList.contains('modal-overlay') || event.target.classList.contains('modal-close')) {
+            document.getElementById(id).classList.remove('show');
+        }
+    }
+
+    function resetForm() {
+        config = { q1: '', q2: '' };
+        document.getElementById('pet-weight').value = '';
+        document.getElementById('mdr1-check').checked = false;
+        document.getElementById('lbl-q1-yes').classList.remove('active');
+        document.getElementById('lbl-q1-no').classList.remove('active');
+        clearQ2Selection();
+        document.querySelectorAll('input[type="radio"]').forEach(i => i.checked = false);
+        document.getElementById('step-q1').style.display = 'none';
+        document.getElementById('step-q2').style.display = 'none';
+        document.getElementById('result-area').classList.remove('show');
+    }
+</script>
+
+</body>
+</html>
