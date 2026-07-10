@@ -2,8 +2,23 @@
 <html lang="ko">
 <head>
    <link rel="icon" type="image/png" href="https://i.postimg.cc/zGTWCcMk/Gemini-Generated-Image-hhfw79hhfw79hhfw.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4A90E2">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./service-worker.js')
+            .then((reg) => console.log('서비스 워커 등록 성공!', reg.scope))
+            .catch((err) => console.log('서비스 워커 등록 실패:', err));
+        });
+      }
+    </script>
+   <meta charset="UTF-8">
+
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>파란약국 - 맞춤형 동물약 상담 가이드</title>
     <style>
         :root {
