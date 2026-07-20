@@ -1,0 +1,270 @@
+/* ===========================
+   파란약국 홈페이지
+   style.css
+=========================== */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+/* Reset */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Noto Sans KR',sans-serif;
+    background:#f7fafb;
+    color:#333;
+    line-height:1.7;
+}
+
+/* 공통 */
+.container{
+    width:1100px;
+    max-width:95%;
+    margin:auto;
+}
+
+/* Header */
+
+header{
+
+    background:#ffffff;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+}
+
+nav{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    height:70px;
+
+}
+
+.logo{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#0d9488;
+
+}
+
+.menu{
+
+    display:flex;
+
+    gap:30px;
+
+}
+
+.menu a{
+
+    text-decoration:none;
+
+    color:#444;
+
+    font-weight:500;
+
+    transition:.25s;
+
+}
+
+.menu a:hover{
+
+    color:#0d9488;
+
+}
+
+/* Hero */
+
+.hero{
+
+    background:linear-gradient(135deg,#d8f5f2,#f8ffff);
+
+    padding:90px 0;
+
+}
+
+.hero h1{
+
+    font-size:48px;
+
+    color:#0d9488;
+
+    margin-bottom:15px;
+
+}
+
+.hero p{
+
+    font-size:20px;
+
+    color:#555;
+
+}
+
+/* 카드 */
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+    margin:70px auto;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    transition:.25s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+
+}
+
+.card h2{
+
+    color:#0d9488;
+
+    margin-bottom:15px;
+
+    font-size:24px;
+
+}
+
+.card p{
+
+    color:#666;
+
+    margin-bottom:20px;
+
+}
+
+/* 버튼 */
+
+.btn{
+
+    display:inline-block;
+
+    padding:12px 22px;
+
+    background:#0d9488;
+
+    color:white;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    transition:.25s;
+
+}
+
+.btn:hover{
+
+    background:#0f766e;
+
+}
+
+/* Footer */
+
+footer{
+
+    background:#1e293b;
+
+    color:white;
+
+    padding:40px;
+
+    text-align:center;
+
+    margin-top:70px;
+
+}
+
+/* 모바일 */
+
+@media(max-width:768px){
+
+nav{
+
+    flex-direction:column;
+
+    height:auto;
+
+    padding:20px 0;
+
+}
+
+.menu{
+
+    margin-top:15px;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+}
+
+.hero{
+
+    padding:60px 20px;
+
+}
+
+.hero h1{
+
+    font-size:34px;
+
+}
+
+.hero p{
+
+    font-size:17px;
+
+}
+
+.cards{
+
+    grid-template-columns:1fr;
+
+}
+
+}
