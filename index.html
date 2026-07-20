@@ -1,35 +1,322 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>namyaksa의 제미나이 공부방</title>
-    <style>
-        body { font-family: 'Pretendard', sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
-        header { border-bottom: 2px solid #4A90E2; padding-bottom: 10px; margin-bottom: 30px; }
-        h1 { color: #2C3E50; margin: 0; }
-        p.subtitle { color: #666; margin-top: 5px; }
-        .post-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; transition: transform 0.2s; }
-        .post-card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .post-title { margin: 0 0 10px 0; color: #1a73e8; }
-        .post-date { font-size: 0.85em; color: #888; }
-        .tag { display: inline-block; background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-top: 10px; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>📖 namyaksa의 제미나이 공부방</h1>
-        <p class="subtitle">Gemini와 함께 공부한 내용을 기록하는 공간입니다.</p>
-    </header>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파란약국</title>
 
-    <main id="posts-container">
-        <!-- 최근 작성한 공부 노트 카드 예시 -->
-        <article class="post-card">
-            <span class="post-date">2026-07-21</span>
-            <h2 class="post-title">제미나이 프롬프트 엔지니어링 기초</h2>
-            <p>오늘 Gemini와 공부한 원하는 답변을 얻어내는 효과적인 프롬프트 작성 법 요약...</p>
-            <span class="tag">#Gemini</span> <span class="tag">#AI</span>
-        </article>
-    </main>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Pretendard,sans-serif;
+}
+
+body{
+background:#f6f8fb;
+color:#333;
+}
+
+header{
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+position:sticky;
+top:0;
+z-index:999;
+}
+
+.container{
+width:1100px;
+max-width:95%;
+margin:auto;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+height:70px;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:#147a74;
+}
+
+.menu a{
+text-decoration:none;
+margin-left:30px;
+color:#444;
+font-weight:500;
+}
+
+.menu a:hover{
+color:#009688;
+}
+
+.hero{
+
+background:linear-gradient(135deg,#dff8f6,#f7ffff);
+
+padding:70px 0;
+
+}
+
+.hero h1{
+font-size:50px;
+color:#147a74;
+margin-bottom:15px;
+}
+
+.hero p{
+font-size:22px;
+line-height:1.8;
+}
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+gap:30px;
+
+margin:60px auto;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:18px;
+
+padding:30px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+transition:.25s;
+
+}
+
+.card:hover{
+
+transform:translateY(-6px);
+
+}
+
+.card h2{
+
+margin-bottom:15px;
+
+color:#0b7068;
+
+}
+
+.card p{
+
+line-height:1.7;
+
+margin-bottom:20px;
+
+}
+
+.btn{
+
+display:inline-block;
+
+padding:12px 20px;
+
+background:#0f8f86;
+
+color:white;
+
+border-radius:10px;
+
+text-decoration:none;
+
+}
+
+footer{
+
+margin-top:80px;
+
+padding:40px;
+
+background:#1d2a39;
+
+color:white;
+
+text-align:center;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="container">
+
+<nav>
+
+<div class="logo">
+
+💊 파란약국
+
+</div>
+
+<div class="menu">
+
+<a href="#">홈</a>
+
+<a href="study/index.html">공부방</a>
+
+<a href="blog.html">블로그</a>
+
+<a href="about.html">약국소개</a>
+
+</div>
+
+</nav>
+
+</div>
+
+</header>
+
+<section class="hero">
+
+<div class="container">
+
+<h1>전문 약사의 상담과 공부 기록</h1>
+
+<p>
+
+반려동물 상담가이드와 AI 공부 노트를 한 곳에서 제공합니다.
+
+</p>
+
+</div>
+
+</section>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card">
+
+<h2>❤️ 심장사상충 상담가이드</h2>
+
+<p>
+
+심장사상충 예방약 종류, 보호자 상담방법,
+
+예방 일정 등을 쉽게 확인할 수 있습니다.
+
+</p>
+
+<a class="btn" href="heartworm.html">
+
+바로가기
+
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>📚 공부방</h2>
+
+<p>
+
+Gemini,
+
+ChatGPT,
+
+영어,
+
+약학 공부 내용을
+
+계속 기록하는 공간입니다.
+
+</p>
+
+<a class="btn" href="study/index.html">
+
+공부방 열기
+
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>📝 블로그</h2>
+
+<p>
+
+약국 이야기,
+
+동물약품,
+
+AI 활용법,
+
+공부 내용을
+
+블로그 형식으로 제공합니다.
+
+</p>
+
+<a class="btn" href="blog.html">
+
+블로그 보기
+
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>💊 약국 소개</h2>
+
+<p>
+
+영업시간,
+
+오시는 길,
+
+전화번호,
+
+약국 소개를 확인하세요.
+
+</p>
+
+<a class="btn" href="about.html">
+
+약국 안내
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+© 2026 파란약국 · Powered by GitHub Pages
+
+</footer>
+
 </body>
 </html>
