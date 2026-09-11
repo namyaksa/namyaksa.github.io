@@ -154,7 +154,8 @@ service cloud.firestore {
     }
     match /transactions/{docId} {
       allow read: if request.auth != null;
-      allow write: if true;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
     }
   }
 }`;
@@ -536,6 +537,7 @@ if(!isConfigured){
               </div>
               <div style="flex-shrink:0;">
                 ${r.fileData ? `<button class="btn btn-ghost" data-download-record="${r.id}" style="font-size:0.8rem; padding:6px 12px;">다운로드</button>` : ""}
+                <button class="btn-icon danger" data-delete-record="${r.id}" title="삭제">✕</button>
               </div>
             </li>
           `).join("")}
@@ -755,6 +757,19 @@ if(!isConfigured){
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
+        });
+      });
+      document.querySelectorAll("[data-delete-record]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          const id = btn.dataset.deleteRecord;
+          if(!confirm("이 거래 기록을 삭제할까요? 되돌릴 수 없습니다.")) return;
+          try{
+            await db.collection("transactions").doc(id).delete();
+            state.historyRecords = state.historyRecords.filter(r => r.id !== id);
+            render();
+          }catch(e){
+            alert("삭제에 실패했습니다: " + e.message);
+          }
         });
       });
     }
