@@ -164,6 +164,7 @@ const isConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("YOU
 
 function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function won(n){ return (Number(n)||0).toLocaleString("ko-KR"); }
+function formatDot(n){ return Math.round(Number(n)||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 function newItem(){ return { id: Date.now()+Math.random(), name:"", qty:1, price:0, note:"" }; }
 function emptyForm(){ return { name:"", biz:"", ceo:"", phone:"", address:"" }; }
 function normalizeDrugName(s){ return (s||"").trim().replace(/\s+/g," "); }
@@ -943,13 +944,15 @@ if(!isConfigured){
     rows.push(["","대표자", receiver.ceo||"", "전화번호", receiver.phone||"", ""]);
     rows.push(["","주소", receiver.address||"", "", "", ""]);                    idx.receiverAddress = rows.length-1;
     rows.push([]);
-    rows.push(["번호","품목명","수량","단가","공급가액","비고"]);              idx.itemHeader = rows.length-1;
+    rows.push(["번호","품목명","수량","단가","공급가액",""]);              idx.itemHeader = rows.length-1;
     idx.itemStart = rows.length;
     validItems.forEach((it)=>{
-      rows.push([rows.length-idx.itemStart+1, it.name, Number(it.qty)||0, Number(it.price)||0, (Number(it.qty)||0)*(Number(it.price)||0), it.note||""]);
+      const qty = Number(it.qty)||0, price = Number(it.price)||0;
+      rows.push([rows.length-idx.itemStart+1, it.name, qty, formatDot(price), formatDot(qty*price), ""]);
     });
     idx.itemEnd = rows.length-1;
-    rows.push(["합계","","","", validItems.reduce((s,it)=> s + (Number(it.qty)||0)*(Number(it.price)||0), 0), ""]); idx.totalRow = rows.length-1;
+    const totalSum = validItems.reduce((s,it)=> s + (Number(it.qty)||0)*(Number(it.price)||0), 0);
+    rows.push(["합계","","","", formatDot(totalSum), ""]); idx.totalRow = rows.length-1;
     if(state.txNote && state.txNote.trim()){
       rows.push([]);
       rows.push(["비고", state.txNote, "", "", "", ""]); idx.noteRow = rows.length-1;
@@ -957,7 +960,7 @@ if(!isConfigured){
 
     const workbook = new ExcelJS.Workbook();
     const ws = workbook.addWorksheet("거래명세서");
-    ws.columns = [{width:10},{width:30},{width:8},{width:13},{width:14},{width:9}];
+    ws.columns = [{width:10},{width:32},{width:24},{width:13},{width:14},{width:6}];
 
     rows.forEach((rowArr, r) => {
       rowArr.forEach((val, c) => {
@@ -991,6 +994,12 @@ if(!isConfigured){
       ws.getCell(idx.itemHeader+1, c+1).alignment = { horizontal:"center", vertical:"middle" };
     }
     ws.getCell(idx.totalRow+1, 1).font = { bold:true };
+    ws.getCell(idx.totalRow+1, 5).font = { bold:true };
+    ws.getCell(idx.totalRow+1, 5).alignment = { horizontal:"right" };
+    for(let r=idx.itemStart; r<=idx.itemEnd; r++){
+      ws.getCell(r+1, 4).alignment = { horizontal:"right" }; // 단가
+      ws.getCell(r+1, 5).alignment = { horizontal:"right" }; // 공급가액
+    }
     ws.getCell(idx.dateRow+1, 1).font = { bold:true };
     [idx.supplierStart, idx.supplierStart+1, idx.supplierAddress, idx.receiverStart, idx.receiverStart+1, idx.receiverAddress].forEach(r=>{
       ws.getCell(r+1, 1).font = { bold:true };
