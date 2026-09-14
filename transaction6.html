@@ -960,7 +960,7 @@ if(!isConfigured){
 
     const workbook = new ExcelJS.Workbook();
     const ws = workbook.addWorksheet("거래명세서");
-    ws.columns = [{width:10},{width:32},{width:24},{width:13},{width:14},{width:6}];
+    ws.columns = [{width:10},{width:32},{width:16},{width:18},{width:14},{width:6}];
 
     rows.forEach((rowArr, r) => {
       rowArr.forEach((val, c) => {
