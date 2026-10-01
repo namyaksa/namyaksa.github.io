@@ -40,6 +40,9 @@ button:disabled{opacity:0.5;}
 .btn-main{width:100%;margin-top:14px;background:var(--accent);color:#fff;padding:11px;border-radius:10px;font-size:0.95rem;font-weight:700;}
 .lookup-btn{background:var(--accent-light);color:var(--accent);padding:7px 12px;border-radius:8px;font-size:0.82rem;font-weight:600;}
 .lookup-status{font-size:0.78rem;color:var(--sub);margin-top:6px;}
+.example-suggestions{margin-top:6px;}
+.sugg-label{font-size:0.75rem;color:var(--sub);margin-bottom:4px;}
+.sugg-btn{display:block;width:100%;text-align:left;background:var(--accent-light);color:var(--text);padding:8px 10px;border-radius:8px;font-size:0.8rem;margin-bottom:6px;line-height:1.4;}
 .ipa-row{display:flex;align-items:center;gap:10px;margin-top:6px;}
 .ipa-text{font-size:0.85rem;color:var(--sub);font-family:"Times New Roman",serif;}
 .speak-btn{background:var(--accent-light);color:var(--accent);padding:5px 10px;border-radius:8px;font-size:0.78rem;font-weight:600;}
@@ -108,6 +111,7 @@ button:disabled{opacity:0.5;}
         <input type="text" id="inMeaning" placeholder="예: 덧없는, 순간적인">
         <label>예문 — 책에서 직접 옮겨 적기 (선택)</label>
         <textarea id="inExample" placeholder="본인이 읽던 책에서 이 단어가 나온 문장을 직접 옮겨 적어보세요"></textarea>
+        <div id="exampleSuggestions" class="example-suggestions"></div>
         <label>페이지 (선택)</label>
         <input type="text" id="inPage" placeholder="예: p.42">
         <label>예문 해석 (선택)</label>
@@ -199,54 +203,13 @@ function renderAuthbar(user){
   }
 }
 
-// Starter vocabulary — general medical/literary words a reader of this kind of novel
-// might encounter. These are original definitions/examples, not excerpts from any book.
-const SEED_WORDS = [
-  { word:"ephemeral", meaning:"덧없는, 순간적인", ipa:"/ɪˈfem.ər.əl/", example:"Their friendship felt ephemeral, fading as quickly as it had begun.", exampleKo:"그들의 우정은 덧없어서, 시작된 만큼이나 빠르게 사그라들었다." },
-  { word:"prognosis", meaning:"예후, 예측", ipa:"/prɒɡˈnoʊ.sɪs/", example:"The doctor's prognosis gave the family a cautious sense of hope.", exampleKo:"의사의 예후 소견은 가족에게 조심스러운 희망을 안겨주었다." },
-  { word:"stoic", meaning:"금욕적인, 의연한", ipa:"/ˈstoʊ.ɪk/", example:"He remained stoic even as the news grew worse.", exampleKo:"소식이 점점 나빠지는데도 그는 의연함을 잃지 않았다." },
-  { word:"malaise", meaning:"(막연한) 불안감, 권태", ipa:"/məˈleɪz/", example:"A quiet malaise settled over the hospital ward that evening.", exampleKo:"그날 저녁 병동에는 조용한 불안감이 감돌았다." },
-  { word:"visceral", meaning:"본능적인, 내장의", ipa:"/ˈvɪs.ər.əl/", example:"She felt a visceral fear the moment she heard the diagnosis.", exampleKo:"진단 결과를 듣는 순간 그녀는 본능적인 두려움을 느꼈다." },
-  { word:"resilience", meaning:"회복력, 탄력성", ipa:"/rɪˈzɪl.i.əns/", example:"His resilience surprised even the surgeons who treated him.", exampleKo:"그의 회복력은 치료했던 외과의들조차 놀라게 했다." },
-  { word:"somber", meaning:"침울한, 어두운", ipa:"/ˈsɒm.bər/", example:"A somber mood filled the waiting room.", exampleKo:"대기실에는 침울한 분위기가 가득했다." },
-  { word:"diligent", meaning:"근면한, 성실한", ipa:"/ˈdɪl.ɪ.dʒənt/", example:"The young intern was diligent, checking every chart twice.", exampleKo:"그 젊은 인턴은 성실해서 모든 차트를 두 번씩 확인했다." },
-  { word:"anguish", meaning:"극심한 고통, 괴로움", ipa:"/ˈæŋ.ɡwɪʃ/", example:"Anguish was written across her face as she waited for news.", exampleKo:"소식을 기다리는 그녀의 얼굴에는 괴로움이 역력했다." },
-  { word:"composure", meaning:"침착함, 평정", ipa:"/kəmˈpoʊ.ʒər/", example:"He struggled to keep his composure during the emergency.", exampleKo:"그는 응급 상황에서도 침착함을 유지하려 애썼다." },
-  { word:"fortitude", meaning:"용기, 불굴의 정신", ipa:"/ˈfɔːr.tɪ.tuːd/", example:"It took great fortitude to walk back into that operating room.", exampleKo:"그 수술실로 다시 걸어 들어가는 데에는 큰 용기가 필요했다." },
-  { word:"wary", meaning:"경계하는, 조심스러운", ipa:"/ˈwer.i/", example:"She grew wary of making promises she might not keep.", exampleKo:"그녀는 지키지 못할지도 모를 약속을 하는 데 점점 조심스러워졌다." },
-  { word:"candor", meaning:"솔직함", ipa:"/ˈkæn.dər/", example:"His candor about the risks earned the patient's trust.", exampleKo:"위험성에 대한 그의 솔직함이 환자의 신뢰를 얻었다." },
-  { word:"meticulous", meaning:"꼼꼼한, 세심한", ipa:"/məˈtɪk.jə.ləs/", example:"The surgeon was meticulous, double-checking every instrument.", exampleKo:"그 외과의는 세심해서 모든 기구를 두 번씩 확인했다." },
-  { word:"benevolent", meaning:"자비로운, 인정 많은", ipa:"/bəˈnev.ə.lənt/", example:"Behind his gruff manner was a surprisingly benevolent heart.", exampleKo:"무뚝뚝한 태도 뒤에는 의외로 자비로운 마음이 있었다." },
-  { word:"grim", meaning:"암울한, 단호한", ipa:"/ɡrɪm/", example:"The statistics painted a grim picture of recovery rates.", exampleKo:"통계는 회복률에 대해 암울한 그림을 보여주었다." },
-  { word:"relentless", meaning:"끊임없는, 가차없는", ipa:"/rɪˈlent.ləs/", example:"Her relentless work ethic made her a favorite among mentors.", exampleKo:"그녀의 끊임없는 근면함은 지도교수들 사이에서 그녀를 돋보이게 했다." },
-  { word:"empathy", meaning:"공감", ipa:"/ˈem.pə.θi/", example:"Empathy, more than skill alone, defined the best doctors there.", exampleKo:"그곳에서 가장 훌륭한 의사들을 정의하는 것은 기술보다 공감이었다." },
-  { word:"turmoil", meaning:"혼란, 동요", ipa:"/ˈtɜːr.mɔɪl/", example:"Inside, he was in turmoil, though his face stayed calm.", exampleKo:"겉으로는 침착했지만 속으로는 혼란스러웠다." },
-  { word:"vindicate", meaning:"입증하다, 정당성을 증명하다", ipa:"/ˈvɪn.dɪ.keɪt/", example:"Years later, his unconventional theory was finally vindicated.", exampleKo:"수년 후, 그의 비전통적인 이론은 마침내 정당성을 인정받았다." }
-];
-
-async function seedIfEmpty(){
-  if(!wordsColRef) return;
-  const now = Date.now();
-  for(let i=0;i<SEED_WORDS.length;i++){
-    const s = SEED_WORDS[i];
-    try{
-      await addDoc(wordsColRef, { word:s.word, meaning:s.meaning, ipa:s.ipa, example:s.example, exampleKo:s.exampleKo, page:'', mastered:false, correctStreak:0, addedAt: now - (SEED_WORDS.length - i) });
-    }catch(e){}
-  }
-}
-
 onAuthStateChanged(auth, (user)=>{
   renderAuthbar(user);
   if(user){
     wordsColRef = collection(db, 'users', user.uid, 'words');
     const q = query(wordsColRef, orderBy('addedAt', 'desc'));
-    let firstSnapshot = true;
     onSnapshot(q, (snap)=>{
       words = snap.docs.map(d=>({ id: d.id, ...d.data() }));
-      if(firstSnapshot){
-        firstSnapshot = false;
-        if(words.length === 0){ seedIfEmpty(); return; }
-      }
       renderStats();
       if(document.getElementById('panel-list').style.display !== 'none') renderList();
     });
@@ -260,8 +223,10 @@ async function doLookup(){
   const w = document.getElementById('inWord').value.trim();
   const meaningEl = document.getElementById('inMeaning');
   const statusEl = document.getElementById('lookupStatus');
+  const suggEl = document.getElementById('exampleSuggestions');
   if(!w) return;
   statusEl.textContent = '사전에서 찾는 중...';
+  suggEl.innerHTML = '';
   document.getElementById('lookupBtn').disabled = true;
   try{
     const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(w));
@@ -281,6 +246,26 @@ async function doLookup(){
         const trData = await trRes.json();
         meaningEl.value = trData?.responseData?.translatedText || def;
       }catch(e){ meaningEl.value = def; }
+    }
+    // Collect up to 2 example sentences from the dictionary (general usage examples,
+    // not taken from any novel) so the person has an option besides their own book excerpt.
+    const examples = [];
+    (entry.meanings || []).forEach(m=>{
+      (m.definitions || []).forEach(d=>{ if(d.example && examples.length < 2 && !examples.includes(d.example)) examples.push(d.example); });
+    });
+    if(examples.length){
+      suggEl.innerHTML = '<div class="sugg-label">예문 추천 (사전 제공, 책 원문 아님) — 눌러서 적용:</div>' +
+        examples.map((ex,i)=>`<button type="button" class="sugg-btn" data-ex="${escapeHtml(ex)}">${escapeHtml(ex)}</button>`).join('');
+      suggEl.querySelectorAll('.sugg-btn').forEach(b=>{
+        b.addEventListener('click', async ()=>{
+          document.getElementById('inExample').value = b.dataset.ex;
+          try{
+            const trRes = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(b.dataset.ex) + '&langpair=en|ko');
+            const trData = await trRes.json();
+            document.getElementById('inExampleKo').value = trData?.responseData?.translatedText || '';
+          }catch(e){}
+        });
+      });
     }
     statusEl.textContent = phonetic || def ? '✓ 찾았어요. 필요하면 수정해주세요. (자동 번역은 참고용)' : '사전에서 찾지 못했어요.';
   }catch(e){
@@ -316,14 +301,20 @@ async function updateWord(id, patch){
 
 document.getElementById('addBtn').addEventListener('click', async ()=>{
   const w = document.getElementById('inWord').value.trim();
-  const m = document.getElementById('inMeaning').value.trim();
+  if(!w){ alert('영어 단어를 입력해주세요.'); return; }
+  let m = document.getElementById('inMeaning').value.trim();
+  if(!m){
+    await doLookup();
+    m = document.getElementById('inMeaning').value.trim();
+  }
+  if(!m){ alert('사전에서 이 단어의 뜻을 찾지 못했어요. 뜻을 직접 입력해주세요.'); return; }
   const ex = document.getElementById('inExample').value.trim();
   const exKo = document.getElementById('inExampleKo').value.trim();
   const page = document.getElementById('inPage').value.trim();
-  if(!w || !m){ alert('단어와 뜻을 입력해주세요.'); return; }
   await addWordEntry({ word:w, meaning:m, ipa:currentIpa||'', example:ex, exampleKo:exKo, page:page, mastered:false, correctStreak:0, addedAt: Date.now() });
   ['inWord','inMeaning','inExample','inExampleKo','inPage'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ipaRow').style.display = 'none';
+  document.getElementById('exampleSuggestions').innerHTML = '';
   currentIpa = ''; document.getElementById('inWord').focus();
 });
 
