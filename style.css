@@ -70,6 +70,12 @@ nav{
     text-decoration:none;
 }
 
+.logo img{
+    display:block;
+    height:60px;
+    width:auto;
+}
+
 .menu{
     display:flex;
     gap:28px;
