@@ -7,17 +7,17 @@
 <link rel="stylesheet" href="../style.css">
 <style>
 .study-header{
-    background:linear-gradient(135deg,#d8f5f2,#ffffff);
+    background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
     padding:50px 20px;
     text-align:center;
 }
 .study-header h1{
-    color:#0d9488;
+    color:var(--blue-dark);
     font-size:42px;
     margin-bottom:10px;
 }
 .study-header p{
-    color:#666;
+    color:var(--sub);
 }
 .search-box{
     max-width:700px;
@@ -28,7 +28,7 @@
     padding:15px;
     font-size:18px;
     border-radius:12px;
-    border:1px solid #ccc;
+    border:1px solid var(--blue-line);
 }
 .toolbar{
     display:flex;
@@ -38,7 +38,7 @@
     max-width:1000px;
 }
 .write-btn{
-    background:#0d9488;
+    background:var(--blue);
     color:white;
     padding:12px 20px;
     text-decoration:none;
@@ -54,10 +54,11 @@
     background:white;
     border-radius:15px;
     padding:25px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    border:1px solid var(--blue-line);
+    box-shadow:0 5px 15px rgba(11,99,173,.08);
 }
 .post h2{
-    color:#0d9488;
+    color:var(--blue);
     margin-bottom:10px;
 }
 .date{
@@ -69,8 +70,8 @@
 }
 .tag{
     display:inline-block;
-    background:#e8f8f6;
-    color:#0d9488;
+    background:var(--blue-soft);
+    color:var(--blue);
     padding:5px 10px;
     border-radius:20px;
     margin-right:8px;
@@ -81,15 +82,15 @@
 .post-detail {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--blue-line);
     line-height: 1.6;
     color: #334155;
 }
 .post-detail h3 {
-    color: #0d9488;
+    color: var(--blue);
     font-size: 17px;
     margin: 20px 0 10px 0;
-    border-bottom: 2px solid #e8f8f6;
+    border-bottom: 2px solid var(--blue-soft);
     padding-bottom: 5px;
 }
 .post-detail ol, .post-detail ul {
@@ -101,7 +102,7 @@
 }
 .post-detail .download-btn {
     display: inline-block;
-    background: #0d9488;
+    background: var(--blue);
     color: #ffffff;
     padding: 10px 18px;
     border-radius: 8px;
@@ -111,16 +112,16 @@
     font-weight: bold;
 }
 .post-detail .download-btn:hover {
-    background: #0f766e;
+    background: var(--blue-dark);
 }
 .post-detail .faq-q {
     font-weight: bold;
-    color: #0f766e;
+    color: var(--blue-dark);
     margin-top: 12px;
 }
 .post-detail .notice {
-    background: #f8fafc;
-    border-left: 4px solid #0d9488;
+    background: #f3f8fc;
+    border-left: 4px solid var(--blue);
     padding: 12px;
     font-size: 13px;
     color: #64748b;
@@ -134,11 +135,13 @@
 <header>
 <div class="container">
 <nav>
-<div class="logo">💙 파란약국</div>
+<a class="logo" href="../index.html">💙 파란약국</a>
 <div class="menu">
 <a href="../index.html">홈</a>
-<a href="#">공부방</a>
 <a href="../heartworm.html">심장사상충</a>
+<a href="index.html" class="active">공부방</a>
+<a href="https://namyaksa.wixsite.com/paran" target="_blank" rel="noopener noreferrer">블로그</a>
+<a href="https://map.naver.com/p/search/%ED%8C%8C%EB%9E%80%EC%95%BD%EA%B5%AD/place/11704833" target="_blank" rel="noopener noreferrer">약국소개</a>
 </div>
 </nav>
 </div>
@@ -169,7 +172,6 @@
 <div class="post-detail">
 <a class="download-btn" href="voca-app.html" download="voca-app.html">
 📥 HTML 파일 다운로드 (voca-app.html)
-</a>
 </a>
 
 <h3>📌 준비물</h3>
@@ -204,7 +206,7 @@
 <p>A. 아니요. 내 단어는 내 계정에만 저장되고, 내 기기들(폰, 태블릿, 컴퓨터)에서는 동기화돼요.</p>
 
 <p class="faq-q">Q. 파일을 그냥 열었더니 자동 기능이 안 돼요.</p>
-<p>A. <span style="color: #e11d48; font-weight: bold;">HTML 파일을 직접 열면 Claude 기능이 없어요.</span> 꼭 위 설치 방법 ②~④처럼 Claude에서 아티팩트로 게시한 뒤 열어야 해요.</p>
+<p>A. HTML 파일을 직접 열면 Claude 기능이 없어요. 꼭 위 설치 방법 ②~④처럼 Claude에서 아티팩트로 게시한 뒤 열어야 해요.</p>
 
 <p class="faq-q">Q. 자동 뜻 찾기가 안 돼요.</p>
 <p>A. Claude에게 이렇게 말해보세요: <em>"db, sample, user 기능을 켜서 다시 게시해줘."</em></p>
