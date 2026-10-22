@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const href = link.getAttribute("href");
 
         if (href === current || (current === "" && href === "index.html")) {
-            link.style.color = "#0d9488";
+            link.style.color = "var(--blue)";
             link.style.fontWeight = "700";
         }
     });
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         height: "50px",
         border: "none",
         borderRadius: "50%",
-        background: "#0d9488",
+        background: "var(--blue)",
         color: "white",
         fontSize: "18px",
         cursor: "pointer",

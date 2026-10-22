@@ -1,10 +1,24 @@
 /* ===========================
    파란약국 홈페이지
-   style.css
+   style.css  (홈 · 공부방 공통, 파란약국 블루톤)
 =========================== */
 
 /* Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+/* 파란약국 색상 (간판의 파란색 기준) */
+:root{
+    --blue:#0b63ad;        /* 대표 파랑 */
+    --blue-dark:#08497f;   /* 진한 파랑 (호버, 강조 제목) */
+    --blue-soft:#e4f1fb;   /* 연한 파랑 (태그, 구분선) */
+    --blue-line:#cfe3f4;   /* 카드 테두리 */
+    --hero-from:#cfe6f7;
+    --hero-to:#f7fbff;
+    --bg:#f3f8fc;
+    --text:#1f2d3d;
+    --sub:#5b6b7c;
+    --navy:#0b2a4a;        /* 푸터 */
+}
 
 /* Reset */
 *{
@@ -19,8 +33,8 @@ html{
 
 body{
     font-family:'Noto Sans KR',sans-serif;
-    background:#f7fafb;
-    color:#333;
+    background:var(--bg);
+    color:var(--text);
     line-height:1.7;
 }
 
@@ -34,189 +48,137 @@ body{
 /* Header */
 
 header{
-
     background:#ffffff;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-
+    border-top:4px solid var(--blue);
+    box-shadow:0 2px 10px rgba(11,99,173,.12);
     position:sticky;
-
     top:0;
-
     z-index:999;
-
 }
 
 nav{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     height:70px;
-
 }
 
 .logo{
-
-    font-size:30px;
-
+    font-size:28px;
     font-weight:700;
-
-    color:#0d9488;
-
+    color:var(--blue);
+    text-decoration:none;
 }
 
 .menu{
-
     display:flex;
-
-    gap:30px;
-
+    gap:28px;
 }
 
 .menu a{
-
     text-decoration:none;
-
-    color:#444;
-
+    color:#3d4b5c;
     font-weight:500;
-
+    padding:6px 0;
+    border-bottom:2px solid transparent;
     transition:.25s;
-
 }
 
-.menu a:hover{
-
-    color:#0d9488;
-
+.menu a:hover,
+.menu a.active{
+    color:var(--blue);
+    border-bottom-color:var(--blue);
 }
 
 /* Hero */
 
 .hero{
-
-    background:linear-gradient(135deg,#d8f5f2,#f8ffff);
-
+    background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
     padding:90px 0;
-
 }
 
 .hero h1{
-
     font-size:48px;
-
-    color:#0d9488;
-
+    color:var(--blue-dark);
     margin-bottom:15px;
-
 }
 
 .hero p{
-
     font-size:20px;
-
-    color:#555;
-
+    color:var(--sub);
 }
 
 /* 카드 */
 
 .cards{
-
     display:grid;
-
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
     gap:30px;
-
     margin:70px auto;
-
 }
 
 .card{
-
     background:white;
-
+    border:1px solid var(--blue-line);
     border-radius:18px;
-
     padding:30px;
-
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-
+    box-shadow:0 5px 15px rgba(11,99,173,.08);
     transition:.25s;
-
 }
 
 .card:hover{
-
     transform:translateY(-8px);
-
-    box-shadow:0 10px 25px rgba(0,0,0,.12);
-
+    box-shadow:0 10px 25px rgba(11,99,173,.16);
 }
 
 .card h2{
-
-    color:#0d9488;
-
+    color:var(--blue);
     margin-bottom:15px;
-
     font-size:24px;
-
 }
 
 .card p{
-
-    color:#666;
-
+    color:var(--sub);
     margin-bottom:20px;
-
 }
 
 /* 버튼 */
 
 .btn{
-
     display:inline-block;
-
     padding:12px 22px;
-
-    background:#0d9488;
-
+    background:var(--blue);
     color:white;
-
     border-radius:10px;
-
     text-decoration:none;
-
     transition:.25s;
-
 }
 
 .btn:hover{
+    background:var(--blue-dark);
+}
 
-    background:#0f766e;
+/* 본문 링크 */
 
+.post-detail a{
+    color:var(--blue);
+}
+
+/* 입력칸 */
+
+input[type="text"]:focus{
+    outline:2px solid var(--blue);
+    border-color:var(--blue);
 }
 
 /* Footer */
 
 footer{
-
-    background:#1e293b;
-
-    color:white;
-
+    background:var(--navy);
+    color:#dbe8f5;
     padding:40px;
-
     text-align:center;
-
     margin-top:70px;
-
 }
 
 /* 모바일 */
@@ -224,47 +186,40 @@ footer{
 @media(max-width:768px){
 
 nav{
-
     flex-direction:column;
-
     height:auto;
-
     padding:20px 0;
-
 }
 
 .menu{
-
     margin-top:15px;
-
     flex-wrap:wrap;
-
     justify-content:center;
-
+    gap:18px;
 }
 
 .hero{
-
     padding:60px 20px;
-
 }
 
 .hero h1{
-
     font-size:34px;
-
 }
 
 .hero p{
-
     font-size:17px;
-
 }
 
 .cards{
-
     grid-template-columns:1fr;
+}
 
+/* 공부방: 좁은 화면에서 양옆 여백 */
+.search-box,
+.toolbar,
+.post-list{
+    padding-left:16px;
+    padding-right:16px;
 }
 
 }
