@@ -131,6 +131,39 @@
     border-radius: 0 8px 8px 0;
 }
 
+/* 하단 첨부 이미지 스타일 */
+.post-detail .attached-img-box {
+    margin-top: 25px;
+    text-align: center;
+}
+.post-detail .attached-img-box img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid var(--blue-line);
+}
+
+/* 유튜브 쇼츠 영상 반응형 박스 스타일 */
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 315px;
+    margin: 20px auto;
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 /* 돋보이는 프롬프트 박스 스타일 */
 .highlight-prompt {
     background: #fff8f8;
@@ -249,6 +282,11 @@
 <p>원서를 읽다가 페이지를 사진으로 찍어서 모르는 영어 단어를 바로 찾고, 사전·발음·어원·예문 해석까지 자동으로 채워주고, 퀴즈로 복습하는 단어장이에요. 특히 Claude로 문맥에 맞게 라틴어 어원, 슬랭까지 활용해 암기를 도와줘요. 본인의 Claude 계정만 있으면 무료로 쓸 수 있습니다. (별도 앱 설치, 가입비, 서버 필요 없음)</p>
 
 <div class="post-detail">
+<!-- 유튜브 쇼츠 영상 삽입 부분 -->
+<div class="video-container">
+    <iframe src="https://www.youtube.com/embed/RdwyFkVuwfQ" title="Claude로 만든 나만의 단어 암기" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 <a class="download-btn" href="voca-app.html" download="voca-app.html">
 📥 HTML 파일 다운로드 (voca-app.html)
 </a>
@@ -296,6 +334,11 @@
 <p class="faq-q">Q. 앱이 업데이트되면요?</p>
 <p>A. 이쯤이면 완벽하지 않을까 생각하는데 건의사항 알려주시면 제가 업데이트 파일 올리겠습니다.</p>
 
+<!-- 문서 하단 이미지 삽입 부분 -->
+<div class="attached-img-box">
+    <img src="doctors.jpg" alt="닥터스 (Doctors - Erich Segal)">
+</div>
+
 <div class="notice">
 ⚠️ 앱의 자동 번역과 어원 설명은 AI가 만든 것이라 틀릴 수 있어요. 중요한 단어는 사전으로 한 번 더 확인하세요. <br><strong>— 남약사 (파란약국)</strong>
 </div>
@@ -337,7 +380,7 @@ function toggleBgm() {
 }
 </script>
 
-<script src="../app.js"></script>
+<script src="doctors.jpg/app.js"></script>
 
 </body>
 </html>
