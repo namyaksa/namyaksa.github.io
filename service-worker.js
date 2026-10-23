@@ -1,4 +1,4 @@
-const CACHE_NAME = 'paran-pharmacy-v1';
+const CACHE_NAME = 'paran-pharmacy-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -8,6 +8,7 @@ const ASSETS_TO_CACHE = [
 
 // 설치 단계: 필요한 자원 캐싱
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
@@ -17,6 +18,7 @@ self.addEventListener('install', (event) => {
 
 // 활성화 단계: 오래된 캐시 정리
 self.addEventListener('activate', (event) => {
+  self.clients.claim();
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -30,12 +32,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 네트워크 요청을 가로채서 캐시된 파일이 있으면 먼저 제공
+// 네트워크 우선: 인터넷이 되면 항상 최신 파일, 안 되면 캐시 사용
 self.addEventListener('fetch', (event) => {
-  event.setUrl = undefined;
+  if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
