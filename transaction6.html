@@ -146,11 +146,19 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /pharmacies/{docId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() < 100;
+      allow update, delete: if request.auth != null;
     }
     match /stats/{docId} {
       allow read: if true;
       allow write: if true;
+    }
+    match /stamps/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.image.size() < 300000;
+      allow update, delete: if request.auth != null;
     }
     match /transactions/{docId} {
       allow read: if request.auth != null;
@@ -296,7 +304,7 @@ if(!isConfigured){
     },
     err => {
       state.loading = false;
-      state.connError = "공용 목록을 불러오지 못했습니다. Firestore 보안 규칙을 확인해 주세요. (" + err.message + ")";
+      console.warn(err); state.connError = "공용 목록을 불러오는 중입니다. 잠시 후 새로고침해 주세요.";
       render();
     }
   );
@@ -468,11 +476,20 @@ if(!isConfigured){
              <label>내 약국 선택 (이름을 입력해서 찾으세요)</label>
              <input type="text" id="mine-input" list="pharmacy-datalist" autocomplete="off" value="${mine ? esc(mine.name) : ''}" placeholder="약국명 입력">
            </div>`}
+      <details class="box" style="margin-top:14px;" ${state.pharmacies.length===0?"open":""}>
+        <summary style="cursor:pointer; font-weight:600;">내 약국이 목록에 없나요? 직접 등록하기</summary>
+        <p style="font-size:0.82rem; color:var(--muted);">다른 지역 약국 등 목록에 없는 경우 새로 등록할 수 있습니다. 등록 후 수정·삭제는 관리자만 가능하니 정확히 입력해 주세요.</p>
+        <div class="field"><label>약국명 (필수)</label><input type="text" id="self-name" autocomplete="off"></div>
+        <div class="field"><label>사업자등록번호</label><input type="text" id="self-biz" autocomplete="off"></div>
+        <div class="field"><label>대표자</label><input type="text" id="self-ceo" autocomplete="off"></div>
+        <div class="field"><label>전화번호</label><input type="text" id="self-phone" autocomplete="off"></div>
+        <button class="btn btn-primary" id="self-register">내 약국으로 등록</button>
+      </details>
       ${mine ? `<div class="partner-info" style="margin-top:14px;">현재 선택됨: <strong>${esc(mine.name)}</strong>${mine.phone?` · ${esc(mine.phone)}`:""}</div>` : ""}
 
       <div class="box" style="margin-top:20px;">
         <h3>도장 이미지 (선택)</h3>
-        <p style="font-size:0.82rem; color:var(--muted); margin-top:0;">등록해두면, 엑셀 거래명세서를 다운로드할 때 우리 약국 대표자 이름 옆에 자동으로 찍혀서 나옵니다. 배경이 투명한 PNG 파일을 권장합니다. 업로드하면 자동으로 작게 줄여서 저장하므로 용량 걱정 없이 올리셔도 됩니다. 이 이미지도 이 브라우저에만 저장됩니다.</p>
+        <p style="font-size:0.82rem; color:var(--muted); margin-top:0;">등록해두면 엑셀 거래명세서에 우리 약국 도장이 자동으로 찍힙니다. 도장을 등록한 약국과 거래하면 상대방 도장도 함께 찍힙니다. 배경이 투명한 PNG 파일을 권장하며, 업로드하면 자동으로 작게 줄여 저장합니다. 도장은 클라우드에 등록되므로, 한 번 등록한 뒤 변경은 관리자에게 요청해 주세요.</p>
         <input type="file" id="stamp-file" accept="image/png,image/jpeg">
         ${state.myStamp ? `
           <div style="margin-top:12px; display:flex; align-items:center; gap:14px;">
@@ -502,24 +519,60 @@ if(!isConfigured){
       });
   }
 
-  function renderHistory(){
-    const q = (state.historySearch || "").trim();
-    let list = state.historyRecords;
-    if(q){
-      list = list.filter(r =>
-        (r.myPharmacyName||"").includes(q) ||
-        (r.supplierName||"").includes(q) ||
-        (r.receiverName||"").includes(q) ||
-        (r.date||"").includes(q)
-      );
-    }
+  function attachHistoryListHandlers(){
+    document.querySelectorAll("[data-download-record]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const rec = state.historyRecords.find(r => r.id === btn.dataset.downloadRecord);
+        if(!rec || !rec.fileData) return;
+        const a = document.createElement("a");
+        a.href = rec.fileData;
+        a.download = rec.fileName || `거래명세서_${rec.date||""}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+    });
+    document.querySelectorAll("[data-delete-record]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const id = btn.dataset.deleteRecord;
+        if(!confirm("이 거래 기록을 삭제할까요? 되돌릴 수 없습니다.")) return;
+        try{
+          await db.collection("transactions").doc(id).delete();
+          state.historyRecords = state.historyRecords.filter(r => r.id !== id);
+          const box = document.getElementById("history-results");
+          if(box){ box.innerHTML = renderHistoryList(); attachHistoryListHandlers(); }
+        }catch(e){
+          alert("삭제에 실패했습니다: " + e.message);
+        }
+      });
+    });
+  }
 
+  function renderHistory(){
     return `
       <p class="desc">모든 약사님이 거래명세서를 다운로드할 때마다 자동으로 여기 기록됩니다. 최근 200건까지 불러옵니다.</p>
       <div class="field" style="max-width:360px; margin-bottom:14px;">
         <label>검색 (약국명 또는 날짜)</label>
-        <input type="text" id="history-search" value="${esc(state.historySearch)}" placeholder="예: 파란약국, 2026-09">
+        <input type="text" id="history-search" value="${esc(state.historySearch)}" placeholder="예: 파란약국, 2026-09" autocomplete="off">
       </div>
+      <div id="history-results">${renderHistoryList()}</div>
+    `;
+  }
+
+  function renderHistoryList(){
+    const norm = v => (v||"").toString().replace(/\s/g,"").toLowerCase();
+    const q = norm(state.historySearch);
+    let list = state.historyRecords;
+    if(q){
+      list = list.filter(r =>
+        norm(r.myPharmacyName).includes(q) ||
+        norm(r.supplierName).includes(q) ||
+        norm(r.receiverName).includes(q) ||
+        norm(r.date).includes(q)
+      );
+    }
+
+    return `
       ${state.historyError ? `<div class="error">${esc(state.historyError)}</div>` : ""}
       ${state.historyLoading ? `<p style="color:#94a3b8; font-size:0.88rem;">불러오는 중...</p>` : ""}
       ${(!state.historyLoading && list.length === 0) ? `<p class="empty-msg">${q ? "검색 결과가 없습니다." : "아직 저장된 거래 기록이 없습니다."}</p>` : ""}
@@ -722,6 +775,26 @@ if(!isConfigured){
         render();
       });
 
+      const selfBtn = document.getElementById("self-register");
+      if(selfBtn) selfBtn.addEventListener("click", async ()=>{
+        const v = id => (document.getElementById(id).value || "").trim();
+        const name = v("self-name");
+        if(!name){ alert("약국명을 입력해 주세요."); return; }
+        const dup = state.pharmacies.find(p => (p.name||"").replace(/\s/g,"") === name.replace(/\s/g,""));
+        if(dup){
+          if(confirm("같은 이름의 약국이 이미 목록에 있습니다. 그 약국을 내 약국으로 선택할까요?")){
+            state.myPharmacyId = dup.id; localStorage.setItem("myPharmacyId", dup.id); render();
+          }
+          return;
+        }
+        try{
+          const ref = await db.collection("pharmacies").add({ name, biz:v("self-biz"), ceo:v("self-ceo"), phone:v("self-phone"), address:"" });
+          state.myPharmacyId = ref.id;
+          localStorage.setItem("myPharmacyId", ref.id);
+          alert("등록되었습니다. 내 약국으로 선택되었습니다.");
+        }catch(e){ console.warn(e); alert("등록이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요."); }
+      });
+
       const stampFile = document.getElementById("stamp-file");
       if(stampFile) stampFile.addEventListener("change", (e)=>{
         const file = e.target.files[0];
@@ -744,8 +817,9 @@ if(!isConfigured){
             state.myStamp = resized;
             localStorage.setItem("myStampImage", resized);
             render();
+            saveStampToCloud(resized);
           };
-          img.onerror = ()=>{ alert("이미지를 읽지 못했습니다. 다른 파일로 시도해 주세요."); };
+          img.onerror = ()=>{ alert("이 파일은 열 수 없습니다. 다른 이미지 파일을 선택해 주세요."); };
           img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
@@ -755,40 +829,23 @@ if(!isConfigured){
         state.myStamp = "";
         localStorage.removeItem("myStampImage");
         render();
+        if(state.myPharmacyId){
+          db.collection("stamps").doc(state.myPharmacyId).delete().catch(()=>{
+            alert("이 기기의 도장은 삭제했습니다. 클라우드에 등록된 도장은 관리자만 삭제할 수 있습니다.");
+          });
+        }
       });
     }
 
     if(state.activeTab === "history" && state.isAdmin){
       const searchInput = document.getElementById("history-search");
       if(searchInput) searchInput.addEventListener("input", e=>{
+        // 입력창은 그대로 두고 결과 목록만 갱신해야 한글 입력(조합 중)이 끊기지 않습니다.
         state.historySearch = e.target.value;
-        render();
+        const box = document.getElementById("history-results");
+        if(box){ box.innerHTML = renderHistoryList(); attachHistoryListHandlers(); }
       });
-      document.querySelectorAll("[data-download-record]").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const rec = state.historyRecords.find(r => r.id === btn.dataset.downloadRecord);
-          if(!rec || !rec.fileData) return;
-          const a = document.createElement("a");
-          a.href = rec.fileData;
-          a.download = rec.fileName || `거래명세서_${rec.date||""}.xlsx`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        });
-      });
-      document.querySelectorAll("[data-delete-record]").forEach(btn=>{
-        btn.addEventListener("click", async ()=>{
-          const id = btn.dataset.deleteRecord;
-          if(!confirm("이 거래 기록을 삭제할까요? 되돌릴 수 없습니다.")) return;
-          try{
-            await db.collection("transactions").doc(id).delete();
-            state.historyRecords = state.historyRecords.filter(r => r.id !== id);
-            render();
-          }catch(e){
-            alert("삭제에 실패했습니다: " + e.message);
-          }
-        });
-      });
+      attachHistoryListHandlers();
     }
 
     if(state.activeTab === "transaction"){
@@ -919,6 +976,35 @@ if(!isConfigured){
     render();
   }
 
+  async function saveStampToCloud(dataUrl){
+    if(!state.myPharmacyId){
+      alert("도장은 이 기기에 저장했습니다. '내 약국'을 먼저 선택한 뒤 다시 올리면 상대방 명세서에도 도장이 자동으로 찍힙니다.");
+      return;
+    }
+    try{
+      await db.collection("stamps").doc(state.myPharmacyId).set({ image: dataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      alert("도장이 등록되었습니다. 이제 이 약국과 거래하는 모든 명세서에 도장이 자동으로 찍힙니다.");
+    }catch(e){
+      alert("도장이 이 기기에 저장되었습니다. 이미 등록된 도장이 있는 약국이라 공용 도장은 그대로 유지됩니다. 도장을 바꾸시려면 관리자에게 문의해 주세요.");
+    }
+  }
+
+  async function fetchStamp(pharmacyId){
+    try{
+      const doc = await db.collection("stamps").doc(pharmacyId).get();
+      return doc.exists ? (doc.data().image || "") : "";
+    }catch(e){ return ""; }
+  }
+
+  function addStampImage(workbook, ws, dataUrl, blockStartRow){
+    try{
+      const m = (dataUrl||"").match(/^data:image\/(png|jpeg);base64,(.*)$/);
+      if(!m) return;
+      const imageId = workbook.addImage({ base64: dataUrl, extension: m[1] === "jpeg" ? "jpeg" : "png" });
+      ws.addImage(imageId, { tl: { col: 5.05, row: blockStartRow + 0.1 }, ext: { width: 46, height: 46 } });
+    }catch(e){ console.warn("도장 삽입 실패", e); }
+  }
+
   async function exportExcel(){
     state.txError = "";
     const mine = state.pharmacies.find(p => p.id === state.myPharmacyId);
@@ -937,12 +1023,10 @@ if(!isConfigured){
     rows.push([]);
     rows.push(["거래일자", state.txDate, "", "", "", ""]);                       idx.dateRow = rows.length-1;
     rows.push(["공급자","상호", supplier.name, "사업자등록번호", supplier.biz||"", ""]);   idx.supplierStart = rows.length-1;
-    rows.push(["","대표자", supplier.ceo||"", "전화번호", supplier.phone||"", ""]);
-    rows.push(["","주소", supplier.address||"", "", "", ""]);                    idx.supplierAddress = rows.length-1;
+    rows.push(["","대표자", supplier.ceo||"", "전화번호", supplier.phone||"", ""]);  idx.supplierAddress = rows.length-1;
     rows.push([]);
     rows.push(["공급받는자","상호", receiver.name, "사업자등록번호", receiver.biz||"", ""]); idx.receiverStart = rows.length-1;
-    rows.push(["","대표자", receiver.ceo||"", "전화번호", receiver.phone||"", ""]);
-    rows.push(["","주소", receiver.address||"", "", "", ""]);                    idx.receiverAddress = rows.length-1;
+    rows.push(["","대표자", receiver.ceo||"", "전화번호", receiver.phone||"", ""]);  idx.receiverAddress = rows.length-1;
     rows.push([]);
     rows.push(["번호","품목명","수량","단가","공급가액",""]);              idx.itemHeader = rows.length-1;
     idx.itemStart = rows.length;
@@ -973,13 +1057,12 @@ if(!isConfigured){
     mergeRange(idx.dateRow,1, idx.dateRow,5);
     mergeRange(idx.supplierStart,0, idx.supplierAddress,0);
     ws.getCell(idx.supplierStart+1, 1).alignment = { vertical:"middle", horizontal:"left" };
-    mergeRange(idx.supplierAddress,2, idx.supplierAddress,5);
     mergeRange(idx.receiverStart,0, idx.receiverAddress,0);
     ws.getCell(idx.receiverStart+1, 1).alignment = { vertical:"middle", horizontal:"left" };
-    mergeRange(idx.receiverAddress,2, idx.receiverAddress,5);
     mergeRange(idx.totalRow,0, idx.totalRow,3);
     if(idx.noteRow !== undefined) mergeRange(idx.noteRow,1, idx.noteRow,5);
 
+    [idx.supplierStart, idx.supplierAddress, idx.receiverStart, idx.receiverAddress].forEach(r=>{ ws.getRow(r+1).height = 28; });
     const THIN = { style:"thin", color:{ argb:"FF000000" } };
     const BOX = { top:THIN, bottom:THIN, left:THIN, right:THIN };
     const borderedRows = rows.map((row,i)=> row.length > 0 && i !== idx.title ? i : -1).filter(i=>i>=0);
@@ -1007,21 +1090,11 @@ if(!isConfigured){
       ws.getCell(r+1, 4).font = { bold:true };
     });
 
-    // 도장 이미지 자동 삽입: 내 약국이 이 거래의 어느 쪽(공급자/공급받는자)인지 찾아서 대표자 칸 옆에 배치
-    if(state.myStamp){
-      try{
-        const match = state.myStamp.match(/^data:image\/(png|jpeg);base64,(.*)$/);
-        if(match){
-          const ext = match[1] === "jpeg" ? "jpeg" : "png";
-          const imageId = workbook.addImage({ base64: state.myStamp, extension: ext });
-          const stampBlockStart = (mine.id === supplier.id) ? idx.supplierStart : idx.receiverStart;
-          ws.addImage(imageId, {
-            tl: { col: 5.15, row: stampBlockStart + 0.15 },
-            ext: { width: 60, height: 60 }
-          });
-        }
-      }catch(e){ console.warn("도장 삽입 실패", e); }
-    }
+    // 도장 자동 삽입: 공급자/공급받는자 양쪽 모두. 내 도장은 이 기기 것을 우선 사용하고, 상대방(및 기기에 없을 때 내 것)은 클라우드에서 가져옵니다.
+    const supplierStamp = (supplier.id === mine.id && state.myStamp) ? state.myStamp : await fetchStamp(supplier.id);
+    const receiverStamp = (receiver.id === mine.id && state.myStamp) ? state.myStamp : await fetchStamp(receiver.id);
+    if(supplierStamp) addStampImage(workbook, ws, supplierStamp, idx.supplierStart);
+    if(receiverStamp) addStampImage(workbook, ws, receiverStamp, idx.receiverStart);
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type:"application/octet-stream" });
@@ -1064,7 +1137,7 @@ if(!isConfigured){
     render();
     const flash = document.getElementById("export-flash");
     if(flash){
-      flash.textContent = cloudSaved ? "다운로드 완료 · 클라우드에도 저장되었습니다." : "다운로드 완료 (클라우드 저장은 실패했지만 파일은 정상 저장되었습니다)";
+      flash.textContent = "다운로드 완료";
       flash.style.display = "inline";
       setTimeout(()=>{ flash.style.display="none"; }, 2400);
     }
