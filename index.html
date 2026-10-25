@@ -5,8 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>파란약국</title>
 
+<!-- 구글 폰트 (필기체용 Caveat) 불러오기 -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
+<style>
+/* 카드 안의 Daily 1에 필기체 적용 */
+.card .daily-title {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+</style>
 </head>
 
 <body>
@@ -25,7 +40,7 @@
 
 <a href="heartworm.html">심장사상충</a>
 
-<a class="daily-link" href="study/index.html">Daily 1</a>
+<a href="study/index.html">Daily 1</a>
 
 <a href="https://namyaksa.wixsite.com/paran" target="_blank" rel="noopener noreferrer">블로그</a>
 
@@ -81,7 +96,7 @@
 
 <div class="card">
 
-<h2>📚 Daily 1</h2>
+<h2 class="daily-title">📚 Daily 1</h2>
 
 <p>
 
