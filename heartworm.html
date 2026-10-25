@@ -475,6 +475,22 @@
             .site-nav .menu a:hover,.site-nav .menu a.active{background:#0b63ad;color:#fff;border-color:#0b63ad;}
         }
             .site-nav .menu a.daily-link{font-family:'Pacifico','Brush Script MT',cursive;font-weight:400;font-size:1.1em;}
+
+        /* 휴대폰 화면 다듬기 */
+        @media(max-width:768px){
+            body{padding:12px;}
+            .site-nav{margin:-12px -12px 16px;}
+            .container{padding:20px 16px;border-radius:12px;}
+            header h1{font-size:22px;word-break:keep-all;line-height:1.35;}
+            header p{font-size:14px;word-break:keep-all;}
+            .section-title{font-size:17px;word-break:keep-all;}
+            .question-group{padding:16px;}
+            .checkbox-container{align-items:flex-start;font-size:14px;line-height:1.5;word-break:keep-all;}
+            .checkbox-container input{flex-shrink:0;margin:3px 10px 0 0;}
+            .radio-grid{grid-template-columns:1fr;}
+            .radio-label{font-size:16px;padding:13px 14px;word-break:keep-all;}
+            .radio-label input{flex-shrink:0;margin-right:12px;}
+        }
     </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
 </head>
