@@ -356,6 +356,9 @@
 <p class="faq-q">Q. 자동 뜻 찾기가 안 돼요.</p>
 <p>A. Claude에게 이렇게 말해보세요: <em>"db, sample, user 기능을 켜서 다시 게시해줘."</em></p>
 
+<p class="faq-q">Q. Claude가 "db 호출 코드가 없다", "단어가 localStorage에만 저장된다"고 해요.</p>
+<p>A. Claude가 파일을 잘못 확인한 거예요. 앱에는 <code>claude.use('db')</code>, <code>claude.use('user')</code>, <code>claude.use('sample')</code> 호출이 들어 있어요. 먼저 게시된 링크를 열어 단어를 하나 추가해 보세요. 뜻이 자동으로 채워지면 정상이에요. 안 채워지면 Claude에게 이렇게 말해보세요: <em>"파일을 수정하지 말고, claude.use('db'), claude.use('user'), claude.use('sample') 호출이 있으니 db·user·sample 기능을 켜서 다시 게시해줘."</em></p>
+
 <p class="faq-q">Q. 앱이 업데이트되면요?</p>
 <p>A. 이쯤이면 완벽하지 않을까 생각하는데 건의사항 알려주시면 제가 업데이트 파일 올리겠습니다.</p>
 
