@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const href = link.getAttribute("href");
 
         if (href === current || (current === "" && href === "index.html")) {
-            link.style.color = "var(--blue)";
-            link.style.fontWeight = "700";
+            link.classList.add("active");
         }
     });
 
@@ -94,53 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
             top: 0,
             behavior: "smooth"
         });
-
-    };
-
-    // ===============================
-    // 다크모드
-    // ===============================
-    const darkBtn = document.createElement("button");
-
-    darkBtn.innerHTML = "🌙";
-
-    darkBtn.id = "darkBtn";
-
-    document.body.appendChild(darkBtn);
-
-    Object.assign(darkBtn.style, {
-        position: "fixed",
-        right: "25px",
-        bottom: "90px",
-        width: "50px",
-        height: "50px",
-        border: "none",
-        borderRadius: "50%",
-        background: "#222",
-        color: "white",
-        cursor: "pointer",
-        fontSize: "18px"
-    });
-
-    if (localStorage.getItem("theme") === "dark") {
-
-        document.body.classList.add("dark");
-
-    }
-
-    darkBtn.onclick = () => {
-
-        document.body.classList.toggle("dark");
-
-        if (document.body.classList.contains("dark")) {
-
-            localStorage.setItem("theme", "dark");
-
-        } else {
-
-            localStorage.setItem("theme", "light");
-
-        }
 
     };
 

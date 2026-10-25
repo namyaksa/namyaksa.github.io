@@ -205,10 +205,38 @@ nav{
 }
 
 .menu{
-    margin-top:15px;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:18px;
+    margin-top:12px;
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    padding:0 4px 4px;
+}
+
+.menu a{
+    grid-column:span 2;
+}
+
+.menu a:nth-child(n+4){
+    grid-column:span 3;
+}
+
+.menu a{
+    text-align:center;
+    padding:10px 4px;
+    font-size:14px;
+    background:var(--blue-soft);
+    border:1px solid var(--blue-line);
+    border-radius:10px;
+    border-bottom:1px solid var(--blue-line);
+    white-space:nowrap;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:var(--blue);
+    color:#fff;
+    border-color:var(--blue);
 }
 
 .hero{
