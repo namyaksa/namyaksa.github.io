@@ -4,7 +4,7 @@
 =========================== */
 
 /* Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Pacifico&display=swap');
 
 /* 파란약국 색상 (간판의 파란색 기준) */
 :root{
@@ -94,6 +94,13 @@ nav{
 .menu a.active{
     color:var(--blue);
     border-bottom-color:var(--blue);
+}
+
+/* 메뉴의 Daily 1 (손글씨 로고체) */
+.menu a.daily-link{
+    font-family:'Pacifico','Brush Script MT',cursive;
+    font-weight:400;
+    font-size:1.1em;
 }
 
 /* Hero */
