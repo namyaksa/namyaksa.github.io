@@ -96,10 +96,13 @@ nav{
     border-bottom-color:var(--blue);
 }
 
-/* 메뉴의 Daily 1 (손글씨 로고체) */
+/* Daily 1 은 어디서나 손글씨 로고체 */
+.daily-font,
+.daily-link{
+    font-family:'Pacifico','Brush Script MT',cursive !important;
+    font-weight:400 !important;
+}
 .menu a.daily-link{
-    font-family:'Pacifico','Brush Script MT',cursive;
-    font-weight:400;
     font-size:1.1em;
 }
 
