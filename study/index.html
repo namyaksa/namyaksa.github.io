@@ -100,6 +100,12 @@
 .bunko-fig img{width:100%;max-width:640px;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);}
 .bunko-fig figcaption{margin-top:6px;font-size:13px;color:var(--sub);}
 
+.continue-link{color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.continue-fig{margin:10px 0 14px;text-align:center;}
+.continue-fig[hidden]{display:none;}
+.continue-fig img{width:100%;max-width:420px;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);}
+.continue-fig figcaption{margin-top:6px;font-size:13px;color:var(--sub);}
+
 /* 단어장 설치 가이드 상세 스타일 */
 .post-detail {
     margin-top: 15px;
@@ -389,7 +395,7 @@
 <code>"첨부한 HTML을 수정하지 말고 그대로 아티팩트로 게시해줘. 사용자별 저장(db), 사용자 식별(user), Claude 호출(sample) 기능을 켜서 게시해줘."</code>
 </div>
 </li>
-<li>게시가 끝나면 나오는 카드를 눌러 열어요. (<strong>"This artifact uses connectors" (Use Claude)</strong> 창이 뜨면 그대로 두고 <strong>[Continue]</strong>만 누르면 돼요)</li>
+<li>게시가 끝나면 나오는 카드를 눌러 열어요. (<strong>"This artifact uses connectors" (Use Claude)</strong> 창이 뜨면 그대로 두고 <a href="img/continue-popup.jpg" class="continue-link" target="_blank" rel="noopener"><strong>[Continue]</strong></a>만 누르면 돼요)</li>
 <li>자주 쓰려면 Safari(아이폰/아이패드)나 Chrome에서 열어서 <strong>공유 버튼 → "홈 화면에 추가"</strong>로 바탕화면에 아이콘을 만들어 두세요.</li>
 </ol>
 
@@ -414,7 +420,11 @@
 <p>A. Claude에게 이렇게 말해보세요: <em>"db, sample, user 기능을 켜서 다시 게시해줘."</em></p>
 
 <p class="faq-q">Q. "This artifact uses connectors" 창이 떠요.</p>
-<p>A. 정상이에요. "Use Claude" 스위치는 켜진 그대로 두고 <strong>[Continue]</strong>만 누르면 돼요. 이 창은 뜻 찾기·번역에 Claude를 쓰겠다는 동의 창이고, 처음 한 번만 나와요.</p>
+<p>A. 정상이에요. "Use Claude" 스위치는 켜진 그대로 두고 <a href="img/continue-popup.jpg" class="continue-link" target="_blank" rel="noopener"><strong>[Continue]</strong></a>만 누르면 돼요. 이 창은 뜻 찾기·번역에 Claude를 쓰겠다는 동의 창이고, 처음 한 번만 나와요.</p>
+<figure class="continue-fig" id="continueFig" hidden>
+<img src="img/continue-popup.jpg" alt="This artifact uses connectors 창: Use Claude 스위치를 켜 두고 Continue 버튼을 누르는 화면" loading="lazy">
+<figcaption>이런 창이 뜨면 <strong>Continue</strong>만 누르세요</figcaption>
+</figure>
 
 <p class="faq-q">Q. 앱이 업데이트되면요?</p>
 <p>A. 이쯤이면 완벽하지 않을까 생각하는데 건의사항 알려주시면 제가 업데이트 파일 올리겠습니다.</p>
@@ -540,6 +550,16 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
   var a=document.querySelector('.bunko-link'), f=document.getElementById('bunkoFig');
   if(!a||!f) return;
   a.addEventListener('click',function(e){ e.preventDefault(); f.hidden=!f.hidden; if(!f.hidden) f.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+})();
+</script>
+
+<script>
+// [Continue] 링크: 누르면 팝업 사진이 열리고, 다시 누르면 닫혀요
+(function(){
+  var f=document.getElementById('continueFig'); if(!f) return;
+  document.querySelectorAll('.continue-link').forEach(function(a){
+    a.addEventListener('click',function(e){ e.preventDefault(); f.hidden=!f.hidden; if(!f.hidden) f.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  });
 })();
 </script>
 
