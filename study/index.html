@@ -134,6 +134,15 @@
 .fallback-body{padding:10px 16px 6px;font-size:14px;line-height:1.7;}
 .fallback-body ol{margin:6px 0;padding-left:20px;}
 
+.easy-way{background:#eef7ff;border:2px solid var(--blue);border-radius:14px;padding:14px 16px 8px;margin:14px 0;}
+.easy-way h4{margin:0 0 10px;color:var(--blue);font-size:16px;word-break:keep-all;}
+.easy-flex{display:flex;gap:16px;align-items:flex-start;}
+.easy-flex ol{flex:1;margin:0;padding-left:20px;}
+.easy-flex li{font-size:14px;line-height:1.65;margin-bottom:7px;word-break:keep-all;}
+.easy-flex img{width:280px;max-width:100%;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);display:block;}
+.easy-tip{font-size:13px;color:var(--sub);line-height:1.6;margin:4px 0 8px;word-break:keep-all;}
+@media(max-width:768px){.easy-flex{flex-direction:column;}.easy-flex img{width:100%;max-width:340px;margin:0 auto;}}
+
 /* 단어장 설치 가이드 상세 스타일 */
 .post-detail {
     margin-top: 15px;
@@ -425,6 +434,20 @@
 </li>
 <li>게시가 끝나면 나오는 카드를 눌러 열어요. (<strong>"This artifact uses connectors" (Use Claude)</strong> 창이 뜨면 그대로 두고 <a href="img/continue-popup.jpg" class="continue-link" target="_blank" rel="noopener"><strong>[Continue]</strong></a>만 누르면 돼요)</li>
 <li>자주 쓰려면 <strong>바탕화면(홈 화면)에 아이콘</strong>을 만들어 두세요. Claude 화면 위쪽의 "내보내기" 버튼이 아니라 <strong>브라우저 자체의 메뉴</strong>를 써요. 쓰는 기기에 맞는 방법을 골라 보세요.
+<div class="easy-way">
+<h4>⭐ 가장 쉬운 방법: 링크 복사 → 브라우저에 붙여넣기</h4>
+<div class="easy-flex">
+<ol>
+<li>Claude에서 왼쪽 메뉴(☰)를 열어요.</li>
+<li><strong>고정됨</strong> 칸의 <strong>Daily 1</strong>을 <strong>길게 눌러요</strong>. (컴퓨터는 마우스 오른쪽 버튼)</li>
+<li>나오는 메뉴에서 <strong>"링크 복사"</strong>를 눌러요. (사진의 빨간 칸)</li>
+<li><strong>Safari 또는 Chrome</strong>을 열고(Claude 앱 말고!) 주소창에 <strong>붙여넣기</strong> 해서 이동해요.</li>
+<li>붙여넣은 페이지에서, 아래 <strong>내 기기 카드의 3번 단계</strong>(공유 아이콘 또는 ⋮ 메뉴 누르기)부터 따라 하면 끝!</li>
+</ol>
+<a href="img/copy-link.png" target="_blank" rel="noopener"><img src="img/copy-link.png" alt="고정됨의 Daily 1을 길게 누르면 나오는 메뉴에서 링크 복사를 누르는 화면" loading="lazy"></a>
+</div>
+<p class="easy-tip">💡 고정됨에 Daily 1이 안 보이면 <a href="img/artifact-location.png" class="art-link" target="_blank" rel="noopener"><strong>아티팩트</strong></a>에서 Daily 1을 열고 <strong>고정</strong>해 두세요. 아래 카드의 방법을 쓰면 링크 복사 없이도 열 수 있어요.</p>
+</div>
 <div class="install-grid">
 <div class="install-card">
 <h4>🍎 아이폰 / 아이패드</h4>
