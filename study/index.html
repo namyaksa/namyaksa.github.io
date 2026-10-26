@@ -122,6 +122,18 @@
 .note-fig[hidden]{display:none;}
 .note-fig img{width:100%;max-width:640px;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);}
 
+.art-link{color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.art-fig{margin:10px 0 14px;text-align:center;}
+.art-fig[hidden]{display:none;}
+.art-fig img{width:100%;max-width:360px;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);}
+.art-fig figcaption{max-width:560px;margin:8px auto 0;font-size:13px;color:var(--sub);line-height:1.6;word-break:keep-all;}
+.fallback{margin:12px 0;background:#fff8e6;border:1px solid #ffe0a3;border-radius:12px;padding:0;}
+.fallback summary{cursor:pointer;padding:12px 14px;font-weight:bold;color:#8a5a00;list-style:none;word-break:keep-all;}
+.fallback summary::-webkit-details-marker{display:none;}
+.fallback[open] summary{border-bottom:1px solid #ffe0a3;}
+.fallback-body{padding:10px 16px 6px;font-size:14px;line-height:1.7;}
+.fallback-body ol{margin:6px 0;padding-left:20px;}
+
 /* 단어장 설치 가이드 상세 스타일 */
 .post-detail {
     margin-top: 15px;
@@ -419,7 +431,7 @@
 <p class="install-warn">⚠️ <strong>Claude 앱이 아니라 Safari</strong>에서 해요.</p>
 <ol>
 <li>아이폰/아이패드의 <strong>Safari</strong>를 열고 <strong>claude.ai</strong>에 접속해서 로그인해요.</li>
-<li>왼쪽 메뉴(☰)의 <strong>아티팩트</strong>에서 만들어 둔 단어장을 눌러 열어요. (단어장이 열린 화면이어야 해요)</li>
+<li>왼쪽 메뉴(☰)의 <a href="img/artifact-location.png" class="art-link" target="_blank" rel="noopener"><strong>아티팩트</strong></a>에서 만들어 둔 단어장을 눌러 열어요. (단어장이 열린 화면이어야 해요)</li>
 <li>Safari 화면 아래(아이패드는 위)의 <strong>공유 아이콘</strong>(네모에 위쪽 화살표)을 눌러요.</li>
 <li>목록을 위로 올려서 <strong>"홈 화면에 추가"</strong>를 찾아 눌러요.</li>
 <li>이름을 확인하고 오른쪽 위 <strong>추가</strong>를 누르면 홈 화면에 아이콘이 생겨요.</li>
@@ -430,7 +442,7 @@
 <p class="install-warn">⚠️ <strong>Claude 앱이 아니라 Chrome</strong>에서 해요.</p>
 <ol>
 <li>안드로이드의 <strong>Chrome</strong> 앱을 열고 <strong>claude.ai</strong>에 접속해서 로그인해요.</li>
-<li>왼쪽 메뉴(☰)의 <strong>아티팩트</strong>에서 만들어 둔 단어장을 눌러 열어요. (단어장이 열린 화면이어야 해요)</li>
+<li>왼쪽 메뉴(☰)의 <a href="img/artifact-location.png" class="art-link" target="_blank" rel="noopener"><strong>아티팩트</strong></a>에서 만들어 둔 단어장을 눌러 열어요. (단어장이 열린 화면이어야 해요)</li>
 <li>Chrome 오른쪽 위 <strong>⋮ 메뉴</strong>를 눌러요.</li>
 <li><strong>"홈 화면에 추가"</strong>를 눌러요. ("앱 설치"와 "바로가기 만들기"가 따로 있으면 <strong>바로가기 만들기</strong>를 골라요.)</li>
 <li>이름을 확인하고 <strong>추가</strong>를 누르면 홈 화면에 아이콘이 생겨요.</li>
@@ -441,7 +453,7 @@
 <p class="install-warn">⚠️ <strong>Claude 앱이 아니라 Chrome</strong>(인터넷 창)에서 해요.</p>
 <ol>
 <li>컴퓨터의 <strong>Chrome</strong>을 열고 <strong>claude.ai</strong>에 접속해서 로그인해요.</li>
-<li>왼쪽 메뉴의 <strong>아티팩트</strong>에서 만들어 둔 단어장을 눌러 열어요. (단어장이 열린 화면이어야 해요)</li>
+<li>왼쪽 메뉴의 <a href="img/artifact-location.png" class="art-link" target="_blank" rel="noopener"><strong>아티팩트</strong></a>에서 만들어 둔 단어장을 눌러 열어요. (단어장이 열린 화면이어야 해요)</li>
 <li>Chrome 오른쪽 위 <strong>⋮ 메뉴 → 캐스팅, 저장, 공유 → 바로가기 만들기...</strong>를 눌러요.</li>
 <li>이름을 확인하고 <strong>"창으로 열기"</strong>에 체크해요.</li>
 <li><strong>만들기</strong>를 누르면 바탕화면에 아이콘이 생겨요. 아이콘을 누르면 단어장만 앱처럼 따로 열려요.</li>
@@ -453,6 +465,22 @@
 <a href="img/install-note.png" target="_blank" rel="noopener"><img src="img/install-note.png" alt="클로드 이용 및 바탕화면 아이콘 안내" loading="lazy"></a>
 <figcaption style="font-size:13px;color:var(--sub);margin-top:6px;">사진을 누르면 크게 볼 수 있어요</figcaption>
 </figure>
+<figure class="art-fig" id="artFig" hidden>
+<a href="img/artifact-location.png" target="_blank" rel="noopener"><img src="img/artifact-location.png" alt="Claude 왼쪽 메뉴: 아티팩트 위치와 고정됨 칸의 Daily 1" loading="lazy"></a>
+<figcaption><strong>아티팩트</strong>는 Claude에서 만든 앱·문서가 모여 있는 곳이에요. 빨간 칸의 <strong>아티팩트</strong> 또는 <strong>고정됨 → Daily 1</strong>을 누르세요. (휴대폰은 왼쪽 위 ☰ 를 누르면 같은 메뉴가 나와요)</figcaption>
+</figure>
+
+<details class="fallback" id="fallback">
+<summary>🆘 그래도 안 되면 (아이콘이 Claude 홈으로만 열릴 때)</summary>
+<div class="fallback-body">
+<p>Claude가 그 주소를 자기 앱으로 가로채서 생기는 일이에요. 이때는 아이콘 대신 이렇게 쓰는 게 가장 쉬워요.</p>
+<ol>
+<li>Claude 홈이 열리면 왼쪽 메뉴(☰)의 <strong>고정됨</strong> 칸에 <strong>"Daily 1"</strong>이 있어요.</li>
+<li>그걸 누르면 바로 단어장이 열려요.</li>
+<li><strong>고정됨</strong>에 안 보이면 <a href="img/artifact-location.png" class="art-link" target="_blank" rel="noopener"><strong>아티팩트</strong></a>에서 Daily 1을 열고 고정해 두세요.</li>
+</ol>
+</div>
+</details>
 </li>
 </ol>
 
@@ -630,6 +658,16 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 </script>
 
 <div class="hit-footer">© 2026 Powered by 파란약국<br><a class="hit-counter" href="https://hits.sh/namyaksa.github.io/study/" target="_blank" rel="noopener noreferrer" title="방문자 수"><img src="https://hits.sh/namyaksa.github.io/study.svg?label=%EC%A1%B0%ED%9A%8C%EC%88%98&color=0b63ad&labelColor=0b2a4a&style=flat-square" alt="조회수" height="20" onerror="this.parentNode.style.display='none'"></a></div>
+
+<script>
+// 아티팩트 링크: 누르면 위치 사진이 열리고, 다시 누르면 닫혀요
+(function(){
+  var f=document.getElementById('artFig'); if(!f) return;
+  document.querySelectorAll('.art-link').forEach(function(a){
+    a.addEventListener('click',function(e){ e.preventDefault(); f.hidden=!f.hidden; if(!f.hidden) f.scrollIntoView({behavior:'smooth',block:'center'}); });
+  });
+})();
+</script>
 
 <script src="../app.js"></script>
 
