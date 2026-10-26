@@ -94,6 +94,12 @@
 .shots img{display:block;width:100%;max-width:560px;margin:0 auto;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);}
 .shots figcaption{max-width:560px;margin:8px auto 0;font-size:14px;color:var(--sub);line-height:1.6;word-break:keep-all;}
 
+.bunko-link{color:var(--blue);font-weight:bold;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.bunko-fig{margin:14px 0;text-align:center;}
+.bunko-fig[hidden]{display:none;}
+.bunko-fig img{width:100%;max-width:640px;border-radius:12px;border:1px solid var(--blue-line);box-shadow:0 4px 12px rgba(11,99,173,.12);}
+.bunko-fig figcaption{margin-top:6px;font-size:13px;color:var(--sub);}
+
 /* 단어장 설치 가이드 상세 스타일 */
 .post-detail {
     margin-top: 15px;
@@ -446,7 +452,11 @@
     <p>새로운 루틴이 내 삶에 자리 잡았다. 매일 아침 6시에 일어나 태블릿으로 원서 2페이지를 스캔하고, 모르는 단어의 어원과 유래를 파악한 뒤 퀴즈로 굳혔다. 그리고 출근 후 약국에서 손님이 없는 짬짬이 그 원서를 읽어 내려갔다.</p>
     <p>처음에는 하루 한 장을 읽어내는 것도 버거웠다. 하지만 단어를 깊이 있게 이해하며 읽다 보니 속도가 붙기 시작했다. 어느덧 하루 읽어내는 분량이 2장, 즉 4페이지가 되었다.</p>
     <p>약국을 찾는 손님들도 내 손에 들린 원서와 태블릿을 보며 감탄을 금치 못하셨다. "약사님, 그 나이에 그렇게 원서를 자연스럽게 읽어내는 비법이 뭡니까?"</p>
-    <p>그럴 때마다 나는 내가 직접 만든 Claude 사전을 펼쳐 보여드린다. 손님들의 눈빛이 달라진다. 자녀들 공부에 활용해 보겠다는 분부터, "나도 늦지 않았다"며 평소 읽고 싶던 일본 소설에 도전해 보시겠다는 어르신까지. 나 하나의 작은 도전과 개발이 주변 분들에게 새로운 배움의 불씨를 지피는 모습을 보며 가슴속 깊은 보람을 느꼈다.</p>
+    <p>그럴 때마다 나는 내가 직접 만든 Claude 사전을 펼쳐 보여드린다. 손님들의 눈빛이 달라진다. 자녀들 공부에 활용해 보겠다는 분부터, "나도 늦지 않았다"며 평소 읽고 싶었던 <a href="img/bunko-subway.jpg" class="bunko-link" target="_blank" rel="noopener">문고본</a>에 도전해 보시겠다는 어르신까지. 나 하나의 작은 도전과 개발이 주변 분들에게 새로운 배움의 불씨를 지피는 모습을 보며 가슴속 깊은 보람을 느꼈다.</p>
+    <figure class="bunko-fig" id="bunkoFig" hidden>
+        <img src="img/bunko-subway.jpg" alt="일본 지하철에서 문고본을 읽는 중년 신사" loading="lazy">
+        <figcaption>일본 지하철에서 문고본을 읽는 모습 <span style="opacity:.7;">(AI로 만든 이미지예요)</span></figcaption>
+    </figure>
 
     <h3>4. 누구나 따라 할 수 있는 배움의 신세계</h3>
     <p>많은 사람이 AI나 앱 개발이라고 하면 거창한 비용이나 고도의 기술을 떠올린다. 하지만 내가 하루 4페이지 분량의 단어를 찾고 퀴즈를 푸는 데 쓰는 Claude 사용량은 하루 무료 할당량조차 초과하지 않는다.</p>
@@ -522,6 +532,15 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
     } else { fallback(); }
   });
 });
+</script>
+
+<script>
+// 문고본 링크: 누르면 같은 자리에서 사진이 열리고, 다시 누르면 닫혀요
+(function(){
+  var a=document.querySelector('.bunko-link'), f=document.getElementById('bunkoFig');
+  if(!a||!f) return;
+  a.addEventListener('click',function(e){ e.preventDefault(); f.hidden=!f.hidden; if(!f.hidden) f.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+})();
 </script>
 
 <script src="../app.js"></script>
