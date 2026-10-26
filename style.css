@@ -209,6 +209,9 @@ footer{
     margin-top:70px;
 }
 
+.hit-counter{display:inline-block;margin-top:10px;line-height:0;}
+.hit-footer{text-align:center;padding:26px 16px 30px;color:#5b6b7c;font-size:14px;}
+
 /* 모바일 */
 
 @media(max-width:768px){
