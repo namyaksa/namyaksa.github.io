@@ -217,6 +217,7 @@
 
 /* 돋보이는 프롬프트 박스 스타일 */
 .highlight-prompt {
+    position: relative;
     background: #fff8f8;
     border: 2px dashed #ff6b6b;
     border-radius: 12px;
@@ -233,6 +234,15 @@
     align-items: center;
     gap: 5px;
 }
+.highlight-prompt .prompt-title{padding-right:84px;}
+.copy-btn{
+    position:absolute;top:10px;right:12px;
+    background:#e03131;color:#fff;border:none;border-radius:20px;
+    padding:6px 12px;font-size:13px;font-weight:bold;cursor:pointer;
+    font-family:inherit;line-height:1.2;
+}
+.copy-btn:hover{background:#c92a2a;}
+.copy-btn.done{background:#2f9e44;}
 .highlight-prompt code {
     background: #fff;
     border: 1px solid #ffc9c9;
@@ -368,7 +378,8 @@
 <li><a href="https://claude.ai" target="_blank" rel="noopener noreferrer">claude.ai</a> 또는 Claude 앱에서 새 대화를 열고, 저장한 HTML 파일을 첨부해요.</li>
 <li>아래 문장을 그대로 복사해서 보내요:
 <div class="highlight-prompt">
-<div class="prompt-title">💡 클로드에게 복사해서 보낼 문장 (아래 박스를 그대로 복사하세요)</div>
+<button type="button" class="copy-btn" aria-label="문장 복사">📋 복사</button>
+<div class="prompt-title">💡 클로드에게 보낼 문장 — 오른쪽 위 [복사] 버튼을 누르세요</div>
 <code>"첨부한 HTML을 수정하지 말고 그대로 아티팩트로 게시해줘. 사용자별 저장(db), 사용자 식별(user), Claude 호출(sample) 기능을 켜서 게시해줘."</code>
 </div>
 </li>
@@ -487,6 +498,30 @@ function toggleBgm() {
         statusText.innerText = "🎵 BGM OFF";
     }
 }
+</script>
+
+<script>
+// 프롬프트 복사 버튼
+document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var code = btn.parentElement.querySelector('code');
+    var text = code.textContent.trim().replace(/^["“]|["”]$/g,'');
+    function done(){
+      btn.textContent = '✓ 복사됨'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent = '📋 복사'; btn.classList.remove('done'); }, 2000);
+    }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='길게 눌러 복사하세요'; }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+  });
+});
 </script>
 
 <script src="../app.js"></script>
