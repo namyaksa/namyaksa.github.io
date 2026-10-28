@@ -365,6 +365,12 @@ function switchTab(name){
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ returnToScan = false; switchTab(t.dataset.tab); }));
 document.getElementById('lookupBtn').addEventListener('click', doLookup);
+document.getElementById('inWord').addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter' || e.isComposing) return;
+  e.preventDefault();
+  if(document.getElementById('lookupBtn').disabled) return;
+  doLookup({silent:true});
+});
 document.getElementById('speakPreviewBtn').addEventListener('click', ()=>{
   const w = document.getElementById('inWord').value.trim();
   if(w) speakWord(w);
