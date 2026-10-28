@@ -307,3 +307,35 @@ nav{
 }
 
 }
+
+/* 홈 BGM 플레이어 (오른쪽 아래 떠 있는 버튼) */
+.bgm-player-box{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#fff;
+    padding:10px 15px;
+    border-radius:30px;
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    z-index:1000;
+    border:1px solid var(--blue-line);
+}
+.bgm-btn{
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:14px;
+    font-family:inherit;
+    transition:background .2s;
+}
+.bgm-btn:hover{background:var(--blue-dark)}
+.bgm-status{font-size:13px;color:var(--sub)}
+/* 맨 위로 버튼이 BGM 플레이어에 가려지지 않게 */
+#topBtn{bottom:90px !important;z-index:1001 !important}
