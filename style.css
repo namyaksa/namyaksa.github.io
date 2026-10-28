@@ -210,6 +210,10 @@ footer{
 }
 
 .hit-counter{display:inline-block;margin-top:10px;line-height:0;}
+.footer-tools{display:inline-flex;align-items:center;gap:10px;margin-top:10px;}
+.footer-tools .hit-counter{margin-top:0;}
+.sns-link{display:inline-block;line-height:0;transition:transform .2s;}
+.sns-link:hover{transform:translateY(-2px);}
 .hit-footer{text-align:center;padding:26px 16px 30px;color:#5b6b7c;font-size:14px;}
 
 /* 모바일 */
