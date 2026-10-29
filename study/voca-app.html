@@ -350,7 +350,18 @@ function renderStats(){
   document.getElementById('statLearning').textContent = words.filter(w=>!w.mastered).length;
 }
 
+// 탭을 떠날 때 스크롤 위치를 기억했다가, 돌아오면 공부하던 자리로 되돌려요.
+let curTab = 'add';
+const tabScroll = {};
+function restoreScroll(name){
+  const y = tabScroll[name];
+  if(typeof y !== 'number') return;
+  const go = ()=>window.scrollTo(0, y);
+  go(); requestAnimationFrame(go); setTimeout(go, 60); setTimeout(go, 250);
+}
 function switchTab(name){
+  if(name !== curTab){ tabScroll[curTab] = window.scrollY || document.documentElement.scrollTop || 0; }
+  const prevTab = curTab; curTab = name;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
   document.getElementById('panel-add').style.display = name==='add' ? '' : 'none';
   document.getElementById('panel-list').style.display = name==='list' ? '' : 'none';
@@ -359,6 +370,10 @@ function switchTab(name){
   if(name==='scan') renderScanResult();
   if(name==='list') renderList();
   if(name==='quiz') startQuiz();
+  if(name!==prevTab){
+    if(name==='scan' || name==='list') restoreScroll(name);
+    else window.scrollTo(0, 0);
+  }
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ returnToScan = false; switchTab(t.dataset.tab); }));
 document.getElementById('lookupBtn').addEventListener('click', doLookup);
