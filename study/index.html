@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261037">
+<link rel="stylesheet" href="../style.css?v=20261038">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -894,9 +894,14 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 <div class="notice-back" id="noticeBack" hidden>
 <div class="notice-box" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
 <h3 id="noticeTitle">🆕 Daily 1 업데이트 안내</h3>
+<div id="noticeNew">
 <p class="nb-em">영어 단어를 입력하고 Enter만 누르면 뜻 찾기가 바로 돼요!</p>
 <p>뜻·발음·어원·예문이 자동으로 채워져서, 버튼을 따로 누르지 않아도 돼요.</p>
 <p class="nb-sub">이미 단어장을 만들어 쓰고 계신 분은, 이 페이지의 단어장 파일(voca-app.html)을 새로 내려받아 다시 게시하면 새 기능이 적용돼요.</p>
+</div>
+<div id="noticeLatest" hidden>
+<p class="nb-em">업데이트할 게 없습니다.<br>최신 버전이십니다. ✅</p>
+</div>
 <button type="button" id="noticeOk">확인했어요</button>
 </div>
 </div>
@@ -904,7 +909,14 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 (function(){
   var KEY='notice_enter_lookup_v1', back=document.getElementById('noticeBack');
   if(!back) return;
+  var LATEST='20261030';
   var force=/[?&]notice=1/.test(location.search);
+  var vm=location.search.match(/[?&]v=(\d+)/), mine=vm?vm[1]:'';
+  if(force && mine && mine>=LATEST){
+    document.getElementById('noticeTitle').textContent='✅ 최신 버전이에요';
+    document.getElementById('noticeNew').hidden=true;
+    document.getElementById('noticeLatest').hidden=false;
+  }
   try{ if(!force && localStorage.getItem(KEY)) return; }catch(e){}
   function close(){ back.hidden=true; try{localStorage.setItem(KEY,'1');}catch(e){} }
   document.getElementById('noticeOk').addEventListener('click',close);
