@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261036">
+<link rel="stylesheet" href="../style.css?v=20261037">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -904,7 +904,8 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 (function(){
   var KEY='notice_enter_lookup_v1', back=document.getElementById('noticeBack');
   if(!back) return;
-  try{ if(localStorage.getItem(KEY)) return; }catch(e){}
+  var force=/[?&]notice=1/.test(location.search);
+  try{ if(!force && localStorage.getItem(KEY)) return; }catch(e){}
   function close(){ back.hidden=true; try{localStorage.setItem(KEY,'1');}catch(e){} }
   document.getElementById('noticeOk').addEventListener('click',close);
   back.addEventListener('click',function(e){ if(e.target===back) close(); });
