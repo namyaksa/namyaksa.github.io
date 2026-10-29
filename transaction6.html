@@ -1001,7 +1001,7 @@ if(!isConfigured){
       const m = (dataUrl||"").match(/^data:image\/(png|jpeg);base64,(.*)$/);
       if(!m) return;
       const imageId = workbook.addImage({ base64: dataUrl, extension: m[1] === "jpeg" ? "jpeg" : "png" });
-      ws.addImage(imageId, { tl: { col: 5.05, row: blockStartRow + 0.1 }, ext: { width: 46, height: 46 } });
+      ws.addImage(imageId, { tl: { col: 5.05, row: blockStartRow + 0.1 }, ext: { width: 54, height: 54 } });
     }catch(e){ console.warn("도장 삽입 실패", e); }
   }
 
@@ -1022,11 +1022,13 @@ if(!isConfigured){
     rows.push(["거래명세서","","","","",""]);                                   idx.title = rows.length-1;
     rows.push([]);
     rows.push(["거래일자", state.txDate, "", "", "", ""]);                       idx.dateRow = rows.length-1;
-    rows.push(["공급자","상호", supplier.name, "사업자등록번호", supplier.biz||"", ""]);   idx.supplierStart = rows.length-1;
-    rows.push(["","대표자", supplier.ceo||"", "전화번호", supplier.phone||"", ""]);  idx.supplierAddress = rows.length-1;
+    rows.push(["공급자","상호", supplier.name, "", "", ""]);   idx.supplierStart = rows.length-1;
+    rows.push(["","대표자", supplier.ceo||"", "전화번호", supplier.phone||"", ""]);
+    rows.push(["","주소", supplier.address||"", "", "", ""]);   idx.supplierAddress = rows.length-1;
     rows.push([]);
-    rows.push(["공급받는자","상호", receiver.name, "사업자등록번호", receiver.biz||"", ""]); idx.receiverStart = rows.length-1;
-    rows.push(["","대표자", receiver.ceo||"", "전화번호", receiver.phone||"", ""]);  idx.receiverAddress = rows.length-1;
+    rows.push(["공급받는자","상호", receiver.name, "", "", ""]);   idx.receiverStart = rows.length-1;
+    rows.push(["","대표자", receiver.ceo||"", "전화번호", receiver.phone||"", ""]);
+    rows.push(["","주소", receiver.address||"", "", "", ""]);   idx.receiverAddress = rows.length-1;
     rows.push([]);
     rows.push(["번호","품목명","수량","단가","공급가액",""]);              idx.itemHeader = rows.length-1;
     idx.itemStart = rows.length;
@@ -1055,14 +1057,19 @@ if(!isConfigured){
     const mergeRange = (r1,c1,r2,c2) => ws.mergeCells(r1+1, c1+1, r2+1, c2+1);
     mergeRange(idx.title,0, idx.title,5);
     mergeRange(idx.dateRow,1, idx.dateRow,5);
+    mergeRange(idx.supplierStart,2, idx.supplierStart,4);
+    mergeRange(idx.supplierAddress,2, idx.supplierAddress,4);
     mergeRange(idx.supplierStart,0, idx.supplierAddress,0);
     ws.getCell(idx.supplierStart+1, 1).alignment = { vertical:"middle", horizontal:"left" };
+    mergeRange(idx.receiverStart,2, idx.receiverStart,4);
+    mergeRange(idx.receiverAddress,2, idx.receiverAddress,4);
     mergeRange(idx.receiverStart,0, idx.receiverAddress,0);
     ws.getCell(idx.receiverStart+1, 1).alignment = { vertical:"middle", horizontal:"left" };
     mergeRange(idx.totalRow,0, idx.totalRow,3);
     if(idx.noteRow !== undefined) mergeRange(idx.noteRow,1, idx.noteRow,5);
 
-    [idx.supplierStart, idx.supplierAddress, idx.receiverStart, idx.receiverAddress].forEach(r=>{ ws.getRow(r+1).height = 28; });
+    for(let r=idx.supplierStart; r<=idx.supplierAddress; r++) ws.getRow(r+1).height = 24;
+    for(let r=idx.receiverStart; r<=idx.receiverAddress; r++) ws.getRow(r+1).height = 24;
     const THIN = { style:"thin", color:{ argb:"FF000000" } };
     const BOX = { top:THIN, bottom:THIN, left:THIN, right:THIN };
     const borderedRows = rows.map((row,i)=> row.length > 0 && i !== idx.title ? i : -1).filter(i=>i>=0);
