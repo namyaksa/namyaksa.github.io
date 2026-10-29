@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261034">
+<link rel="stylesheet" href="../style.css?v=20261035">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -751,8 +751,8 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
       var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
       return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
         '<div class="board-body">'+(i.body_html||'')+'</div>'+
-        '<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
-        (getTok()?'<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
+        (getTok()?'<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
+        '<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
     }).join('');
     list.querySelectorAll('.board-body a').forEach(function(a){a.target='_blank';a.rel='noopener noreferrer';});
     list.querySelectorAll('.board-del').forEach(function(b){
