@@ -669,22 +669,8 @@ async function doScanText(){
 }
 document.getElementById('scanTextGo').addEventListener('click', doScanText);
 document.getElementById('scanText').addEventListener('input', saveScan);
-// 팝업 확인창(confirm)은 아티팩트 안에서 막힐 수 있어서, 버튼을 두 번 눌러 지우는 방식으로 해요.
-let scanClearArmed = false, scanClearTimer = null;
-document.getElementById('scanClear').addEventListener('click', ()=>{
-  const b = document.getElementById('scanClear');
-  if(scanSentences.length === 0 && !document.getElementById('scanText').value.trim()){ clearScan(); return; }
-  if(!scanClearArmed){
-    scanClearArmed = true;
-    b.textContent = '⚠️ 한 번 더 누르면 지워요';
-    scanClearTimer = setTimeout(()=>{ scanClearArmed = false; b.textContent = '🗑️ 붙여넣은 글과 번역 지우기'; }, 4000);
-    return;
-  }
-  clearTimeout(scanClearTimer);
-  scanClearArmed = false;
-  b.textContent = '🗑️ 붙여넣은 글과 번역 지우기';
-  clearScan();
-});
+// 누르면 바로 지워요 (확인 팝업은 아티팩트 안에서 막힐 수 있어서 쓰지 않아요).
+document.getElementById('scanClear').addEventListener('click', clearScan);
 
 document.getElementById('scanResult').addEventListener('click', (e)=>{
   const t = e.target.closest && e.target.closest('.tok');
