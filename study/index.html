@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261033">
+<link rel="stylesheet" href="../style.css?v=20261034">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -878,6 +878,38 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
   document.querySelectorAll('.art-link').forEach(function(a){
     a.addEventListener('click',function(e){ e.preventDefault(); f.hidden=!f.hidden; if(!f.hidden) f.scrollIntoView({behavior:'smooth',block:'center'}); });
   });
+})();
+</script>
+
+<style>
+.notice-back{position:fixed;inset:0;background:rgba(8,30,56,.55);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.notice-back[hidden]{display:none;}
+.notice-box{background:#fff;border-radius:18px;max-width:420px;width:100%;padding:24px 22px 20px;box-shadow:0 12px 40px rgba(0,0,0,.3);border-top:6px solid var(--blue);}
+.notice-box h3{margin:0 0 10px;font-size:1.15rem;color:var(--blue-dark);}
+.notice-box p{margin:0 0 10px;font-size:.95rem;line-height:1.7;word-break:keep-all;}
+.notice-box .nb-em{background:#eaf3fc;border-radius:10px;padding:10px 12px;color:var(--blue-dark);font-weight:700;}
+.notice-box .nb-sub{font-size:.83rem;color:var(--sub);}
+.notice-box button{display:block;width:100%;margin-top:14px;background:var(--blue);color:#fff;border:none;border-radius:24px;padding:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;}
+</style>
+<div class="notice-back" id="noticeBack" hidden>
+<div class="notice-box" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+<h3 id="noticeTitle">🆕 Daily 1 업데이트 안내</h3>
+<p class="nb-em">영어 단어를 입력하고 Enter만 누르면 뜻 찾기가 바로 돼요!</p>
+<p>뜻·발음·어원·예문이 자동으로 채워져서, 버튼을 따로 누르지 않아도 돼요.</p>
+<p class="nb-sub">이미 단어장을 만들어 쓰고 계신 분은, 이 페이지의 단어장 파일(voca-app.html)을 새로 내려받아 다시 게시하면 새 기능이 적용돼요.</p>
+<button type="button" id="noticeOk">확인했어요</button>
+</div>
+</div>
+<script>
+(function(){
+  var KEY='notice_enter_lookup_v1', back=document.getElementById('noticeBack');
+  if(!back) return;
+  try{ if(localStorage.getItem(KEY)) return; }catch(e){}
+  function close(){ back.hidden=true; try{localStorage.setItem(KEY,'1');}catch(e){} }
+  document.getElementById('noticeOk').addEventListener('click',close);
+  back.addEventListener('click',function(e){ if(e.target===back) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!back.hidden) close(); });
+  setTimeout(function(){ back.hidden=false; },600);
 })();
 </script>
 
