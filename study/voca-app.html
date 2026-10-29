@@ -238,9 +238,6 @@ async function doLookup(opts){
   const statusEl = document.getElementById('lookupStatus');
   const w = wordEl.value.trim();
   if(!w || !sampleCap) return;
-  if(!opts.silent && (meaningEl.value.trim() || exampleEl.value.trim())){
-    if(!confirm('이미 입력된 뜻/예문을 덮어쓸까요?')) return;
-  }
   statusEl.textContent = '사전에서 찾는 중...';
   document.getElementById('lookupBtn').disabled = true;
   try{
@@ -428,7 +425,13 @@ document.getElementById('addBtn').addEventListener('click', async ()=>{
   const ex = document.getElementById('inExample').value.trim();
   const exKo = document.getElementById('inExampleKo').value.trim();
   const page = document.getElementById('inPage').value.trim();
-  if(!w || !m){ alert('단어와 뜻을 입력해주세요.'); return; }
+  if(!w || !m){
+    const st = document.getElementById('lookupStatus');
+    st.textContent = '단어와 뜻을 입력해주세요.';
+    document.getElementById('lookupRow').style.display = '';
+    setTimeout(()=>{ st.textContent = ''; }, 3000);
+    return;
+  }
   await addWordEntry(w, m, etym, ex, exKo, currentIpa, page);
   document.getElementById('inWord').value='';
   document.getElementById('inMeaning').value='';
@@ -666,8 +669,20 @@ async function doScanText(){
 }
 document.getElementById('scanTextGo').addEventListener('click', doScanText);
 document.getElementById('scanText').addEventListener('input', saveScan);
+// 팝업 확인창(confirm)은 아티팩트 안에서 막힐 수 있어서, 버튼을 두 번 눌러 지우는 방식으로 해요.
+let scanClearArmed = false, scanClearTimer = null;
 document.getElementById('scanClear').addEventListener('click', ()=>{
-  if(scanSentences.length && !confirm('붙여넣은 글과 번역을 지울까요?')) return;
+  const b = document.getElementById('scanClear');
+  if(scanSentences.length === 0 && !document.getElementById('scanText').value.trim()){ clearScan(); return; }
+  if(!scanClearArmed){
+    scanClearArmed = true;
+    b.textContent = '⚠️ 한 번 더 누르면 지워요';
+    scanClearTimer = setTimeout(()=>{ scanClearArmed = false; b.textContent = '🗑️ 붙여넣은 글과 번역 지우기'; }, 4000);
+    return;
+  }
+  clearTimeout(scanClearTimer);
+  scanClearArmed = false;
+  b.textContent = '🗑️ 붙여넣은 글과 번역 지우기';
   clearScan();
 });
 
