@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261032">
+<link rel="stylesheet" href="../style.css?v=20261033">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -676,6 +676,8 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 .board-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--blue);padding-bottom:8px;margin-bottom:14px;}
 .board-head h2{margin:0;font-size:1.25rem;color:var(--blue-dark);}
 .board-write{background:var(--blue);color:#fff;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:.88rem;padding:8px 14px;border-radius:20px;}
+.board-write[hidden]{display:none;}
+.board-del{background:none;border:none;color:#b3261e;font-size:.8rem;cursor:pointer;margin-left:14px;font-family:inherit;text-decoration:underline;}
 .board-write:hover{background:var(--blue-dark);}
 .board-desc{font-size:.88rem;color:var(--sub);margin:0 0 14px;line-height:1.6;}
 .board-post{background:#fff;border:1px solid var(--blue-line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(11,99,173,.07);}
@@ -701,7 +703,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 <section class="board" id="board">
 <div class="board-head">
 <h2>📌 공부 게시판</h2>
-<button type="button" class="board-write" id="boardWrite">✏️ 글쓰기</button>
+<button type="button" class="board-write" id="boardWrite" hidden>✏️ 글쓰기</button>
 </div>
 <p class="board-desc">원서를 읽다가 발견한 귀한 공부거리를 남약사가 그때그때 올려요.</p>
 <div class="board-form" id="boardForm" hidden>
@@ -749,9 +751,13 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
       var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
       return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
         '<div class="board-body">'+(i.body_html||'')+'</div>'+
-        '<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a></article>';
+        '<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
+        (getTok()?'<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
     }).join('');
     list.querySelectorAll('.board-body a').forEach(function(a){a.target='_blank';a.rel='noopener noreferrer';});
+    list.querySelectorAll('.board-del').forEach(function(b){
+      b.addEventListener('click',function(){ delPost(Number(b.dataset.n), items); });
+    });
   }
   function load(){
     fetch(API+'/repos/'+OWNER+'/'+REPO+'/issues?creator='+OWNER+'&state=open&sort=created&direction=desc&per_page=30&_='+Date.now(),{headers:{'Accept':'application/vnd.github.html+json'}})
@@ -761,22 +767,50 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
   }
   load();
 
+  // ---- 삭제: 글을 닫아서(Close) 게시판에서 없애고, 올린 사진 파일도 지워요 ----
+  function ghTok(method,path,body){
+    return fetch(API+path,{method:method,headers:{'Authorization':'Bearer '+getTok(),'Accept':'application/vnd.github+json','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined})
+      .then(function(r){return r.json().then(function(j){if(!r.ok) throw new Error((j&&j.message)||r.status);return j;});});
+  }
+  function delPost(n, items){
+    var it=items.filter(function(x){return x.number===n;})[0];
+    if(!it||!confirm('이 글을 삭제할까요?\n("'+it.title+'")')) return;
+    var paths=[], re=/raw\.githubusercontent\.com\/namyaksa\/namyaksa\.github\.io\/main\/(study\/board-img\/[^\s)]+)/g, m;
+    while((m=re.exec(it.body||''))) paths.push(m[1]);
+    ghTok('PATCH','/repos/'+OWNER+'/'+REPO+'/issues/'+n,{state:'closed'}).then(function(){
+      return paths.reduce(function(chain,path){
+        return chain.then(function(){
+          return ghTok('GET','/repos/'+OWNER+'/'+REPO+'/contents/'+path).then(function(f){
+            return ghTok('DELETE','/repos/'+OWNER+'/'+REPO+'/contents/'+path,{message:'Delete board photo',sha:f.sha});
+          }).catch(function(){});
+        });
+      },Promise.resolve());
+    }).then(function(){ load(); }).catch(function(e){ alert('삭제하지 못했어요: '+(e&&e.message?e.message:'오류')); });
+  }
+
   // ---- 글쓰기 (토큰이 저장된 남약사님 기기에서만 동작) ----
   var form=$('boardForm'), setup=$('boardSetup'), compose=$('boardCompose'), status=$('bfStatus'), files=[];
   function showPanel(){
     var has=!!getTok();
     setup.hidden=has; compose.hidden=!has;
   }
+  function syncOwner(){
+    var owner=!!getTok()||location.hash==='#admin';
+    $('boardWrite').hidden=!owner;
+    if(!owner) form.hidden=true;
+  }
+  syncOwner();
+  window.addEventListener('hashchange',syncOwner);
   $('boardWrite').addEventListener('click',function(){ form.hidden=!form.hidden; if(!form.hidden) showPanel(); });
   $('bfSaveToken').addEventListener('click',function(){
     var t=$('bfToken').value.trim();
     if(!/^(github_pat_|ghp_)/.test(t)){alert('github_pat_ 로 시작하는 토큰을 붙여 넣어 주세요.');return;}
     fetch(API+'/user',{headers:{'Authorization':'Bearer '+t}}).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(u){
       if(u.login!==OWNER){alert('남약사님 계정의 토큰이 아니에요.');return;}
-      setTok(t); $('bfToken').value=''; showPanel();
+      setTok(t); $('bfToken').value=''; showPanel(); syncOwner(); load();
     }).catch(function(){alert('토큰을 확인하지 못했어요. 다시 복사해서 붙여 넣어 주세요.');});
   });
-  $('bfLogout').addEventListener('click',function(){ if(confirm('이 기기에 저장된 토큰을 지울까요?')){setTok('');showPanel();} });
+  $('bfLogout').addEventListener('click',function(){ if(confirm('이 기기에 저장된 토큰을 지울까요?')){setTok('');showPanel();syncOwner();load();} });
   $('bfPhotos').addEventListener('change',function(e){
     files=Array.prototype.slice.call(e.target.files||[]);
     $('bfPhotoNames').textContent=files.length?('사진 '+files.length+'장 선택됨'):'';
