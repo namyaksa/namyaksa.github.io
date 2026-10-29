@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261039">
+<link rel="stylesheet" href="../style.css?v=20261040">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -441,7 +441,12 @@
 <code>"첨부한 HTML을 수정하지 말고 그대로 아티팩트로 게시해줘. 사용자별 저장(db), 사용자 식별(user), Claude 호출(sample) 기능을 켜서 게시해줘."</code>
 </div>
 </li>
-<li>게시가 끝나면 나오는 카드를 눌러 열어요. (<strong>"This artifact uses connectors" (Use Claude)</strong> 창이 뜨면 그대로 두고 <a href="img/continue-popup.jpg" class="continue-link" target="_blank" rel="noopener"><strong>[Continue]</strong></a>만 누르면 돼요)</li>
+<li>게시가 끝나면 나오는 카드를 눌러 열어요. (<strong>"This artifact uses connectors" (Use Claude)</strong> 창이 뜨면 그대로 두고 <a href="img/continue-popup.jpg" class="continue-link" target="_blank" rel="noopener"><strong>[Continue]</strong></a>만 누르면 돼요)
+<figure class="continue-fig" id="continueFig" hidden>
+<img src="img/continue-popup.jpg" alt="This artifact uses connectors 창: Use Claude 스위치를 켜 두고 Continue 버튼을 누르는 화면" loading="lazy">
+<figcaption>이런 창이 뜨면 정상이에요. <strong>"Use Claude" 스위치는 켜 둔 채 Continue만 누르세요.</strong><br>뜻 찾기·번역에 Claude를 쓰겠다는 동의 창이고, 처음 한 번만 나와요.</figcaption>
+</figure>
+</li>
 <li>자주 쓰려면 <strong>바탕화면(홈 화면)에 아이콘</strong>을 만들어 두세요. Claude 화면 위쪽의 "내보내기" 버튼이 아니라 <strong>브라우저 자체의 메뉴</strong>를 써요. 아래 순서대로 따라 해 보세요.
 <div class="easy-way">
 <h4>⭐ 가장 쉬운 방법: 링크 복사 → 브라우저에 붙여넣기</h4>
@@ -506,13 +511,6 @@
 
 <p class="faq-q">Q. 자동 뜻 찾기가 안 돼요.</p>
 <p>A. Claude에게 이렇게 말해보세요: <em>"db, sample, user 기능을 켜서 다시 게시해줘."</em></p>
-
-<p class="faq-q">Q. "This artifact uses connectors" 창이 떠요.</p>
-<p>A. 정상이에요. "Use Claude" 스위치는 켜진 그대로 두고 <a href="img/continue-popup.jpg" class="continue-link" target="_blank" rel="noopener"><strong>[Continue]</strong></a>만 누르면 돼요. 이 창은 뜻 찾기·번역에 Claude를 쓰겠다는 동의 창이고, 처음 한 번만 나와요.</p>
-<figure class="continue-fig" id="continueFig" hidden>
-<img src="img/continue-popup.jpg" alt="This artifact uses connectors 창: Use Claude 스위치를 켜 두고 Continue 버튼을 누르는 화면" loading="lazy">
-<figcaption>이런 창이 뜨면 <strong>Continue</strong>만 누르세요</figcaption>
-</figure>
 
 <p class="faq-q">Q. 앱이 업데이트되면요?</p>
 <p>A. 이쯤이면 완벽하지 않을까 생각하는데 건의사항 알려주시면 제가 업데이트 파일 올리겠습니다.</p>
