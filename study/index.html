@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261044">
+<link rel="stylesheet" href="../style.css?v=20261045">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -927,7 +927,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 <div class="notice-box" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
 <h3 id="noticeTitle">🆕 Daily 1 업데이트 안내</h3>
 <div id="noticeNew">
-<p class="nb-em">① 영어 단어를 입력하고 Enter만 누르면 뜻 찾기가 바로 돼요!<br>② 단어장에 저장한 단어를 ✏️ 수정 버튼으로 고칠 수 있어요.<br>③ 과거형·과거분사 단어는 원형과 변화형까지 함께 알려줘요.</p>
+<p class="nb-em">① 영어 단어를 입력하고 Enter만 누르면 뜻 찾기가 바로 돼요!<br>② 단어장에 저장한 단어를 ✏️ 수정 버튼으로 고칠 수 있어요.<br>③ 과거형·과거분사 단어는 원형과 변화형까지 함께 알려줘요.<br>④ 단어를 추가할 때 첫 글자가 자동으로 소문자로 들어가요.</p>
 <p>뜻·발음·어원·예문이 자동으로 채워지고, 저장한 단어도 언제든 내 뜻대로 다듬을 수 있어요.</p>
 <p class="nb-sub">이미 단어장을 만들어 쓰고 계신 분은, 이 페이지의 단어장 파일(voca-app.html)을 새로 내려받아 다시 게시하면 새 기능이 적용돼요.</p>
 </div>
@@ -939,9 +939,9 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 </div>
 <script>
 (function(){
-  var KEY='notice_enter_lookup_v3', back=document.getElementById('noticeBack');
+  var KEY='notice_enter_lookup_v4', back=document.getElementById('noticeBack');
   if(!back) return;
-  var LATEST='20261032';
+  var LATEST='20261033';
   var force=/[?&]notice=1/.test(location.search);
   var vm=location.search.match(/[?&]v=(\d+)/), mine=vm?vm[1]:'';
   if(force && mine && mine>=LATEST){
