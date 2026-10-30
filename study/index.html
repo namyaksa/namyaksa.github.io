@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261041">
+<link rel="stylesheet" href="../style.css?v=20261042">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -682,6 +682,8 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 .board-post h3{margin:0 0 4px;font-size:1.05rem;color:var(--blue-dark);word-break:keep-all;}
 .board-date{font-size:.78rem;color:var(--sub);margin-bottom:10px;}
 .board-body{font-size:.95rem;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere;}
+.board-body img[data-src]{display:none;}
+.board-photo-btn{background:#eaf3fc;color:var(--blue-dark);border:1px solid var(--blue-line);border-radius:20px;padding:8px 14px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;margin:2px 0 10px;}
 .board-body img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--blue-line);}
 .board-body p{margin:.5em 0;}
 .board-body pre{overflow:auto;background:#f3f7fb;padding:10px;border-radius:8px;}
@@ -745,14 +747,27 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
     items=items.filter(function(i){return !i.pull_request;});
     if(!items.length){list.innerHTML='<div class="board-msg">아직 올라온 글이 없어요.</div>';return;}
     list.innerHTML=items.map(function(i){
+      // 사진은 처음에 불러오지 않고, 보고 싶은 사람이 누를 때만 불러와요 (홈페이지 속도를 위해)
+      var tpl=document.createElement('template'); tpl.innerHTML=i.body_html||'';
+      var imgs=tpl.content.querySelectorAll('img');
+      imgs.forEach(function(im){ im.setAttribute('data-src',im.getAttribute('src')||''); im.removeAttribute('src'); im.removeAttribute('srcset'); im.setAttribute('loading','lazy'); });
+      var photoBtn=imgs.length?'<button type="button" class="board-photo-btn">📷 사진 '+imgs.length+'장 보기</button>':'';
       var d=new Date(i.created_at);
       var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
       return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
-        '<div class="board-body">'+(i.body_html||'')+'</div>'+
+        photoBtn+'<div class="board-body">'+tpl.innerHTML+'</div>'+
         (getTok()?'<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
         '<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
     }).join('');
     list.querySelectorAll('.board-body a').forEach(function(a){a.target='_blank';a.rel='noopener noreferrer';});
+    list.querySelectorAll('.board-photo-btn').forEach(function(b){
+      b.addEventListener('click',function(){
+        var art=b.closest('.board-post');
+        art.querySelectorAll('img[data-src]').forEach(function(im){ im.src=im.getAttribute('data-src'); im.removeAttribute('data-src'); });
+        art.querySelector('.board-body').classList.add('show-photos');
+        b.remove();
+      });
+    });
     list.querySelectorAll('.board-del').forEach(function(b){
       b.addEventListener('click',function(){ delPost(Number(b.dataset.n), items); });
     });
