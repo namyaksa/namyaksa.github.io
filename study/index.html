@@ -6,7 +6,7 @@
 <title>Daily 1 - 파란약국</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261045">
+<link rel="stylesheet" href="../style.css?v=20261046">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -405,7 +405,7 @@
 <figure><img src="img/1-copy.jpg" alt="책 사진에서 글자를 길게 눌러 복사하는 화면" loading="lazy"><figcaption>① 사진 앱에서 모르는 문장을 길게 눌러 <strong>복사하기</strong></figcaption></figure>
 <figure><img src="img/2-scan.jpg" alt="사진번역 탭에서 붙여넣은 문장과 한국어 번역" loading="lazy"><figcaption>② <strong>사진번역</strong> 탭에 붙여넣으면 문장별로 번역돼요. 모르는 단어를 누르면 바로 단어장에 저장!</figcaption></figure>
 <figure><img src="img/3-list.jpg" alt="단어장 화면: 뜻, 발음, 어원, 예문" loading="lazy"><figcaption>③ <strong>단어장</strong>에는 뜻·발음·어원·예문이 자동으로 채워져요</figcaption></figure>
-<figure><img src="img/4-quiz.jpg" alt="퀴즈 화면" loading="lazy"><figcaption>④ <strong>퀴즈</strong>로 복습하고, 3번 연속 맞히면 외운 단어!</figcaption></figure>
+<figure><img src="img/4-quiz.jpg" alt="퀴즈 화면" loading="lazy"><figcaption>④ <strong>퀴즈</strong>로 복습하고, 5번 연속 맞히면 외운 단어!</figcaption></figure>
 </div>
 
 <div class="post-detail">
@@ -496,7 +496,7 @@
 <ul>
 <li><strong>단어 추가:</strong> 영어 단어를 입력하면 뜻, 발음, 라틴어/그리스어 어원, 예문이 자동으로 채워집니다. 발음 듣기 버튼으로 반복해서 들을 수 있어요.</li>
 <li><strong>사진 번역:</strong> 원서 한 페이지의 글자를 복사해서 붙여넣으면 문장별로 한국어 번역이 나와요. 모르는 단어를 누르면 단어 추가 화면으로 바로 이동해요. (아이폰/아이패드: 사진 앱에서 글자를 길게 눌러 복사)</li>
-<li><strong>퀴즈:</strong> 같은 단어를 3번 연속 맞히면 "외운 단어"가 돼요. 위쪽 숫자 카드를 누르면 외운 단어, 복습 중인 단어를 따로 볼 수 있어요.</li>
+<li><strong>퀴즈:</strong> 같은 단어를 5번 연속 맞히면 "외운 단어"가 돼요. 위쪽 숫자 카드를 누르면 외운 단어, 복습 중인 단어를 따로 볼 수 있어요.</li>
 </ul>
 
 <h3>❓ 자주 묻는 질문 (FAQ)</h3>
@@ -927,7 +927,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 <div class="notice-box" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
 <h3 id="noticeTitle">🆕 Daily 1 업데이트 안내</h3>
 <div id="noticeNew">
-<p class="nb-em">① 영어 단어를 입력하고 Enter만 누르면 뜻 찾기가 바로 돼요!<br>② 단어장에 저장한 단어를 ✏️ 수정 버튼으로 고칠 수 있어요.<br>③ 과거형·과거분사 단어는 원형과 변화형까지 함께 알려줘요.<br>④ 단어를 추가할 때 첫 글자가 자동으로 소문자로 들어가요.</p>
+<p class="nb-em">① 영어 단어를 입력하고 Enter만 누르면 뜻 찾기가 바로 돼요!<br>② 단어장에 저장한 단어를 ✏️ 수정 버튼으로 고칠 수 있어요.<br>③ 과거형·과거분사 단어는 원형과 변화형까지 함께 알려줘요.<br>④ 단어를 추가할 때 첫 글자가 자동으로 소문자로 들어가요.<br>⑤ 퀴즈를 5번 연속 맞혀야 외운 단어가 돼요.</p>
 <p>뜻·발음·어원·예문이 자동으로 채워지고, 저장한 단어도 언제든 내 뜻대로 다듬을 수 있어요.</p>
 <p class="nb-sub">이미 단어장을 만들어 쓰고 계신 분은, 이 페이지의 단어장 파일(voca-app.html)을 새로 내려받아 다시 게시하면 새 기능이 적용돼요.</p>
 </div>
@@ -939,9 +939,9 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 </div>
 <script>
 (function(){
-  var KEY='notice_enter_lookup_v4', back=document.getElementById('noticeBack');
+  var KEY='notice_enter_lookup_v5', back=document.getElementById('noticeBack');
   if(!back) return;
-  var LATEST='20261033';
+  var LATEST='20261034';
   var force=/[?&]notice=1/.test(location.search);
   var vm=location.search.match(/[?&]v=(\d+)/), mine=vm?vm[1]:'';
   if(force && mine && mine>=LATEST){
