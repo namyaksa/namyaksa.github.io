@@ -357,3 +357,15 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 .bookcase-section{max-width:760px;margin:0 auto 70px;}
 .bookcase-section h2{font-size:1.25rem;color:var(--blue-dark);margin:0 0 12px;text-align:center;}
 .bookcase-section h2 small{font-size:.75rem;color:var(--sub);font-weight:600;margin-left:6px;}
+
+/* 책장 윗줄: 나무 막대 + 버튼 */
+.bc-wrap{border-radius:14px;overflow:hidden;box-shadow:0 10px 22px rgba(60,35,5,.32);background:#6f4616;}
+.bc-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;
+  background:linear-gradient(180deg,#e6b870 0%,#c98d42 55%,#b27530 100%);border-bottom:3px solid #6f4616;box-shadow:inset 0 1px 0 rgba(255,255,255,.45);}
+.bc-bar-title{flex:1;text-align:center;color:#fff;font-weight:800;font-size:1.05rem;text-shadow:0 -1px 0 rgba(80,45,5,.7),0 1px 2px rgba(80,45,5,.5);}
+.bc-btn{display:inline-block;min-width:72px;text-align:center;padding:7px 12px;border-radius:8px;text-decoration:none;color:#fff;font-weight:800;font-size:.88rem;
+  text-shadow:0 -1px 0 rgba(80,45,5,.7);background:linear-gradient(180deg,#d89a50 0%,#b97a32 55%,#a86a26 100%);
+  border:1px solid #7a4c18;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 1px 2px rgba(60,35,5,.4);}
+.bc-btn:hover{filter:brightness(1.08);}
+.bc-btn:active{filter:brightness(.92);}
+.bc-wrap .bc{border-radius:0;box-shadow:inset 0 0 0 3px #6f4616;}
