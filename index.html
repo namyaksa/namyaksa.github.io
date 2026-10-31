@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261059">
+<link rel="stylesheet" href="style.css?v=20261060">
 
 </head>
 
@@ -161,7 +161,7 @@ AI 활용법,
 <section class="bookcase-section" id="bookcase">
 <div class="bc-wrap">
 <div class="bc-bar">
-<a class="bc-btn" href="https://namyaksa.wixsite.com/paran/blank-4" target="_blank" rel="noopener noreferrer">원서 목록</a>
+<span class="bc-btn daily-font" aria-hidden="true" style="visibility:hidden">Daily 1</span>
 <div class="bc-bar-title">남약사의 서재</div>
 <a class="bc-btn daily-font" href="study/index.html">Daily 1</a>
 </div>
@@ -174,11 +174,11 @@ AI 활용법,
   // 책 목록: 왼쪽 위부터 차례로 꽂혀요. year: 책 밑에 적히는 읽은 때. 책을 새로 꽂을 때 한 줄씩 추가하세요.
   // title: 제목(표지 사진이 없을 때 표지에 적혀요) / cover: 표지 사진 경로 / url: 누르면 이동할 Wix 주소(비워 두면 연결 없음) / color: 표지 색
   var BOOKS=[
-    {title:'Nothing Lasts Forever',year:'1995',cover:'books/nothing-lasts-forever.png',url:'',color:'#b5702a'},
-    {title:'Rising Sun',year:'2008.11.4',cover:'books/rising-sun.png',url:'',color:'#8c2f3d'},
-    {title:'Memoirs of a Geisha',year:'2020',cover:'books/memoirs-of-a-geisha.png',url:'',color:'#2f7a52'},
-    {title:'Airframe',year:'2024',cover:'books/airframe.png',url:'',color:'#6b4a9c'},
-    {title:'Doctors',year:'2026.9.1~',cover:'books/doctors.png',url:'',color:'#2f5d8c'}
+    {title:'Nothing Lasts Forever',year:'1995',cover:'books/nothing-lasts-forever.png',url:'https://namyaksa.wixsite.com/paran/blank-4#nothing',color:'#b5702a'},
+    {title:'Rising Sun',year:'2008.11.4',cover:'books/rising-sun.png',url:'https://namyaksa.wixsite.com/paran/blank-4#rising',color:'#8c2f3d'},
+    {title:'Memoirs of a Geisha',year:'2020',cover:'books/memoirs-of-a-geisha.png',url:'https://namyaksa.wixsite.com/paran/blank-4#geisha',color:'#2f7a52'},
+    {title:'Airframe',year:'2024',cover:'books/airframe.png',url:'https://namyaksa.wixsite.com/paran/blank-4#airframe',color:'#6b4a9c'},
+    {title:'Doctors',year:'2026.9.1~',cover:'books/doctors.png',url:'https://namyaksa.wixsite.com/paran/blank-4#doctors',color:'#2f5d8c'}
   ];
   var ROWS=4, PER=6, body=document.getElementById('bcBody'), body=document.getElementById('bcBody');
   if(!body) return;
