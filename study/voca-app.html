@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -95,6 +94,10 @@ button:disabled{opacity:0.5;cursor:default;}
 .stat.clickable{cursor:pointer;user-select:none;}
 .stat.clickable:active{background:var(--accent-light);}
 .filterbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.listsearch{position:relative;margin-bottom:12px;}
+.listsearch input{padding-right:36px;}
+#listSearchClear{position:absolute;right:6px;top:6px;width:28px;height:28px;border:none;border-radius:50%;background:var(--border);color:var(--text);font-size:.8rem;cursor:pointer;}
+.ls-count{margin-top:6px;font-size:.78rem;color:var(--sub);}
 .chip{background:var(--bg);color:var(--sub);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;}
 .chip.on{background:var(--accent);color:#0f1638;border-color:var(--accent);}
 .progress{font-size:1rem;font-weight:700;color:var(--accent);text-align:center;margin-bottom:10px;}
@@ -527,7 +530,9 @@ function renderList(){
   const missingCount = words.filter(w=>!w.etymology || !w.etymology.trim()).length;
   fillRow.style.display = (sampleCap && missingCount>0) ? '' : 'none';
   if(words.length===0){ el.innerHTML = '<div class="empty">아직 저장한 단어가 없어요.<br>단어 추가 탭에서 시작해보세요!</div>'; return; }
-  const shown = words.filter(w=> listFilter==='mastered' ? w.mastered : listFilter==='learning' ? !w.mastered : true);
+  const q = listQuery.trim().toLowerCase();
+  const hit = w=> !q || [w.word,w.meaning,w.etymology,w.example,w.exampleKo,w.page].some(t=>String(t||'').toLowerCase().includes(q));
+  const shown = words.filter(w=> (listFilter==='mastered' ? w.mastered : listFilter==='learning' ? !w.mastered : true) && hit(w));
   el.innerHTML = shown.map(w=> w.id===editId ? editFormHtml(w) : `
     <div class="word-item">
       <div style="flex:1;min-width:0;">
@@ -571,13 +576,24 @@ function renderList(){
   });
   const cnt = { all: words.length, mastered: words.filter(w=>w.mastered).length, learning: words.filter(w=>!w.mastered).length };
   const chip = (k, label)=>`<button type="button" class="chip${listFilter===k?' on':''}" data-f="${k}">${label} ${cnt[k]}</button>`;
-  el.insertAdjacentHTML('afterbegin', `<div class="filterbar">${chip('all','전체')}${chip('mastered','외운 단어')}${chip('learning','복습 중')}</div>`);
+  el.insertAdjacentHTML('afterbegin', `<div class="filterbar">${chip('all','전체')}${chip('mastered','외운 단어')}${chip('learning','복습 중')}</div><div class="listsearch"><input type="text" id="listSearch" placeholder="🔍 알쏭달쏭한 단어 찾기 (영어·뜻·어원·예문)" value="${escapeHtml(listQuery)}" autocomplete="off" autocapitalize="off" spellcheck="false">${listQuery?'<button type="button" id="listSearchClear" aria-label="검색 지우기">✕</button>':''}${q?`<div class="ls-count">${shown.length}개 찾았어요</div>`:''}</div>`);
+  const si = document.getElementById('listSearch');
+  let composing = false;
+  const apply = ()=>{ listQuery = si.value; const pos = si.selectionStart; renderList(); const n = document.getElementById('listSearch'); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} } };
+  si.addEventListener('compositionstart', ()=>{ composing = true; });
+  si.addEventListener('compositionend', ()=>{ composing = false; apply(); });
+  si.addEventListener('input', ()=>{ if(!composing) apply(); });
+  if(searchFocus){ searchFocus = false; si.focus(); const L = si.value.length; try{ si.setSelectionRange(L,L); }catch(e){} }
+  const sc = document.getElementById('listSearchClear');
+  if(sc) sc.addEventListener('click', ()=>{ listQuery=''; searchFocus = true; renderList(); });
   if(shown.length===0){
     el.insertAdjacentHTML('beforeend', `<div class="empty">${listFilter==='mastered' ? '아직 외운 단어가 없어요.<br>퀴즈에서 같은 단어를 5번 연속 맞히면 외운 단어가 돼요.' : '해당하는 단어가 없어요.'}</div>`);
   }
   el.querySelectorAll('.chip').forEach(b=>b.addEventListener('click', ()=>{ listFilter = b.dataset.f; renderList(); }));
 }
 let listFilter = 'all';
+let listQuery = '';
+let searchFocus = false;
 let editId = null;
 function editFormHtml(w){
   return `<div class="edit-form" id="editForm">
@@ -728,10 +744,10 @@ async function doScanText(){
 }
 document.getElementById('scanTextGo').addEventListener('click', doScanText);
 document.getElementById('scanText').addEventListener('input', saveScan);
-// 누르면 바로 지워요 (확인 팝업은 아티팩트 안에서 막힐 수 있어서 쓰지 않아요).
+// 확인 없이 버튼을 누르면 바로 지워요.
 document.getElementById('scanClear').addEventListener('click', clearScan);
 // ---- 업데이트 확인: 링크로 나가지 않고 이 안에서 바로 알려줘요 ----
-const APP_VERSION = '20261034';
+const APP_VERSION = '20261035';
 (function(){ const v=document.getElementById('appVer'); if(v) v.textContent='단어장 버전 v'+APP_VERSION.slice(0,4)+'.'+APP_VERSION.slice(4,6)+'.'+APP_VERSION.slice(6,8); })();
 const NOTICE_URL = 'https://namyaksa.github.io/study/index.html?notice=1&v=' + APP_VERSION;
 function showUpdateBox(title, msg, withLink){
@@ -904,5 +920,3 @@ init();
 </script>
 </body>
 </html>
-
-</body></html>
