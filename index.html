@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261055">
+<link rel="stylesheet" href="style.css?v=20261057">
 
 </head>
 
@@ -171,14 +171,14 @@ AI 활용법,
 </section>
 <script>
 (function(){
-  // 책 목록: 왼쪽 위부터 차례로 꽂혀요. 책을 새로 꽂을 때 한 줄씩 추가하세요.
+  // 책 목록: 왼쪽 위부터 차례로 꽂혀요. year: 책 밑에 적히는 읽은 때. 책을 새로 꽂을 때 한 줄씩 추가하세요.
   // title: 제목(표지 사진이 없을 때 표지에 적혀요) / cover: 표지 사진 경로 / url: 누르면 이동할 Wix 주소(비워 두면 연결 없음) / color: 표지 색
   var BOOKS=[
-    {title:'',cover:'',url:'',color:'#2f5d8c'},
-    {title:'',cover:'',url:'',color:'#8c2f3d'},
-    {title:'',cover:'',url:'',color:'#2f7a52'},
-    {title:'',cover:'',url:'',color:'#6b4a9c'},
-    {title:'',cover:'',url:'',color:'#b5702a'}
+    {title:'Nothing Lasts Forever',year:'1995',cover:'books/nothing-lasts-forever.jpg',url:'',color:'#b5702a'},
+    {title:'Rising Sun',year:'2008.11.4',cover:'books/rising-sun.jpg',url:'',color:'#8c2f3d'},
+    {title:'Memoirs of a Geisha',year:'2020',cover:'books/memoirs-of-a-geisha.jpg',url:'',color:'#2f7a52'},
+    {title:'Airframe',year:'2024',cover:'books/airframe.jpg',url:'',color:'#6b4a9c'},
+    {title:'Doctors',year:'2026.9.1~',cover:'books/doctors.jpg',url:'',color:'#2f5d8c'}
   ];
   var ROWS=4, PER=6, body=document.getElementById('bcBody'), body=document.getElementById('bcBody');
   if(!body) return;
@@ -194,6 +194,7 @@ AI 활용법,
         if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title||'책 표지'; im.loading='lazy'; el.appendChild(im); }
         else { el.style.background=b.color; var t=document.createElement('div'); t.className='bc-t'; t.textContent=b.title; el.appendChild(t); }
         slot.appendChild(el);
+        if(b.year){ var yr=document.createElement('div'); yr.className='bc-year'; yr.textContent=b.year; slot.appendChild(yr); }
       }
       slots.appendChild(slot);
     }
