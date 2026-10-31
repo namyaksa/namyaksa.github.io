@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261052">
+<link rel="stylesheet" href="../style.css?v=20261053">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -428,67 +428,6 @@
     </a>
 </div>
 
-<!-- 책장: 위 버튼을 누르면 열리고 닫혀요. 책을 누르면 Wix로 이동하게 할 수 있어요(주소는 아래 BOOKS의 url에 적어요) -->
-<style>
-#bookcase[hidden]{display:none;}
-#bookcase{margin:16px 0 8px;}
-.bc{border-radius:12px;background:#9a6a2e;padding:12px 10px 10px;box-shadow:inset 0 0 0 3px #6f4616,0 8px 18px rgba(60,35,5,.3);}
-.bc-row{position:relative;margin-bottom:10px;padding:0 4px;border-radius:4px 4px 0 0;
-  background:repeating-linear-gradient(90deg,#c99a55 0,#c99a55 7px,#c0914c 7px,#c0914c 11px,#caa05e 11px,#caa05e 20px);box-shadow:inset 0 10px 14px rgba(70,40,5,.35);}
-.bc-row:last-child{margin-bottom:0;}
-.bc-slots{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:end;min-height:96px;padding:10px 0 0;}
-.bc-slot{aspect-ratio:2/3;max-height:90px;margin:0 auto;width:100%;max-width:56px;}
-.bc-book{display:block;width:100%;height:100%;border-radius:2px 4px 4px 2px;overflow:hidden;position:relative;text-decoration:none;box-shadow:2px 3px 6px rgba(0,0,0,.45),inset 3px 0 0 rgba(255,255,255,.22);}
-a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:translateY(-5px);}
-.bc-book img{width:100%;height:100%;object-fit:cover;display:block;}
-.bc-book .bc-t{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;padding:4px;color:#fff;font-weight:800;font-size:.55rem;line-height:1.25;word-break:keep-all;}
-.bc-plank{height:12px;margin:0 -4px;background:linear-gradient(180deg,#7d5120 0%,#a8742f 55%,#5e3a10 100%);box-shadow:0 4px 6px rgba(50,28,4,.4);}
-.bc-note{font-size:.82rem;color:var(--sub);margin:8px 2px 0;}
-</style>
-<div id="bookcase" hidden>
-<div class="bc" id="bcBody"></div>
-<p class="bc-note">새로 읽은 책이 생기면 하나씩 채워 갈게요. 📖</p>
-</div>
-<script>
-(function(){
-  // 책 목록: 왼쪽 위부터 차례로 꽂혀요. 책을 새로 꽂을 때 한 줄씩 추가하세요.
-  // title: 제목(표지 사진이 없을 때 표지에 적혀요) / cover: 표지 사진 경로 / url: 누르면 이동할 Wix 주소(비워 두면 연결 없음) / color: 표지 색
-  var BOOKS=[
-    {title:'',cover:'',url:'',color:'#2f5d8c'},
-    {title:'',cover:'',url:'',color:'#8c2f3d'},
-    {title:'',cover:'',url:'',color:'#2f7a52'},
-    {title:'',cover:'',url:'',color:'#6b4a9c'},
-    {title:'',cover:'',url:'',color:'#b5702a'}
-  ];
-  var ROWS=4, PER=6, body=document.getElementById('bcBody'), btn=document.getElementById('bookcaseBtn'), box=document.getElementById('bookcase');
-  if(!body||!btn||!box) return;
-  for(var r=0;r<ROWS;r++){
-    var row=document.createElement('div'); row.className='bc-row';
-    var slots=document.createElement('div'); slots.className='bc-slots';
-    for(var c=0;c<PER;c++){
-      var slot=document.createElement('div'); slot.className='bc-slot';
-      var b=BOOKS[r*PER+c];
-      if(b){
-        var el=document.createElement(b.url?'a':'div'); el.className='bc-book';
-        if(b.url){ el.href=b.url; el.target='_blank'; el.rel='noopener noreferrer'; el.title=b.title||'책 자세히 보기'; }
-        if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title||'책 표지'; im.loading='lazy'; el.appendChild(im); }
-        else { el.style.background=b.color; var t=document.createElement('div'); t.className='bc-t'; t.textContent=b.title; el.appendChild(t); }
-        slot.appendChild(el);
-      }
-      slots.appendChild(slot);
-    }
-    row.appendChild(slots);
-    body.appendChild(row);
-    var plank=document.createElement('div'); plank.className='bc-plank'; body.appendChild(plank);
-  }
-  btn.addEventListener('click',function(e){
-    e.preventDefault();
-    box.hidden=!box.hidden;
-    btn.setAttribute('aria-expanded',box.hidden?'false':'true');
-    if(!box.hidden) box.scrollIntoView({behavior:'smooth',block:'nearest'});
-  });
-})();
-</script>
 
 <h3>📌 준비물</h3>
 <ul>

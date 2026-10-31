@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261049">
+<link rel="stylesheet" href="style.css?v=20261053">
 
 </head>
 
@@ -157,6 +157,46 @@ AI 활용법,
 </div>
 
 </div>
+
+<section class="bookcase-section" id="bookcase">
+<h2>📚 남약사의 서재 <small>준비 중</small></h2>
+<div class="bc" id="bcBody"></div>
+<p class="bc-note" style="text-align:center;">새로 읽은 책이 생기면 하나씩 채워 갈게요. 📖</p>
+</section>
+<script>
+(function(){
+  // 책 목록: 왼쪽 위부터 차례로 꽂혀요. 책을 새로 꽂을 때 한 줄씩 추가하세요.
+  // title: 제목(표지 사진이 없을 때 표지에 적혀요) / cover: 표지 사진 경로 / url: 누르면 이동할 Wix 주소(비워 두면 연결 없음) / color: 표지 색
+  var BOOKS=[
+    {title:'',cover:'',url:'',color:'#2f5d8c'},
+    {title:'',cover:'',url:'',color:'#8c2f3d'},
+    {title:'',cover:'',url:'',color:'#2f7a52'},
+    {title:'',cover:'',url:'',color:'#6b4a9c'},
+    {title:'',cover:'',url:'',color:'#b5702a'}
+  ];
+  var ROWS=4, PER=6, body=document.getElementById('bcBody'), body=document.getElementById('bcBody');
+  if(!body) return;
+  for(var r=0;r<ROWS;r++){
+    var row=document.createElement('div'); row.className='bc-row';
+    var slots=document.createElement('div'); slots.className='bc-slots';
+    for(var c=0;c<PER;c++){
+      var slot=document.createElement('div'); slot.className='bc-slot';
+      var b=BOOKS[r*PER+c];
+      if(b){
+        var el=document.createElement(b.url?'a':'div'); el.className='bc-book';
+        if(b.url){ el.href=b.url; el.target='_blank'; el.rel='noopener noreferrer'; el.title=b.title||'책 자세히 보기'; }
+        if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title||'책 표지'; im.loading='lazy'; el.appendChild(im); }
+        else { el.style.background=b.color; var t=document.createElement('div'); t.className='bc-t'; t.textContent=b.title; el.appendChild(t); }
+        slot.appendChild(el);
+      }
+      slots.appendChild(slot);
+    }
+    row.appendChild(slots);
+    body.appendChild(row);
+    var plank=document.createElement('div'); plank.className='bc-plank'; body.appendChild(plank);
+  }
+})();
+</script>
 
 </div>
 
