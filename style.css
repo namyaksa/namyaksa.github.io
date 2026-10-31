@@ -341,7 +341,6 @@ nav{
 #topBtn{bottom:90px !important;z-index:1001 !important}
 
 /* 책장 (홈) */
-#bookcase{margin:16px 0 8px;}
 .bc{border-radius:12px;background:#9a6a2e;padding:12px 10px 10px;box-shadow:inset 0 0 0 3px #6f4616,0 8px 18px rgba(60,35,5,.3);}
 .bc-row{position:relative;margin-bottom:10px;padding:0 4px;border-radius:4px 4px 0 0;
   background:repeating-linear-gradient(90deg,#c99a55 0,#c99a55 7px,#c0914c 7px,#c0914c 11px,#caa05e 11px,#caa05e 20px);box-shadow:inset 0 10px 14px rgba(70,40,5,.35);}
