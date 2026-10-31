@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261057">
+<link rel="stylesheet" href="style.css?v=20261058">
 
 </head>
 
@@ -194,13 +194,19 @@ AI 활용법,
         if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title||'책 표지'; im.loading='lazy'; el.appendChild(im); }
         else { el.style.background=b.color; var t=document.createElement('div'); t.className='bc-t'; t.textContent=b.title; el.appendChild(t); }
         slot.appendChild(el);
-        if(b.year){ var yr=document.createElement('div'); yr.className='bc-year'; yr.textContent=b.year; slot.appendChild(yr); }
       }
       slots.appendChild(slot);
     }
     row.appendChild(slots);
     body.appendChild(row);
-    var plank=document.createElement('div'); plank.className='bc-plank'; body.appendChild(plank);
+    // 선반 널빤지 위에 읽은 때(연도)를 적어요
+    var plank=document.createElement('div'); plank.className='bc-plank';
+    for(var k=0;k<PER;k++){
+      var yr=document.createElement('div'); yr.className='bc-year';
+      var bk=BOOKS[r*PER+k]; yr.textContent=(bk&&bk.year)?bk.year:'';
+      plank.appendChild(yr);
+    }
+    body.appendChild(plank);
   }
 })();
 </script>

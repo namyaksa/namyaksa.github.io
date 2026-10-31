@@ -345,17 +345,17 @@ nav{
 .bc-row{position:relative;margin-bottom:10px;padding:0 4px;border-radius:4px 4px 0 0;
   background:repeating-linear-gradient(90deg,#c99a55 0,#c99a55 7px,#c0914c 7px,#c0914c 11px,#caa05e 11px,#caa05e 20px);box-shadow:inset 0 10px 14px rgba(70,40,5,.35);}
 .bc-row:last-child{margin-bottom:0;}
-.bc-slots{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:end;min-height:112px;padding:10px 0 4px;}
+.bc-slots{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:end;min-height:96px;padding:10px 0 0;}
 .bc-slot{margin:0 auto;width:100%;max-width:56px;}
-.bc-year{margin-top:3px;text-align:center;font-size:.58rem;font-weight:700;color:#fff6e3;text-shadow:0 1px 2px rgba(70,40,5,.85);white-space:nowrap;letter-spacing:-.02em;}
+.bc-year{text-align:center;font-family:'Pacifico','Brush Script MT',cursive;font-weight:400;font-size:.78rem;line-height:1.1;color:#fff;text-shadow:0 1px 3px rgba(60,35,5,.9);white-space:nowrap;}
 .bc-book{display:block;width:100%;aspect-ratio:2/3;border-radius:2px 4px 4px 2px;overflow:hidden;position:relative;text-decoration:none;box-shadow:2px 3px 6px rgba(0,0,0,.45),inset 3px 0 0 rgba(255,255,255,.22);}
 a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:translateY(-5px);}
 .bc-book img{width:100%;height:100%;object-fit:cover;display:block;}
 .bc-book .bc-t{min-height:100%;}
 .bc-book .bc-t{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;padding:4px;color:#fff;font-weight:800;font-size:.55rem;line-height:1.25;word-break:keep-all;}
-.bc-plank{height:12px;margin:0 -4px;background:linear-gradient(180deg,#7d5120 0%,#a8742f 55%,#5e3a10 100%);box-shadow:0 4px 6px rgba(50,28,4,.4);}
+.bc-plank{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:center;min-height:28px;padding:4px 8px;margin:0 -4px;background:linear-gradient(180deg,#8a5a22 0%,#a8742f 55%,#6a4212 100%);box-shadow:0 4px 6px rgba(50,28,4,.4);}
 .bc-note{font-size:.82rem;color:var(--sub);margin:8px 2px 0;}
-@media(min-width:769px){.bc-slot{max-width:92px;}.bc-year{font-size:.8rem;}.bc-slots{min-height:176px;}}
+@media(min-width:769px){.bc-slot{max-width:92px;}.bc-year{font-size:1.15rem;}.bc-plank{min-height:40px;}.bc-slots{min-height:160px;}}
 .bookcase-section{max-width:760px;margin:0 auto 70px;}
 .bookcase-section h2{font-size:1.25rem;color:var(--blue-dark);margin:0 0 12px;text-align:center;}
 .bookcase-section h2 small{font-size:.75rem;color:var(--sub);font-weight:600;margin-left:6px;}
