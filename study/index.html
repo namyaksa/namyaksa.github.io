@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261047">
+<link rel="stylesheet" href="../style.css?v=20261050">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -685,7 +685,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
 .board-post h3{margin:0 0 4px;font-size:1.05rem;color:var(--blue-dark);word-break:keep-all;}
 .board-date{font-size:.78rem;color:var(--sub);margin-bottom:10px;}
 .board-body{font-size:.95rem;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere;}
-.board-body img[data-src]{display:none;}
+.board-body img[data-src],.board-body.photos-hidden img{display:none;}
 .board-morebtn{display:block;width:100%;background:#fff;color:var(--blue-dark);border:1px solid var(--blue);border-radius:24px;padding:12px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;margin:4px 0 14px;}
 .board-photo-btn{background:#eaf3fc;color:var(--blue-dark);border:1px solid var(--blue-line);border-radius:20px;padding:8px 14px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;margin:2px 0 10px;}
 .board-body img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--blue-line);}
@@ -757,17 +757,24 @@ document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
     var d=new Date(i.created_at);
     var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
     return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
-      photoBtn+'<div class="board-body">'+tpl.innerHTML+'</div>'+
+      photoBtn+'<div class="board-body'+(imgs.length?' photos-hidden':'')+'">'+tpl.innerHTML+'</div>'+
       (getTok()?'<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
       '<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
   }
   function bindPosts(root){
     root.querySelectorAll('.board-body a').forEach(function(a){a.target='_blank';a.rel='noopener noreferrer';});
     root.querySelectorAll('.board-photo-btn').forEach(function(b){
-      b.addEventListener('click',function(){
-        var art=b.closest('.board-post');
-        art.querySelectorAll('img[data-src]').forEach(function(im){ im.src=im.getAttribute('data-src'); im.removeAttribute('data-src'); });
-        b.remove();
+      var art=b.closest('.board-post'), body=art.querySelector('.board-body');
+      var label=b.textContent;
+      function setShown(on){
+        if(on) art.querySelectorAll('img[data-src]').forEach(function(im){ im.src=im.getAttribute('data-src'); im.removeAttribute('data-src'); });
+        body.classList.toggle('photos-hidden',!on);
+        b.textContent=on?'📷 사진 숨기기':label;
+      }
+      b.addEventListener('click',function(){ setShown(body.classList.contains('photos-hidden')); });
+      // 사진을 누르면 다시 닫혀요
+      body.addEventListener('click',function(e){
+        if(e.target.tagName==='IMG'){ e.preventDefault(); setShown(false); b.scrollIntoView({block:'nearest'}); }
       });
     });
     root.querySelectorAll('.board-del').forEach(function(b){
