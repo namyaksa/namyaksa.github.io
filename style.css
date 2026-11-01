@@ -375,7 +375,7 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 
 /* 책 펼침 효과 */
 .bc-slot{perspective:700px;}
-.bc-book .bc-pages{position:absolute;inset:3% 2% 0 6%;background:linear-gradient(90deg,#d9c9a3,#fbf3de 12%,#fffaf0);border-radius:1px 3px 3px 1px;box-shadow:inset 6px 0 8px rgba(120,90,40,.35);opacity:0;transition:opacity .2s;}
+.bc-book .bc-pages{position:absolute;inset:3% 2% 0 6%;background:linear-gradient(90deg,rgba(90,60,20,.45),rgba(90,60,20,0) 22%),url(books/open-page.jpg) center/cover;border-radius:1px 3px 3px 1px;box-shadow:inset 6px 0 8px rgba(120,90,40,.35);opacity:0;transition:opacity .2s;}
 .bc-book.opening{z-index:20;animation:bcLift .85s ease-in-out forwards;}
 .bc-book.opening .bc-pages{opacity:1;}
 .bc-book.opening img{transform-origin:left center;animation:bcOpen .85s cubic-bezier(.45,.05,.3,1) forwards;backface-visibility:hidden;}
