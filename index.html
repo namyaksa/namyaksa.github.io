@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261063">
+<link rel="stylesheet" href="style.css?v=20261064">
 
 </head>
 
@@ -187,14 +187,13 @@ AI 활용법,
     if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
     e.preventDefault();
     if(bk.classList.contains('opening')) return;
-    var url=bk.href, w=null;
-    try{ w=window.open('about:blank','_blank'); if(w) w.opener=null; }catch(err){}
+    var url=bk.href;
     bk.classList.add('opening');
-    setTimeout(function(){
-      if(w){ w.location.href=url; } else { location.href=url; }
-      setTimeout(function(){ bk.classList.remove('opening'); },400);
-    },850);
+    setTimeout(function(){ location.href=url; },850);
   });
+  function resetOpen(){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) o[i].classList.remove('opening'); }
+  window.addEventListener('pageshow',resetOpen);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) resetOpen(); });
   for(var r=0;r<ROWS;r++){
     var row=document.createElement('div'); row.className='bc-row';
     var slots=document.createElement('div'); slots.className='bc-slots';
