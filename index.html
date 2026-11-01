@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261065">
+<link rel="stylesheet" href="style.css?v=20261066">
 
 </head>
 
@@ -176,7 +176,7 @@ AI 활용법,
     {title:'Nothing Lasts Forever',year:'1995',cover:'books/nothing-lasts-forever.png',url:'https://namyaksa.wixsite.com/paran/blank-4#nothing',color:'#b5702a'},
     {title:'Rising Sun',year:'2008.11.4',cover:'books/rising-sun.png',url:'https://namyaksa.wixsite.com/paran/blank-4#rising',color:'#8c2f3d'},
     {title:'Memoirs of a Geisha',year:'2020',cover:'books/memoirs-of-a-geisha.png',url:'https://namyaksa.wixsite.com/paran/blank-4#geisha',color:'#2f7a52'},
-    {title:'Airframe',year:'2024',cover:'books/airframe.png',url:'https://namyaksa.wixsite.com/paran/blank-4#airframe',color:'#6b4a9c'},
+    {title:'Airframe',year:'2024',cover:'books/airframe.png',spread:'books/spread-airframe.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#airframe',color:'#6b4a9c'},
     {title:'Doctors',year:'2026.9.1~',cover:'books/doctors.png',url:'https://namyaksa.wixsite.com/paran/blank-4#doctors',color:'#2f5d8c'}
   ];
   var ROWS=4, PER=6, body=document.getElementById('bcBody'), body=document.getElementById('bcBody');
@@ -187,11 +187,29 @@ AI 활용법,
     if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
     e.preventDefault();
     if(bk.classList.contains('opening')) return;
-    var url=bk.href;
+    var url=bk.href, idx=[].indexOf.call(body.querySelectorAll('.bc-book'),bk), bd=BOOKS[idx]||{};
+    if(bd.spread){ openSpread(bd,url); return; }
     bk.classList.add('opening');
     setTimeout(function(){ location.href=url; },850);
   });
-  function resetOpen(){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) o[i].classList.remove('opening'); }
+  // 펼친 책 한 쪽 전체가 보이는 효과 (spread 사진이 있는 책)
+  function openSpread(bd,url){
+    var ov=document.createElement('div'); ov.className='bk-ov';
+    ov.innerHTML='<div class="bk-stage"><div class="bk-pg bk-r"></div><div class="bk-pg bk-l"></div>'
+      +'<div class="bk-cover"><div class="bk-front"></div><div class="bk-back"></div></div></div>'
+      +'<div class="bk-cap">탭하면 바로 이동해요</div>';
+    var st=ov.querySelector('.bk-stage');
+    var sp='url('+bd.spread+')';
+    ov.querySelector('.bk-r').style.backgroundImage=sp;
+    ov.querySelector('.bk-l').style.backgroundImage=sp;
+    ov.querySelector('.bk-front').style.backgroundImage='url('+bd.cover+')';
+    ov.querySelector('.bk-back').style.backgroundImage=sp;
+    document.body.appendChild(ov);
+    var go=false; function jump(){ if(go) return; go=true; location.href=url; }
+    ov.addEventListener('click',jump);
+    setTimeout(jump,2600);
+  }
+  function resetOpen(){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) o[i].classList.remove('opening'); var v=document.querySelectorAll('.bk-ov'); for(var j=0;j<v.length;j++) v[j].remove(); }
   window.addEventListener('pageshow',resetOpen);
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) resetOpen(); });
   for(var r=0;r<ROWS;r++){
