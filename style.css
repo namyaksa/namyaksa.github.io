@@ -388,3 +388,10 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 
 .bc-book.has-sp .bc-pages{inset:0;background:var(--sp) 100% 0/200% 100%;box-shadow:0 2px 6px rgba(0,0,0,.5);border-radius:0 2px 2px 0;}
 .bc-book.has-sp .bc-back{background:var(--sp) 0 0/200% 100%;box-shadow:0 2px 6px rgba(0,0,0,.5);border-radius:2px 0 0 2px;}
+
+/* Daily 1 페이지: 영상 오른쪽에 책장 */
+.vrow{display:flex;gap:22px;align-items:flex-start;justify-content:center;margin:20px 0;}
+.vrow .video-container{flex:0 0 315px;margin:0;}
+.vrow .bookcase-section{flex:1;min-width:0;max-width:640px;margin:0;scroll-margin-top:80px;container-type:inline-size;}
+@media(max-width:760px){.vrow{flex-direction:column;align-items:center;}.vrow .video-container{flex:none;margin:0 auto;}.vrow .bookcase-section{width:100%;}}
+@container (max-width:559px){.bc-slot{max-width:56px;}.bc-year{font-size:.78rem;}.bc-plank{min-height:20px;padding:2px 8px;}.bc-slots{min-height:96px;}}
