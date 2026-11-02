@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261073">
+<link rel="stylesheet" href="../style.css?v=20261074">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -501,6 +501,7 @@
         📥 HTML 파일 다운로드 (voca-app.html)
     </a>
 </div>
+<p style="font-size:.85rem;margin:6px 2px 0;"><a href="#ja" id="jaHint">🇯🇵 日本の方はこちら（日本語版）</a></p>
 
 <h3>🛠 설치 방법 (3분)</h3>
 <ol>
@@ -570,6 +571,34 @@
 <li><strong>사진 번역:</strong> 원서 한 페이지의 글자를 복사해서 붙여넣으면 문장별로 한국어 번역이 나와요. 모르는 단어를 누르면 단어 추가 화면으로 바로 이동해요. (아이폰/아이패드: 사진 앱에서 글자를 길게 눌러 복사)</li>
 <li><strong>퀴즈:</strong> 같은 단어를 5번 연속 맞히면 "외운 단어"가 돼요. 위쪽 숫자 카드를 누르면 외운 단어, 복습 중인 단어를 따로 볼 수 있어요.</li>
 </ul>
+
+<details class="ja-box" id="ja">
+<summary>🇯🇵 日本の方へ — 韓国語・英語の勉強に（日本語版）</summary>
+<div class="ja-body" lang="ja">
+<p>韓国語や英語の本を読むときに、わからない単語を<strong>写真を撮るだけ</strong>で日本語に翻訳し、単語帳にためてクイズで覚えられる、Claude 用のアプリ（アーティファクト）です。</p>
+<ul>
+<li>📷 写真 or 文章 → 文ごとに<strong>日本語訳</strong>（韓国語は読み方もカタカナで表示）</li>
+<li>📚 わからない単語をタップ → 意味・発音・語源（漢字語なら元の漢字）・例文が自動で入ります</li>
+<li>📝 クイズで復習。<strong>5回連続で正解</strong>すると「覚えた単語」になります</li>
+</ul>
+<p><a class="download-btn" href="voca-app-ja.html" download="voca-app-ja.html">📥 日本語版HTMLをダウンロード (voca-app-ja.html)</a></p>
+<h4>🛠 使い方（3分）</h4>
+<ol>
+<li>上のボタンでHTMLファイルを端末に保存します（アドレスではなくファイルそのものを保存）。</li>
+<li><a href="https://claude.ai" target="_blank" rel="noopener noreferrer">claude.ai</a> または Claude アプリで新しいチャットを開き、保存したHTMLファイルを添付します。（Claude の無料プランで使えます）</li>
+<li>次の文をそのまま送ります：
+<div class="highlight-prompt ja-prompt">
+<button type="button" class="copy-btn ja-copy" aria-label="コピー">📋 コピー</button>
+<div class="prompt-title">💡 Claude に送る文 — 右上の［コピー］を押してください</div>
+<code>「添付したHTMLは修正せず、そのままアーティファクトとして公開してください。ユーザーごとの保存（db）、ユーザー識別（user）、Claude 呼び出し（sample）の機能をオンにして公開してください。」</code>
+</div>
+</li>
+<li>公開されたカードを開きます。「This artifact uses connectors」という画面が出たら、<strong>Use Claude をオンのまま［Continue］</strong>を押してください（最初の1回だけです）。</li>
+<li>よく使うなら、ブラウザ（Safari / Chrome）のメニューから<strong>ホーム画面に追加</strong>しておくと便利です。</li>
+</ol>
+<p class="install-note">※ 単語はあなたの Claude アカウントに保存されます。写真や文章の翻訳、辞書検索には Claude が使われます。</p>
+</div>
+</details>
 
 <h3>❓ 자주 묻는 질문 (FAQ)</h3>
 <p class="faq-q">Q. 정말 무료인가요?</p>
@@ -688,8 +717,24 @@ function toggleBgm() {
 </script>
 
 <script>
+(function(){
+  var d=document.getElementById('ja'); if(!d) return;
+  function openIfHash(){ if(location.hash==='#ja'){ d.open=true; setTimeout(function(){ d.scrollIntoView({block:'start'}); },60); } }
+  openIfHash(); window.addEventListener('hashchange',openIfHash);
+  var h=document.getElementById('jaHint'); if(h) h.addEventListener('click',function(){ d.open=true; });
+  var btn=d.querySelector('.ja-copy'); if(!btn) return;
+  btn.addEventListener('click',function(){
+    var text=btn.parentElement.querySelector('code').textContent.trim().replace(/^[「"“]|[」"”]$/g,'');
+    function done(){ btn.textContent='✓ コピーしました'; btn.classList.add('done'); setTimeout(function(){ btn.textContent='📋 コピー'; btn.classList.remove('done'); },2000); }
+    function fb(){ var ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){ btn.textContent='長押ししてコピー'; } document.body.removeChild(ta); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done,fb); } else { fb(); }
+  });
+})();
+</script>
+
+<script>
 // 프롬프트 복사 버튼
-document.querySelectorAll('.highlight-prompt .copy-btn').forEach(function(btn){
+document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(function(btn){
   btn.addEventListener('click', function(){
     var code = btn.parentElement.querySelector('code');
     var text = code.textContent.trim().replace(/^["“]|["”]$/g,'');

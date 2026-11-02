@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0f1638; --card:#1a2456; --text:#f1e4c0; --sub:#9aa3d1;
+  --accent:#d4af37; --accent-light:#2a3570; --border:#2e3a72; --good:#5a8a5a; --bad:#c65b5b;
+  --navy:#1a2456; --navy-deep:#0f1638;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1638; --card:#1a2456; --text:#f1e4c0; --sub:#9aa3d1;
+    --accent:#d4af37; --accent-light:#2a3570; --border:#2e3a72;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1638; --card:#1a2456; --text:#f1e4c0; --sub:#9aa3d1;
+  --accent:#d4af37; --accent-light:#2a3570; --border:#2e3a72;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);background-image:linear-gradient(180deg, var(--navy) 0px, var(--navy) 148px, transparent 148px);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,"Segoe UI",Roboto,sans-serif;min-height:100%;}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 60px;}
+.titlebar{padding:6px 2px 16px;margin-bottom:16px;}
+h1{font-size:1.4rem;margin:4px 0 2px;letter-spacing:-0.02em;color:#f1e4c0;}
+.logo{font-family:'Pacifico','Brush Script MT',cursive;font-weight:400;font-size:2.3rem;line-height:1.15;margin:2px 0 2px;letter-spacing:0;}
+.logo .lg-d{background:linear-gradient(180deg,#bfe0ff 0%,#6aaeff 55%,#3f86e8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 6px rgba(80,150,255,.35));}
+.logo .lg-1{margin-left:.18em;font-size:1.15em;color:#e8f3ff;-webkit-text-fill-color:#e8f3ff;text-shadow:0 0 14px rgba(120,180,255,.55);}
+.credit{font-size:0.88rem;color:#c9cdea;margin-bottom:0;line-height:1.5;}
+.hanja{font-size:1.05rem;color:#d4af37;letter-spacing:0.35em;font-weight:700;margin:2px 0 4px;}
+.syncstate{font-size:0.76rem;color:#9aa3d1;margin-top:10px;display:flex;align-items:center;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#7fd68a;display:inline-block;}
+.dot.off{background:#9aa3d1;}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:16px;}
+.tab{flex:1;text-align:center;padding:9px 0;border-radius:9px;font-size:0.92rem;font-weight:600;color:var(--sub);cursor:pointer;user-select:none;}
+.tab.active{background:var(--accent);color:#fff;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.stat{flex:1;min-width:80px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center;}
+.stat .n{font-size:1.3rem;font-weight:700;color:var(--accent);}
+.stat .l{font-size:0.75rem;color:var(--sub);margin-top:2px;}
+label{display:block;font-size:0.82rem;color:var(--sub);margin:10px 0 4px;font-weight:600;}
+input[type=text],textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;font-family:inherit;}
+textarea{resize:vertical;min-height:44px;}
+button{font-family:inherit;cursor:pointer;border:none;}
+button:disabled{opacity:0.5;cursor:default;}
+.btn-main{width:100%;margin-top:14px;background:var(--accent);color:#fff;padding:11px;border-radius:10px;font-size:0.95rem;font-weight:700;}
+.lookup-btn{background:var(--accent-light);color:var(--accent);padding:7px 12px;border-radius:8px;font-size:0.82rem;font-weight:600;}
+.lookup-status{font-size:0.78rem;color:var(--sub);margin-top:6px;}
+.ipa-row{display:flex;align-items:center;gap:10px;margin-top:6px;}
+.ipa-text{font-size:0.85rem;color:var(--sub);font-family:"Times New Roman",serif;}
+.speak-btn{background:var(--accent-light);color:var(--accent);padding:5px 10px;border-radius:8px;font-size:0.78rem;font-weight:600;}
+.w-word-row{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.w-ipa{font-size:0.78rem;color:var(--sub);font-family:"Times New Roman",serif;}
+.word-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);}
+.word-item:last-child{border-bottom:none;}
+.w-word{font-weight:700;font-size:1rem;}
+.w-meaning{color:var(--sub);font-size:0.87rem;margin-top:2px;}
+.w-ex{color:var(--sub);font-size:0.78rem;margin-top:4px;font-style:italic;}
+.w-etym{color:var(--accent);font-size:0.92rem;line-height:1.5;margin-top:6px;background:var(--accent-light);padding:12px 14px;min-height:56px;border-radius:8px;text-align:left;}
+.badge{font-size:0.7rem;padding:2px 7px;border-radius:20px;background:var(--accent-light);color:var(--accent);white-space:nowrap;margin-top:2px;display:inline-block;}
+.edit-btn{background:none;color:var(--accent);font-size:0.78rem;padding:4px 6px;flex-shrink:0;}
+.edit-form{padding:12px 0;border-bottom:1px solid var(--border);}
+.edit-form label{margin:8px 0 3px;}
+.edit-form .ef-btns{display:flex;gap:8px;margin-top:12px;}
+.edit-form .ef-btns button{flex:1;padding:10px;border-radius:10px;font-weight:700;font-size:0.9rem;}
+.ef-save{background:var(--accent);color:#0f1638;}
+.ef-cancel{background:var(--accent-light);color:var(--sub);}
+.ef-msg{font-size:0.78rem;color:#f2a5a5;margin-top:6px;min-height:16px;}
+.del{background:none;color:var(--sub);font-size:0.78rem;padding:4px 6px;flex-shrink:0;}
+.empty{text-align:center;color:var(--sub);padding:30px 10px;font-size:0.9rem;}
+.qcard{text-align:center;padding:26px 16px;}
+.qword{font-size:1.6rem;font-weight:800;margin-bottom:6px;}
+.qhint{color:var(--sub);font-size:0.8rem;margin-bottom:20px;}
+.opt{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:9px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.92rem;}
+.opt.correct{background:#213a21;border-color:var(--good);color:#9ad99a;}
+.opt.wrong{background:#3a2121;border-color:var(--bad);color:#f2a5a5;}
+:root[data-theme="dark"] .opt.correct,:root:not([data-theme="light"]) .opt.correct{background:#213a21;}
+:root[data-theme="dark"] .opt.wrong,:root:not([data-theme="light"]) .opt.wrong{background:#3a2121;}
+.qfeedback{min-height:22px;font-size:0.88rem;font-weight:600;margin-bottom:10px;}
+.flash{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px 16px;text-align:center;min-height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;}
+.flashrow{display:flex;gap:8px;margin-top:14px;}
+.flashrow button{flex:1;padding:11px;border-radius:10px;font-weight:700;font-size:0.88rem;}
+.know{background:var(--good);color:#fff;}
+.dontknow{background:var(--bad);color:#fff;}
+.stat.clickable{cursor:pointer;user-select:none;}
+.stat.clickable:active{background:var(--accent-light);}
+.filterbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.listsearch{position:relative;margin-bottom:12px;}
+.listsearch input{padding-right:36px;}
+#listSearchClear{position:absolute;right:6px;top:6px;width:28px;height:28px;border:none;border-radius:50%;background:var(--border);color:var(--text);font-size:.8rem;cursor:pointer;}
+.ls-count{margin-top:6px;font-size:.78rem;color:var(--sub);}
+.chip{background:var(--bg);color:var(--sub);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;}
+.chip.on{background:var(--accent);color:#0f1638;border-color:var(--accent);}
+.progress{font-size:1rem;font-weight:700;color:var(--accent);text-align:center;margin-bottom:10px;}
+.optn{display:inline-block;min-width:22px;height:22px;line-height:22px;margin-right:10px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:0.78rem;font-weight:700;text-align:center;vertical-align:middle;}
+.sent{padding:10px 0;border-bottom:1px solid var(--border);}
+.sent:last-child{border-bottom:none;}
+.sent .en{font-size:1.02rem;line-height:1.7;}
+.sent .ko{font-size:0.86rem;line-height:1.55;color:var(--sub);margin-top:4px;}
+.tok{cursor:pointer;border-radius:4px;padding:0 1px;}
+select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;font-family:inherit;}
+.sent .rd{font-size:0.8rem;color:var(--sub);margin-top:2px;opacity:.9;}
+.tok:active,.tok.sel{background:var(--accent-light);}
+.tok.known{border-bottom:2px solid var(--accent);}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--border);box-shadow:0 -6px 20px rgba(0,0,0,0.18);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;border-radius:16px 16px 0 0;}
+.sheet-ko{font-size:0.82rem;color:var(--sub);margin-bottom:8px;line-height:1.5;max-height:64px;overflow:auto;}
+.sheet-btns{display:flex;gap:8px;margin-top:10px;align-items:center;}
+.maker{display:flex;flex-direction:column;align-items:center;gap:8px;margin:28px auto 0;padding:18px 16px 0;border-top:1px solid var(--border);color:var(--sub);text-align:center;}
+.maker-logo{width:170px;max-width:60%;height:auto;border-radius:10px;border:1px solid var(--accent);}
+.maker-link{display:block;line-height:0;}
+.maker-sub{font-size:0.72rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="titlebar">
+    <h1 class="logo" aria-label="Daily 1"><span class="lg-d">Daily</span><span class="lg-1">1</span></h1>
+    <div class="hanja">日新又日新</div>
+    <div class="credit">1日1ページ、<br>昨日と違う今日、今日より良い明日のために…</div>
+    <div class="syncstate" id="syncState"></div>
+  </div>
+
+  <div class="row">
+    <div class="stat clickable" data-filter="all"><div class="n" id="statTotal">0</div><div class="l">全単語</div></div>
+    <div class="stat clickable" data-filter="mastered"><div class="n" id="statMastered">0</div><div class="l">覚えた単語</div></div>
+    <div class="stat clickable" data-filter="learning"><div class="n" id="statLearning">0</div><div class="l">復習中</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="add">単語追加</div>
+    <div class="tab" data-tab="list">単語帳</div>
+    <div class="tab" data-tab="quiz">クイズ</div>
+    <div class="tab" data-tab="scan" id="scanTab" style="display:none;">写真翻訳</div>
+  </div>
+
+  <div id="panel-add">
+    <div class="card">
+      <label>単語（英語・韓国語）</label>
+      <input type="text" id="inWord" placeholder="例: ephemeral" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false">
+      <div id="ipaRow" class="ipa-row" style="display:none;">
+        <span id="ipaDisplay" class="ipa-text"></span>
+        <button type="button" class="speak-btn" id="speakPreviewBtn">🔊 発音を聞く</button>
+      </div>
+      <div id="lookupRow" style="display:none;margin-top:6px;">
+        <button type="button" class="lookup-btn" id="lookupBtn">🔍 辞書で意味を自動検索</button>
+        <div id="lookupStatus" class="lookup-status"></div>
+      </div>
+      <label>意味</label>
+      <textarea id="inMeaning" style="min-height:66px;" placeholder="例: はかない、つかの間の"></textarea>
+      <label>語源（任意）</label>
+      <textarea id="inEtymology" style="min-height:176px;" placeholder="ラテン語・ギリシャ語の語源、漢字語の成り立ちなど、覚えるのに役立つ由来"></textarea>
+      <label>例文 — 本から書き写す（任意）</label>
+      <textarea id="inExample" placeholder="読んでいる本でこの単語が出てきた文を書き写してみましょう" spellcheck="true" lang="en"></textarea>
+      <div id="spellRow" style="display:none;margin-top:6px;">
+        <button type="button" class="lookup-btn" id="spellBtn">✏️ スペルチェック</button>
+        <div id="spellStatus" class="lookup-status"></div>
+        <div id="spellSuggestions"></div>
+      </div>
+      <div id="translateRow" style="display:none;margin-top:6px;">
+        <button type="button" class="lookup-btn" id="translateBtn">🌐 この文を翻訳する</button>
+        <div id="translateStatus" class="lookup-status"></div>
+      </div>
+      <label>ページ（任意）</label>
+      <input type="text" id="inPage" placeholder="例: p.42">
+      <label>例文の訳（任意）</label>
+      <textarea id="inExampleKo" placeholder="例文の日本語訳"></textarea>
+      <button class="btn-main" id="addBtn">単語帳に保存</button>
+    </div>
+  </div>
+
+  <div id="panel-list" style="display:none;">
+    <div id="fillEtymRow" style="display:none;margin-bottom:10px;">
+      <button type="button" class="lookup-btn" id="fillEtymBtn">🏛️ 保存済み単語の語源を補う</button>
+      <div id="fillEtymStatus" class="lookup-status"></div>
+    </div>
+    <div class="card" id="listCard"></div>
+  </div>
+  <div id="panel-quiz" style="display:none;"><div class="card" id="quizCard"></div></div>
+
+  <div id="panel-scan" style="display:none;">
+    <div class="card">
+      <label style="margin-top:0;" for="scanLang">文章の言語</label>
+      <select id="scanLang">
+        <option value="auto">自動判定</option>
+        <option value="en">英語</option>
+        <option value="ko">韓国語</option>
+      </select>
+      <div class="lookup-status">英語と韓国語に対応しています。写真を撮るか文章を貼り付けると、日本語に翻訳します。わからなければ「自動判定」のままで大丈夫です。</div>
+    </div>
+    <div class="card" id="scanPhotoCard" style="display:none;">
+      <input type="file" id="scanFile" accept="image/*" style="display:none;">
+      <button class="btn-main" id="scanPick" style="margin-top:0;">📷 写真を選ぶ</button>
+      <img id="scanPreview" alt="" style="display:none;margin-top:10px;border-radius:10px;width:100%;max-height:220px;object-fit:contain;background:var(--bg);">
+      <button class="btn-main" id="scanGo" style="display:none;">🌐 写真を翻訳する</button>
+      <div id="scanStatus" class="lookup-status"></div>
+    </div>
+    <div class="card">
+      <label style="margin-top:0;">原文を貼り付け</label>
+      <textarea id="scanText" style="min-height:120px;" placeholder="ここに本文を貼り付けてください（1ページ分くらい）"></textarea>
+      <div class="lookup-status">写真の選択ができないときは、iPhone・iPadは写真アプリで写真内の文字を長押ししてコピー（テキスト認識）、Androidは Google レンズの「テキストをコピー」を使ってください。</div>
+      <button class="btn-main" id="scanTextGo">🌐 貼り付けた文章を翻訳する</button>
+      <button type="button" class="lookup-btn" id="scanClear" style="margin-top:10px;">🗑️ 貼り付けた文章と翻訳を消す</button>
+    </div>
+    <div class="card" id="scanResult" style="display:none;"></div>
+  </div>
+
+  <div class="maker">
+    <a class="maker-link" href="https://namyaksa.github.io/study/index.html#ja" target="_blank" rel="noopener noreferrer" title="アップデートを確認"><img class="maker-logo" alt="南薬師" src="data:image/jpeg;base64,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"></a>
+    <div class="maker-sub">アップデートの確認は上のボタンを押してください</div>
+    <div class="maker-sub" id="appVer" style="font-weight:700;letter-spacing:.02em;">バージョン v2026.11.03</div>
+  </div>
+</div>
+
+<script>
+let words = [];
+let dbCap = null, userCap = null, sampleCap = null, uid = null, wordsCol = null;
+const LS_KEY = 'vocab_words_v1'; // legacy local key, used for one-time migration
+
+const LANGS = { en:{name:'英語',bcp:'en-US'}, ko:{name:'韓国語',bcp:'ko-KR'} };
+let addLang = 'en'; // language of the word on the add screen
+function speakWord(text, times, lang){
+  times = times || 5;
+  if(!('speechSynthesis' in window)) { alert('このブラウザは音声再生に対応していません。'); return; }
+  window.speechSynthesis.cancel();
+  for(let i=0;i<times;i++){
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = (LANGS[lang] || LANGS.en).bcp;
+    u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function autoGrow(el, min){
+  el.style.height = 'auto';
+  el.style.height = Math.max(min, el.scrollHeight + 4) + 'px';
+}
+function resizeFields(){
+  autoGrow(document.getElementById('inMeaning'), 66);
+  autoGrow(document.getElementById('inEtymology'), 176);
+}
+document.getElementById('inMeaning').addEventListener('input', ()=>autoGrow(document.getElementById('inMeaning'), 66));
+document.getElementById('inEtymology').addEventListener('input', ()=>autoGrow(document.getElementById('inEtymology'), 176));
+
+// 첫 글자만 대문자인 일반 단어(Ephemeral)는 소문자로 바꿔요. NASA처럼 여러 대문자가 있는 말은 그대로 둬요.
+function lowerFirst(w){ return /^[A-Z][a-z'’-]*$/.test(w) ? w.charAt(0).toLowerCase()+w.slice(1) : w; }
+let currentIpa = '';
+let lastLookupWord = '';
+
+async function doLookup(opts){
+  opts = opts || {};
+  const wordEl = document.getElementById('inWord');
+  const meaningEl = document.getElementById('inMeaning');
+  const etymEl = document.getElementById('inEtymology');
+  const exampleEl = document.getElementById('inExample');
+  const exampleKoEl = document.getElementById('inExampleKo');
+  const statusEl = document.getElementById('lookupStatus');
+  wordEl.value = lowerFirst(wordEl.value.trim());
+  const w = wordEl.value;
+  if(!w || !sampleCap) return;
+  statusEl.textContent = '辞書で検索中…';
+  document.getElementById('lookupBtn').disabled = true;
+  try{
+    const promptEn = `あなたは英語-日本語辞書です。次の英単語または短い表現を分析してください: "${w}"${opts.context ? '\nこの単語が使われている文: "' + opts.context.en + '"\n意味はこの文での使われ方を優先してください。' : ''}\n必ず次のJSON形式だけで答えてください。他のテキストや説明、マークダウンのコードブロックは付けず、純粋なJSONだけを出力してください。\n{"meaning": "日本語の意味。単語が動詞の活用形（過去形、過去分詞、-ing形、三人称単数形など）なら、必ず先頭に「[原形 - 過去形 - 過去分詞]」を書き（例: '[go - went - gone]'、規則動詞は '[walk - walked - walked]'）、続けてこの文での意味と原形の基本的な意味を簡潔に書く。活用形でなければ簡潔な日本語の意味だけ書く（複数の意味はカンマ区切り）。", "ipa": "国際音声記号（IPA）の発音表記。スラッシュ付き（例: /ɪˈfem.ər.əl/）", "etymology": "この単語のラテン語・ギリシャ語などの語源と、それを使って意味を覚えやすく説明する短い日本語の文（例: 'ラテン語 ephemerus（一日だけの）に由来。一日しか生きられないようにはかない、と覚えるとよい'）。語源が不明な表現なら空文字。", "example": "この単語を使った短く自然な英語の例文（自作。実在の本や著作物から引用しないこと）", "exampleKo": "上の例文の自然な日本語訳"}\nこの単語を知らない、または辞書にない表現なら {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""} と答えてください。`;
+    const ln = (LANGS[addLang]||LANGS.en).name;
+    const promptOther = `あなたは韓国語-日本語辞書です。次の韓国語の単語または短い表現を分析してください: "${w}"${opts.context ? '\nこの単語が使われている文: "' + opts.context.en + '"\n意味はこの文での使われ方を優先してください。' : ''}\n必ず次のJSON形式だけで答えてください。他のテキストや説明、マークダウンのコードブロックは付けず、純粋なJSONだけを出力してください。\n{"meaning": "日本語の意味。動詞・形容詞の活用形なら先頭に「[辞書形]」を書き（例: '[가다]'）、続けてこの文での意味と辞書形の意味を簡潔に書く。そうでなければ簡潔な日本語の意味だけ書く（複数の意味はカンマ区切り）。", "ipa": "発音。実際の読み方をカタカナで書き、必要ならローマ字も添える（例: 학교 → ハッキョ / hakgyo）", "etymology": "漢字語なら元の漢字と日本語の漢字語との対応（例: 학교 = 学校）や覚え方を短い日本語で。固有語なら成り立ちや覚え方を短く。不明なら空文字。", "example": "この単語を使った短く自然な韓国語の例文（自作。実在の著作物から引用しないこと）", "exampleKo": "上の例文の自然な日本語訳"}\nこの単語を知らない、または辞書にない表現なら {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""} と答えてください。`;
+    const prompt = addLang === 'en' ? promptEn : promptOther;
+    const result = await sampleCap.json(prompt);
+    lastLookupWord = w;
+    if(result && result.meaning){
+      meaningEl.value = result.meaning;
+      autoGrow(meaningEl, 66);
+      if(result.etymology && !etymEl.value.trim()) etymEl.value = result.etymology;
+      etymEl.style.height = 'auto'; etymEl.style.height = Math.max(176, etymEl.scrollHeight + 4) + 'px';
+      if(opts.context){
+        exampleEl.value = opts.context.en;
+        exampleKoEl.value = opts.context.ko || '';
+      } else {
+        if(result.example) exampleEl.value = result.example;
+        if(result.exampleKo) exampleKoEl.value = result.exampleKo;
+      }
+      currentIpa = result.ipa || '';
+      const ipaRow = document.getElementById('ipaRow');
+      if(currentIpa){ document.getElementById('ipaDisplay').textContent = currentIpa; ipaRow.style.display = 'flex'; }
+      else { ipaRow.style.display = 'none'; }
+      statusEl.textContent = '✓ 見つかりました。必要なら修正してください。';
+      const has = exampleEl.value.trim().length > 0;
+      document.getElementById('translateRow').style.display = (has && sampleCap) ? '' : 'none';
+    } else {
+      statusEl.textContent = '辞書に見つかりませんでした。直接入力してください。';
+    }
+  }catch(e){
+    statusEl.textContent = '検索に失敗しました。直接入力してください。';
+  }
+  document.getElementById('lookupBtn').disabled = false;
+  setTimeout(()=>{ statusEl.textContent = ''; }, 4000);
+}
+
+async function doSpellCheck(){
+  const exEl = document.getElementById('inExample');
+  const statusEl = document.getElementById('spellStatus');
+  const suggEl = document.getElementById('spellSuggestions');
+  const text = exEl.value.trim();
+  if(!text || !sampleCap) return;
+  statusEl.textContent = 'スペルを確認中…';
+  suggEl.innerHTML = '';
+  document.getElementById('spellBtn').disabled = true;
+  try{
+    const prompt = `次の英文にスペルミスがないか確認してください。文法や不自然な表現ではなく「明らかなスペルミス」だけを探してください。\n"${text}"\n必ず次のJSON形式だけで答えてください。他のテキストは付けず、純粋なJSONだけを出力してください。\n{"corrections": [{"original": "スペルミスのある単語", "suggestion": "正しい綴り"}]}\nスペルミスがなければ {"corrections": []} と答えてください。`;
+    const result = await sampleCap.json(prompt);
+    const corrections = (result && Array.isArray(result.corrections)) ? result.corrections : [];
+    if(corrections.length === 0){
+      statusEl.textContent = '✓ スペルミスはなさそうです。';
+      setTimeout(()=>{ statusEl.textContent = ''; }, 3000);
+    } else {
+      statusEl.textContent = '';
+      suggEl.innerHTML = corrections.map((c,i)=>
+        `<button type="button" class="lookup-btn" data-i="${i}" style="margin:4px 4px 0 0;">${escapeHtml(c.original)} → ${escapeHtml(c.suggestion)}</button>`
+      ).join('');
+      suggEl.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const c = corrections[Number(btn.dataset.i)];
+          const re = new RegExp('\\b' + c.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+          exEl.value = exEl.value.replace(re, c.suggestion);
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+        });
+      });
+    }
+  }catch(e){
+    statusEl.textContent = 'スペルチェックに失敗しました。';
+    setTimeout(()=>{ statusEl.textContent = ''; }, 3000);
+  }
+  document.getElementById('spellBtn').disabled = false;
+}
+
+async function doTranslateExample(){
+  const exEl = document.getElementById('inExample');
+  const koEl = document.getElementById('inExampleKo');
+  const statusEl = document.getElementById('translateStatus');
+  const text = exEl.value.trim();
+  if(!text || !sampleCap) return;
+  statusEl.textContent = '翻訳中…';
+  document.getElementById('translateBtn').disabled = true;
+  try{
+    const prompt = `次の${(LANGS[addLang]||LANGS.en).name}の文を自然な日本語に翻訳してください。\n"${text}"\n必ず次のJSON形式だけで答えてください。他のテキストは付けず、純粋なJSONだけを出力してください。\n{"translation": "日本語訳"}`;
+    const result = await sampleCap.json(prompt);
+    if(result && result.translation){
+      koEl.value = result.translation.trim();
+      statusEl.textContent = '✓ 翻訳できました。必要なら修正してください。';
+    } else {
+      statusEl.textContent = '翻訳に失敗しました。直接入力してください。';
+    }
+  }catch(e){
+    statusEl.textContent = '翻訳に失敗しました。直接入力してください。';
+  }
+  document.getElementById('translateBtn').disabled = false;
+  setTimeout(()=>{ statusEl.textContent = ''; }, 4000);
+}
+
+function setSyncState(state){
+  const el = document.getElementById('syncState');
+  if(state === 'synced') el.innerHTML = '';
+  else if(state === 'local') el.innerHTML = '<span class="dot off"></span><span>この端末にのみ保存（同期できません）</span>';
+  else el.innerHTML = '';
+}
+
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function renderStats(){
+  document.getElementById('statTotal').textContent = words.length;
+  document.getElementById('statMastered').textContent = words.filter(w=>w.mastered).length;
+  document.getElementById('statLearning').textContent = words.filter(w=>!w.mastered).length;
+}
+
+// 탭을 떠날 때 스크롤 위치를 기억했다가, 돌아오면 공부하던 자리로 되돌려요.
+let curTab = 'add';
+const tabScroll = {};
+function restoreScroll(name){
+  const y = tabScroll[name];
+  if(typeof y !== 'number') return;
+  const go = ()=>window.scrollTo(0, y);
+  go(); requestAnimationFrame(go); setTimeout(go, 60); setTimeout(go, 250);
+}
+function switchTab(name){
+  if(name !== curTab){ tabScroll[curTab] = window.scrollY || document.documentElement.scrollTop || 0; }
+  const prevTab = curTab; curTab = name;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.getElementById('panel-add').style.display = name==='add' ? '' : 'none';
+  document.getElementById('panel-list').style.display = name==='list' ? '' : 'none';
+  document.getElementById('panel-quiz').style.display = name==='quiz' ? '' : 'none';
+  document.getElementById('panel-scan').style.display = name==='scan' ? '' : 'none';
+  if(name==='scan') renderScanResult();
+  if(name==='list') renderList();
+  if(name==='quiz') startQuiz();
+  if(name!==prevTab){
+    if(name==='scan' || name==='list') restoreScroll(name);
+    else window.scrollTo(0, 0);
+  }
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ returnToScan = false; if(!document.getElementById('inWord').value.trim()) addLang = 'en'; switchTab(t.dataset.tab); }));
+document.getElementById('lookupBtn').addEventListener('click', doLookup);
+document.getElementById('inWord').addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter' || e.isComposing) return;
+  e.preventDefault();
+  if(document.getElementById('lookupBtn').disabled) return;
+  doLookup({silent:true});
+});
+document.getElementById('speakPreviewBtn').addEventListener('click', ()=>{
+  const w = document.getElementById('inWord').value.trim();
+  if(w) speakWord(w, 5, addLang);
+});
+document.getElementById('inWord').addEventListener('input', ()=>{
+  currentIpa = '';
+  document.getElementById('ipaRow').style.display = 'none';
+});
+document.getElementById('inWord').addEventListener('blur', ()=>{
+  document.getElementById('inWord').value = lowerFirst(document.getElementById('inWord').value.trim());
+  const w = document.getElementById('inWord').value;
+  if(!sampleCap || !w) return;
+  if(w === lastLookupWord) return; // already looked up this exact word
+  // the word changed since the last lookup — clear stale fields from the
+  // previous word and look this one up fresh, without the overwrite prompt
+  document.getElementById('inMeaning').value = '';
+  document.getElementById('inEtymology').value = '';
+  document.getElementById('inExample').value = '';
+  document.getElementById('inExampleKo').value = '';
+  document.getElementById('spellRow').style.display = 'none';
+  currentIpa = '';
+  document.getElementById('ipaRow').style.display = 'none';
+  document.getElementById('translateRow').style.display = 'none';
+  resizeFields();
+  doLookup({ silent: true });
+});
+document.getElementById('translateBtn').addEventListener('click', doTranslateExample);
+document.getElementById('spellBtn').addEventListener('click', doSpellCheck);
+document.getElementById('inExample').addEventListener('input', ()=>{
+  const has = document.getElementById('inExample').value.trim().length > 0;
+  document.getElementById('translateRow').style.display = (has && sampleCap) ? '' : 'none';
+  document.getElementById('spellRow').style.display = (has && sampleCap && addLang==='en') ? '' : 'none';
+  document.getElementById('spellSuggestions').innerHTML = '';
+  document.getElementById('spellStatus').textContent = '';
+});
+document.getElementById('inExample').addEventListener('blur', ()=>{
+  const text = document.getElementById('inExample').value.trim();
+  const ko = document.getElementById('inExampleKo').value.trim();
+  if(sampleCap && text && !ko) doTranslateExample();
+});
+
+async function addWordEntry(w, m, etym, ex, exKo, ipa, page){
+  const data = { lang: addLang, word: w, meaning: m, ipa: ipa || '', etymology: etym || '', example: ex || '', exampleKo: exKo || '', page: page || '', mastered: false, correctStreak: 0, addedAt: Date.now() };
+  if(wordsCol){
+    try{ await wordsCol.add(data); }catch(e){ alert('保存に失敗しました。しばらくしてからもう一度お試しください。'); }
+  } else {
+    words.unshift({ id: 'local_'+Date.now().toString(36)+Math.random().toString(36).slice(2), ...data });
+    saveLocal(); renderStats();
+  }
+}
+
+document.getElementById('addBtn').addEventListener('click', async ()=>{
+  const w = lowerFirst(document.getElementById('inWord').value.trim());
+  const m = document.getElementById('inMeaning').value.trim();
+  const etym = document.getElementById('inEtymology').value.trim();
+  const ex = document.getElementById('inExample').value.trim();
+  const exKo = document.getElementById('inExampleKo').value.trim();
+  const page = document.getElementById('inPage').value.trim();
+  if(!w || !m){
+    const st = document.getElementById('lookupStatus');
+    st.textContent = '単語と意味を入力してください。';
+    document.getElementById('lookupRow').style.display = '';
+    setTimeout(()=>{ st.textContent = ''; }, 3000);
+    return;
+  }
+  await addWordEntry(w, m, etym, ex, exKo, currentIpa, page);
+  addLang = 'en';
+  document.getElementById('inWord').value='';
+  document.getElementById('inMeaning').value='';
+  document.getElementById('inEtymology').value='';
+  document.getElementById('inExample').value='';
+  document.getElementById('inExampleKo').value='';
+  document.getElementById('inPage').value='';
+  document.getElementById('ipaRow').style.display = 'none';
+  document.getElementById('translateRow').style.display = 'none';
+  document.getElementById('spellRow').style.display = 'none';
+  currentIpa = '';
+  resizeFields();
+  if(returnToScan){ returnToScan = false; switchTab('scan'); }
+  else document.getElementById('inWord').focus();
+});
+
+async function deleteWord(id){
+  if(wordsCol){
+    try{ await wordsCol.doc(id).delete(); }catch(e){}
+  } else {
+    words = words.filter(w=>w.id!==id);
+    saveLocal(); renderStats(); renderList();
+  }
+}
+
+async function updateWord(id, patch){
+  const w = words.find(x=>x.id===id);
+  if(!w) return;
+  Object.assign(w, patch);
+  if(wordsCol){
+    try{ await wordsCol.doc(id).update(patch); }catch(e){}
+  } else {
+    saveLocal();
+  }
+  renderStats();
+}
+
+async function fillMissingEtymology(){
+  const missing = words.filter(w=>!w.etymology || !w.etymology.trim());
+  if(missing.length===0 || !sampleCap) return;
+  const btn = document.getElementById('fillEtymBtn');
+  const statusEl = document.getElementById('fillEtymStatus');
+  btn.disabled = true;
+  let done = 0;
+  for(const w of missing){
+    statusEl.textContent = `${w.word} の語源を検索中… (${done+1}/${missing.length})`;
+    try{
+      const prompt = `あなたは語源辞書です。次の${(LANGS[w.lang]||LANGS.en).name}の単語の語源（ラテン語・ギリシャ語、漢字語なら元の漢字など）を教えてください: "${w.word}"\n必ず次のJSON形式だけで答えてください。他のテキストは付けず、純粋なJSONだけを出力してください。\n{"etymology": "この単語の語源と、それを使って意味を覚えやすく説明する短い日本語の文。語源が不明なら空文字。"}`;
+      const result = await sampleCap.json(prompt);
+      if(result && result.etymology){
+        await updateWord(w.id, { etymology: result.etymology });
+      }
+    }catch(e){}
+    done++;
+  }
+  statusEl.textContent = `✓ ${done}語の語源を補いました。`;
+  btn.disabled = false;
+  renderList();
+  setTimeout(()=>{ statusEl.textContent = ''; }, 4000);
+}
+
+function renderList(){
+  const el = document.getElementById('listCard');
+  const fillRow = document.getElementById('fillEtymRow');
+  const missingCount = words.filter(w=>!w.etymology || !w.etymology.trim()).length;
+  fillRow.style.display = (sampleCap && missingCount>0) ? '' : 'none';
+  if(words.length===0){ el.innerHTML = '<div class="empty">まだ保存した単語がありません。<br>「単語追加」タブから始めましょう！</div>'; return; }
+  const q = listQuery.trim().toLowerCase();
+  const hit = w=> !q || [w.word,w.meaning,w.etymology,w.example,w.exampleKo,w.page].some(t=>String(t||'').toLowerCase().includes(q));
+  const shown = words.filter(w=> (listFilter==='mastered' ? w.mastered : listFilter==='learning' ? !w.mastered : true) && hit(w));
+  el.innerHTML = shown.map(w=> w.id===editId ? editFormHtml(w) : `
+    <div class="word-item">
+      <div style="flex:1;min-width:0;">
+        <div class="w-word-row" data-speak="${escapeHtml(w.word)}" data-lang="${w.lang||'en'}">
+          <span class="w-word">${escapeHtml(w.word)}</span>${w.lang && w.lang!=='en' && LANGS[w.lang] ? `<span class="badge" style="margin:0;">${LANGS[w.lang].name}</span>` : ''}
+          ${w.ipa ? `<span class="w-ipa">${escapeHtml(w.ipa)}</span>` : ''}
+          <span class="speak-btn" data-speak="${escapeHtml(w.word)}" data-lang="${w.lang||'en'}">🔊</span>
+        </div>
+        <div class="w-meaning">${escapeHtml(w.meaning)}</div>
+        ${w.etymology ? `<div class="w-etym">🏛️ ${escapeHtml(w.etymology)}</div>` : ''}
+        ${w.example ? `<div class="w-ex">"${escapeHtml(w.example)}"${w.page ? ` <span style="opacity:0.7;">(${escapeHtml(w.page)})</span>` : ''}</div>` : ''}
+        ${w.exampleKo ? `<div class="w-ex">→ ${escapeHtml(w.exampleKo)}</div>` : ''}
+        <span class="badge">${w.mastered ? '✓ 覚えた' : '復習中'}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;flex-shrink:0;"><button class="del" data-id="${w.id}">削除</button><button class="edit-btn" data-edit="${w.id}">✏️ 修正</button></div>
+    </div>
+  `).join('');
+  el.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', ()=>deleteWord(btn.dataset.id));
+  });
+  el.querySelectorAll('.edit-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ editId = btn.dataset.edit; renderList(); const f=document.getElementById('editForm'); if(f) f.scrollIntoView({block:'center'}); });
+  });
+  const ef = document.getElementById('editForm');
+  if(ef){
+    document.getElementById('efCancel').addEventListener('click', ()=>{ editId = null; renderList(); });
+    document.getElementById('efSave').addEventListener('click', async ()=>{
+      const w = words.find(x=>x.id===editId); if(!w) { editId = null; renderList(); return; }
+      const v = id=>document.getElementById(id).value.trim();
+      const nw = v('efWord'), nm = v('efMeaning');
+      if(!nw || !nm){ document.getElementById('efMsg').textContent = '単語と意味は空にできません。'; return; }
+      const patch = { word: nw, meaning: nm, etymology: v('efEtym'), example: v('efEx'), exampleKo: v('efExKo'), page: v('efPage') };
+      if(nw !== w.word) patch.ipa = '';
+      editId = null;
+      await updateWord(w.id, patch);
+      renderList();
+    });
+  }
+  el.querySelectorAll('[data-speak]').forEach(elm=>{
+    elm.addEventListener('click', ()=>speakWord(elm.dataset.speak, 5, elm.dataset.lang));
+  });
+  const cnt = { all: words.length, mastered: words.filter(w=>w.mastered).length, learning: words.filter(w=>!w.mastered).length };
+  const chip = (k, label)=>`<button type="button" class="chip${listFilter===k?' on':''}" data-f="${k}">${label} ${cnt[k]}</button>`;
+  el.insertAdjacentHTML('afterbegin', `<div class="filterbar">${chip('all','すべて')}${chip('mastered','覚えた単語')}${chip('learning','復習中')}</div><div class="listsearch"><input type="text" id="listSearch" placeholder="🔍 あやふやな単語を探す（単語・意味・語源・例文）" value="${escapeHtml(listQuery)}" autocomplete="off" autocapitalize="off" spellcheck="false">${listQuery?'<button type="button" id="listSearchClear" aria-label="検索をクリア">✕</button>':''}${q?`<div class="ls-count">${shown.length}件見つかりました</div>`:''}</div>`);
+  const si = document.getElementById('listSearch');
+  let composing = false;
+  const apply = ()=>{ listQuery = si.value; const pos = si.selectionStart; renderList(); const n = document.getElementById('listSearch'); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} } };
+  si.addEventListener('compositionstart', ()=>{ composing = true; });
+  si.addEventListener('compositionend', ()=>{ composing = false; apply(); });
+  si.addEventListener('input', ()=>{ if(!composing) apply(); });
+  if(searchFocus){ searchFocus = false; si.focus(); const L = si.value.length; try{ si.setSelectionRange(L,L); }catch(e){} }
+  const sc = document.getElementById('listSearchClear');
+  if(sc) sc.addEventListener('click', ()=>{ listQuery=''; searchFocus = true; renderList(); });
+  if(shown.length===0){
+    el.insertAdjacentHTML('beforeend', `<div class="empty">${listFilter==='mastered' ? 'まだ覚えた単語がありません。<br>クイズで同じ単語に5回連続で正解すると「覚えた単語」になります。' : '該当する単語がありません。'}</div>`);
+  }
+  el.querySelectorAll('.chip').forEach(b=>b.addEventListener('click', ()=>{ listFilter = b.dataset.f; renderList(); }));
+}
+let listFilter = 'all';
+let listQuery = '';
+let searchFocus = false;
+let editId = null;
+function editFormHtml(w){
+  return `<div class="edit-form" id="editForm">
+    <label>単語（英語・韓国語）</label><input type="text" id="efWord" value="${escapeHtml(w.word||'')}">
+    <label>意味</label><textarea id="efMeaning" style="min-height:56px;">${escapeHtml(w.meaning||'')}</textarea>
+    <label>語源</label><textarea id="efEtym" style="min-height:110px;">${escapeHtml(w.etymology||'')}</textarea>
+    <label>例文</label><textarea id="efEx" lang="en">${escapeHtml(w.example||'')}</textarea>
+    <label>例文の訳</label><textarea id="efExKo">${escapeHtml(w.exampleKo||'')}</textarea>
+    <label>ページ</label><input type="text" id="efPage" value="${escapeHtml(w.page||'')}">
+    <div class="ef-msg" id="efMsg"></div>
+    <div class="ef-btns"><button type="button" class="ef-save" id="efSave">保存</button><button type="button" class="ef-cancel" id="efCancel">キャンセル</button></div>
+  </div>`;
+}
+document.querySelectorAll('.stat[data-filter]').forEach(s=>s.addEventListener('click', ()=>{
+  listFilter = s.dataset.filter;
+  returnToScan = false;
+  switchTab('list');
+}));
+document.getElementById('fillEtymBtn').addEventListener('click', fillMissingEtymology);
+
+// --- Page scan: photo of a book page -> sentence-by-sentence translation, tap words to save ---
+let scanFile = null, scanSentences = [], scanImagesOk = null, returnToScan = false;
+
+function cleanToken(t){ return (t||'').replace(/^[^\p{L}\p{M}]+|[^\p{L}\p{M}]+$/gu,''); }
+// 일본어는 띄어쓰기가 없어서 브라우저의 단어 나누기(Intl.Segmenter)로 나눠요.
+function splitTokens(text, lang){
+  if(false){
+    try{ const seg = new Intl.Segmenter(lang, {granularity:'word'}); return Array.from(seg.segment(text)).map(x=>({t:x.segment, w:!!x.isWordLike})); }catch(e){}
+  }
+  return text.split(/(\s+)/).map(t=>({t, w:/\S/.test(t)}));
+}
+function isKnownWord(w){ const l = w.toLowerCase(); return words.some(x=>(x.word||'').toLowerCase()===l); }
+// Tapping a word jumps to the add-word tab, pre-filled and looked up in the context of that sentence.
+function goAddWord(word, idx){
+  const s = scanSentences[idx];
+  ['inMeaning','inEtymology','inExample','inExampleKo','inPage'].forEach(id=>{ document.getElementById(id).value = ''; });
+  addLang = (s && LANGS[s.lang]) ? s.lang : 'en';
+  document.getElementById('inWord').value = lowerFirst(word);
+  document.getElementById('ipaRow').style.display = 'none';
+  document.getElementById('spellRow').style.display = 'none';
+  document.getElementById('translateRow').style.display = 'none';
+  document.getElementById('spellSuggestions').innerHTML = '';
+  currentIpa = '';
+  lastLookupWord = '';
+  resizeFields();
+  switchTab('add');
+  returnToScan = true;
+  window.scrollTo(0, 0);
+  doLookup({ silent: true, context: s });
+}
+
+// The pasted text and its translation are kept in this browser, so leaving the page or a reload doesn't lose them.
+const SCAN_KEY = 'vocab_scan_v1';
+function saveScan(){
+  try{
+    localStorage.setItem(SCAN_KEY, JSON.stringify({ text: document.getElementById('scanText').value, sentences: scanSentences, sel: document.getElementById('scanLang').value }));
+  }catch(e){}
+}
+function loadScan(){
+  try{
+    const raw = localStorage.getItem(SCAN_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d && typeof d.text === 'string') document.getElementById('scanText').value = d.text;
+    if(d && Array.isArray(d.sentences)) scanSentences = d.sentences.filter(s=>s && s.en);
+    if(d && typeof d.sel === 'string' && document.getElementById('scanLang').querySelector('option[value="'+d.sel+'"]')) document.getElementById('scanLang').value = d.sel;
+    renderScanResult();
+  }catch(e){}
+}
+function clearScan(){
+  scanSentences = [];
+  document.getElementById('scanText').value = '';
+  document.getElementById('scanStatus').textContent = '';
+  try{ localStorage.removeItem(SCAN_KEY); }catch(e){}
+  renderScanResult();
+}
+
+function renderScanResult(){
+  saveScan();
+  const el = document.getElementById('scanResult');
+  if(scanSentences.length===0){ el.style.display='none'; return; }
+  el.style.display = '';
+  el.innerHTML = '<div class="qhint" style="text-align:left;margin-bottom:6px;">わからない単語をタップすると単語追加画面に移ります。保存するとこの画面に戻ります。下線は保存済みの単語です。</div>' +
+    scanSentences.map((s,i)=>{
+      const toks = splitTokens(s.en, s.lang).map(x=>{
+        if(!x.w) return escapeHtml(x.t);
+        const c = cleanToken(x.t);
+        if(!c) return escapeHtml(x.t);
+        return `<span class="tok${isKnownWord(c)?' known':''}" data-i="${i}">${escapeHtml(x.t)}</span>`;
+      }).join('');
+      const rtl = '';
+      return `<div class="sent"><div class="en"${rtl}>${toks}</div>${s.read ? `<div class="rd">${escapeHtml(s.read)}</div>` : ''}<div class="ko">${escapeHtml(s.ko||'')}</div></div>`;
+    }).join('');
+}
+
+document.getElementById('scanPick').addEventListener('click', ()=>{
+  if(scanImagesOk === false){
+    document.getElementById('scanStatus').textContent = 'この画面ではClaudeが写真を直接読み取れません。代わりに下の欄に本文を貼り付けてください。';
+    document.getElementById('scanText').focus();
+    return;
+  }
+  document.getElementById('scanFile').click();
+});
+document.getElementById('scanFile').addEventListener('change', (e)=>{
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  scanFile = f;
+  const img = document.getElementById('scanPreview');
+  img.src = URL.createObjectURL(f);
+  img.style.display = '';
+  document.getElementById('scanGo').style.display = '';
+  document.getElementById('scanStatus').textContent = '';
+  scanSentences = []; renderScanResult();
+});
+
+function scanPrompt(sel, isPhoto){
+  const hint = sel==='auto' ? '文章の言語は英語または韓国語です。自分で判別してください。' : '文章の言語は' + LANGS[sel].name + 'です。';
+  const head = isPhoto ? 'この写真は、ユーザーが持っている外国語の本や文書の1ページです。写真の本文を読み取り、' : '次は、ユーザーが持っている外国語の本や文書の1ページ分の文章です。文章を';
+  return head + ' 個人の学習用に、文ごとに分けて、それぞれに自然な日本語訳を付けてください。' + hint + ' ページ番号、ヘッダー、フッターなど本文でないものは除いてください。改行やハイフンで途切れた単語はつなげて読んでください。韓国語の文は、全体の発音をカタカナで "read" に書いてください。英語の場合、read は空文字にしてください。文章が読み取れないときは sentences を空の配列にしてください。\n必ず次のJSON形式だけで答えてください。他のテキストは付けず、純粋なJSONだけを出力してください。\n{"language": "en または ko", "sentences": [{"en": "原文の文（元の言語のまま）", "ko": "日本語訳", "read": "読み方（韓国語はカタカナ発音）または空文字"}]}';
+}
+function parseScan(result, sel){
+  const list = (result && Array.isArray(result.sentences)) ? result.sentences.filter(s=>s && s.en) : [];
+  const lang = LANGS[result && result.language] ? result.language : (LANGS[sel] ? sel : 'en');
+  return list.map(s=>({ en: String(s.en), ko: String(s.ko||''), read: String(s.read||''), lang }));
+}
+async function doScan(){
+  if(!scanFile || !sampleCap) return;
+  const statusEl = document.getElementById('scanStatus');
+  const btn = document.getElementById('scanGo');
+  btn.disabled = true;
+  statusEl.textContent = '写真の文章を読み取って翻訳中…（10〜40秒かかります）';
+  try{
+    const sel = document.getElementById('scanLang').value;
+    const prompt = scanPrompt(sel, true);
+    const result = await sampleCap.json(prompt, { images: scanFile });
+    scanSentences = parseScan(result, sel);
+    if(scanSentences.length===0) statusEl.textContent = '文章を読み取れませんでした。明るく鮮明に、文字が画面いっぱいになるように撮り直してみてください。';
+    else statusEl.textContent = `✓ ${scanSentences.length}文を翻訳しました。`;
+    renderScanResult();
+  }catch(e){
+    const code = e && e.code;
+    statusEl.textContent = code==='image_rejected' ? 'この写真は使えません。別の写真でお試しください。'
+      : code==='rate_limited' ? '利用上限に達しました。少し待ってからもう一度お試しください。'
+      : code==='images_unavailable' ? 'この画面では写真の読み取りは使えません。'
+      : '読み取りに失敗しました。もう一度お試しください。';
+  }
+  btn.disabled = false;
+}
+document.getElementById('scanGo').addEventListener('click', doScan);
+
+async function doScanText(){
+  const text = document.getElementById('scanText').value.trim();
+  if(!text || !sampleCap) return;
+  const statusEl = document.getElementById('scanStatus');
+  const btn = document.getElementById('scanTextGo');
+  btn.disabled = true;
+  statusEl.textContent = '文ごとに翻訳中…（10〜40秒かかります）';
+  try{
+    const sel = document.getElementById('scanLang').value;
+    const prompt = scanPrompt(sel, false) + '\n\n文章:\n' + text.slice(0, 6000);
+    const result = await sampleCap.json(prompt);
+    scanSentences = parseScan(result, sel);
+    statusEl.textContent = scanSentences.length ? `✓ ${scanSentences.length}文を翻訳しました。` : '翻訳する文が見つかりませんでした。';
+    renderScanResult();
+  }catch(e){
+    statusEl.textContent = (e && e.code==='rate_limited') ? '利用上限に達しました。少し待ってからもう一度お試しください。' : '翻訳に失敗しました。もう一度お試しください。';
+  }
+  btn.disabled = false;
+}
+document.getElementById('scanTextGo').addEventListener('click', doScanText);
+document.getElementById('scanText').addEventListener('input', saveScan);
+document.getElementById('scanLang').addEventListener('change', saveScan);
+// 확인 없이 버튼을 누르면 바로 지워요.
+document.getElementById('scanClear').addEventListener('click', clearScan);
+// ---- 업데이트 확인: 링크로 나가지 않고 이 안에서 바로 알려줘요 ----
+const APP_VERSION = '20261103';
+(function(){ const v=document.getElementById('appVer'); if(v) v.textContent='バージョン v'+APP_VERSION.slice(0,4)+'.'+APP_VERSION.slice(4,6)+'.'+APP_VERSION.slice(6,8); })();
+const NOTICE_URL = 'https://namyaksa.github.io/study/index.html#ja';
+function showUpdateBox(title, msg, withLink){
+  let back = document.getElementById('updBack');
+  if(back) back.remove();
+  back = document.createElement('div');
+  back.id = 'updBack';
+  back.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;';
+  const box = document.createElement('div');
+  box.style.cssText = 'background:#1a2456;color:#f1e4c0;border:1px solid #d4af37;border-radius:16px;max-width:380px;width:100%;padding:22px 20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);';
+  const h = document.createElement('div'); h.textContent = title; h.style.cssText = 'font-size:1.1rem;font-weight:800;margin-bottom:10px;';
+  const m = document.createElement('div'); m.textContent = msg; m.style.cssText = 'font-size:.95rem;line-height:1.7;color:#f1e4c0;';
+  box.appendChild(h); box.appendChild(m);
+  if(withLink){
+    const a = document.createElement('a'); a.href = NOTICE_URL; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.textContent = '詳しい案内を見る'; a.style.cssText = 'display:block;margin-top:12px;color:#9ad0ff;font-size:.9rem;';
+    box.appendChild(a);
+  }
+  const ok = document.createElement('button'); ok.type = 'button'; ok.textContent = 'OK';
+  ok.style.cssText = 'margin-top:14px;width:100%;background:#d4af37;color:#0f1638;border:none;border-radius:10px;padding:11px;font-size:1rem;font-weight:800;cursor:pointer;';
+  ok.addEventListener('click', ()=>back.remove());
+  box.appendChild(ok); back.appendChild(box);
+  back.addEventListener('click', e=>{ if(e.target===back) back.remove(); });
+  document.body.appendChild(back);
+}
+(function(){
+  const link = document.querySelector('.maker-link'); if(!link) return;
+  link.addEventListener('click', async (e)=>{
+    e.preventDefault();
+    try{
+      const r = await fetch('https://namyaksa.github.io/study/version-ja.json?_=' + Date.now(), {cache:'no-store'});
+      if(!r.ok) throw new Error('http');
+      const j = await r.json();
+      if(String(j.latest) <= APP_VERSION){
+        showUpdateBox('✅ 最新バージョンです', 'アップデートはありません。\n最新バージョンです。', false);
+      } else {
+        showUpdateBox('🆕 新しいバージョンがあります', 'Daily 1 のページから単語帳ファイル（voca-app-ja.html）をもう一度ダウンロードして公開し直すと、新機能が使えます。', true);
+      }
+    }catch(err){
+      window.open(NOTICE_URL, '_blank', 'noopener');
+    }
+  });
+})();
+
+
+document.getElementById('scanResult').addEventListener('click', (e)=>{
+  const t = e.target.closest && e.target.closest('.tok');
+  if(!t) return;
+  const c = cleanToken(t.textContent);
+  if(!c) return;
+  goAddWord(c, Number(t.dataset.i));
+});
+
+// Quiz logic
+let quizPool = [], quizIndex = 0, quizScore = 0, quizMode = 'choice';
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function startQuiz(){
+  if(words.length===0){ document.getElementById('quizCard').innerHTML = '<div class="empty">クイズをするには、まず単語を追加してください。</div>'; return; }
+  const learning = words.filter(w=>!w.mastered);
+  quizPool = shuffle(learning.length>=3 ? learning : words).slice(0,10);
+  quizIndex = 0; quizScore = 0;
+  quizMode = words.length >= 4 ? 'choice' : 'flash';
+  renderQuizStep();
+}
+
+function renderQuizStep(){
+  const el = document.getElementById('quizCard');
+  if(quizIndex >= quizPool.length){
+    el.innerHTML = `<div class="qcard"><div class="qword">🎉 完了！</div><div class="qhint">${quizPool.length}問中 ${quizScore}問正解しました</div><button class="btn-main" id="retryBtn">もう一度</button></div>`;
+    document.getElementById('retryBtn').addEventListener('click', startQuiz);
+    return;
+  }
+  const cur = quizPool[quizIndex];
+  const progressHtml = `<div class="progress">問題 ${quizIndex+1} / ${quizPool.length}</div>`;
+
+  if(quizMode === 'choice'){
+    const distractors = shuffle(words.filter(w=>w.id!==cur.id)).slice(0,3).map(w=>w.meaning);
+    const options = shuffle([cur.meaning, ...distractors]);
+    el.innerHTML = progressHtml + `<div class="qcard"><div class="qword">${escapeHtml(cur.word)} <span class="speak-btn" id="qSpeak">🔊</span></div>${cur.ipa?`<div class="ipa-text" style="margin-bottom:10px;">${escapeHtml(cur.ipa)}</div>`:''}<div class="qhint">この単語の意味は？</div><div id="qfeedback" class="qfeedback"></div><div id="opts">${options.map((o,i)=>`<button class="opt" data-val="${escapeHtml(o)}"><span class="optn">${i+1}</span>${escapeHtml(o)}</button>`).join('')}</div></div>`;
+    document.getElementById('qSpeak').addEventListener('click', ()=>speakWord(cur.word, 5, cur.lang));
+    document.querySelectorAll('.opt').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const isCorrect = btn.dataset.val === cur.meaning;
+        document.querySelectorAll('.opt').forEach(b=>{
+          b.disabled = true;
+          if(b.dataset.val === cur.meaning) b.classList.add('correct');
+          else if(b===btn) b.classList.add('wrong');
+        });
+        handleAnswer(cur, isCorrect);
+        document.getElementById('qfeedback').textContent = isCorrect ? '正解です！👍' : `残念。正解は「${cur.meaning}」`;
+        setTimeout(()=>{ quizIndex++; renderQuizStep(); }, 1100);
+      });
+    });
+  } else {
+    el.innerHTML = progressHtml + `<div class="flash" id="flashCard"><div class="qword">${escapeHtml(cur.word)} <span class="speak-btn" id="qSpeak2">🔊</span></div>${cur.ipa?`<div class="ipa-text">${escapeHtml(cur.ipa)}</div>`:''}<div class="qhint" id="flashHint">タップして意味を見る</div></div><div class="flashrow" id="flashBtns" style="display:none;"><button class="dontknow" id="btnNo">まだわからない</button><button class="know" id="btnYes">わかる！</button></div>`;
+    document.getElementById('qSpeak2').addEventListener('click', (e)=>{ e.stopPropagation(); speakWord(cur.word, 5, cur.lang); });
+    let flipped = false;
+    document.getElementById('flashCard').addEventListener('click', ()=>{
+      if(flipped) return; flipped = true;
+      document.getElementById('flashCard').innerHTML = `<div class="w-meaning" style="font-size:1.1rem;">${escapeHtml(cur.meaning)}</div>${cur.etymology?`<div class="w-etym">🏛️ ${escapeHtml(cur.etymology)}</div>`:''}${cur.example?`<div class="w-ex" style="margin-top:8px;">"${escapeHtml(cur.example)}"</div>`:''}${cur.exampleKo?`<div class="w-ex">→ ${escapeHtml(cur.exampleKo)}</div>`:''}`;
+      document.getElementById('flashBtns').style.display = 'flex';
+    });
+    document.getElementById('btnYes').addEventListener('click', ()=>{ handleAnswer(cur, true); quizIndex++; renderQuizStep(); });
+    document.getElementById('btnNo').addEventListener('click', ()=>{ handleAnswer(cur, false); quizIndex++; renderQuizStep(); });
+  }
+}
+
+function handleAnswer(word, correct){
+  const w = words.find(x=>x.id===word.id);
+  if(!w) return;
+  let streak = correct ? (w.correctStreak||0)+1 : 0;
+  let mastered = correct ? (!!w.mastered || streak >= 5) : false; // 5 correct in a row = mastered
+  quizScore += correct ? 1 : 0;
+  updateWord(w.id, { correctStreak: streak, mastered });
+}
+
+// --- local fallback (no db/user capability available) ---
+function loadLocal(){
+  try{ const raw = localStorage.getItem(LS_KEY); words = raw ? JSON.parse(raw) : []; }catch(e){ words = []; }
+}
+function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(words)); }catch(e){} }
+
+// --- init: try cross-device sync, fall back to local storage ---
+async function init(){
+  loadLocal(); renderStats(); // paint immediately from whatever local cache exists
+  loadScan();
+
+  try{
+    userCap = await claude.use('user');
+    dbCap = await claude.use('db');
+    sampleCap = await claude.use('sample');
+  }catch(e){}
+
+  if(sampleCap) document.getElementById('lookupRow').style.display = '';
+  if(sampleCap){
+    document.getElementById('scanTab').style.display = '';
+    try{
+      const lim = await sampleCap.limits();
+      scanImagesOk = !!(lim && lim.images);
+      if(scanImagesOk) document.getElementById('scanPhotoCard').style.display = '';
+    }catch(e){ scanImagesOk = false; }
+  }
+
+  if(!userCap || !dbCap){ setSyncState('local'); return; }
+
+  uid = await userCap.id();
+  if(!uid){ setSyncState('local'); return; }
+
+  wordsCol = dbCap.collection('data/users/' + uid);
+  setSyncState('synced');
+
+  let migrated = false;
+  wordsCol.orderBy('addedAt', 'desc').onSnapshot(async (snap)=>{
+    if(!migrated && snap.empty){
+      migrated = true;
+      const legacy = words.filter(w=>String(w.id).startsWith('local_'));
+      for(const w of legacy){
+        try{ await wordsCol.add({ word:w.word, meaning:w.meaning, ipa:w.ipa||'', etymology:w.etymology||'', example:w.example||'', exampleKo:w.exampleKo||'', mastered:!!w.mastered, correctStreak:w.correctStreak||0, addedAt:w.addedAt||Date.now() }); }catch(e){}
+      }
+      return; // the migration writes will trigger a fresh snapshot
+    }
+    migrated = true;
+    words = snap.docs.map(d=>({ id: d.id, ...d.data() }));
+    renderStats();
+    if(document.getElementById('panel-list').style.display !== 'none') renderList();
+  }, (err)=>{ setSyncState('local'); });
+}
+init();
+</script>
+</body>
+</html>

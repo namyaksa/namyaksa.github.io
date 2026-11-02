@@ -405,3 +405,13 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 /* 펼쳐진 책이 옆 책 위로 오도록 */
 .bc-slot{position:relative;}
 .bc-slot:has(.bc-book.opening){z-index:30;}
+
+/* 일본어 손님용 안내 */
+.ja-box{margin:22px 0;border:1px solid var(--blue-line);border-radius:12px;background:#f7fbff;padding:0;}
+.ja-box summary{cursor:pointer;padding:13px 16px;font-weight:800;color:var(--blue-dark);list-style:none;}
+.ja-box summary::-webkit-details-marker{display:none;}
+.ja-box summary::after{content:'▾';float:right;opacity:.6;}
+.ja-box[open] summary::after{content:'▴';}
+.ja-box .ja-body{padding:2px 16px 16px;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;line-height:1.75;}
+.ja-box h4{margin:16px 0 6px;color:var(--blue-dark);}
+.ja-box .download-btn{display:inline-block;}
