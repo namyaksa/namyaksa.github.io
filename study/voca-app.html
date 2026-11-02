@@ -107,6 +107,8 @@ button:disabled{opacity:0.5;cursor:default;}
 .sent .en{font-size:1.02rem;line-height:1.7;}
 .sent .ko{font-size:0.86rem;line-height:1.55;color:var(--sub);margin-top:4px;}
 .tok{cursor:pointer;border-radius:4px;padding:0 1px;}
+select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;font-family:inherit;}
+.sent .rd{font-size:0.8rem;color:var(--sub);margin-top:2px;opacity:.9;}
 .tok:active,.tok.sel{background:var(--accent-light);}
 .tok.known{border-bottom:2px solid var(--accent);}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--border);box-shadow:0 -6px 20px rgba(0,0,0,0.18);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;border-radius:16px 16px 0 0;}
@@ -185,6 +187,15 @@ button:disabled{opacity:0.5;cursor:default;}
   <div id="panel-quiz" style="display:none;"><div class="card" id="quizCard"></div></div>
 
   <div id="panel-scan" style="display:none;">
+    <div class="card">
+      <label style="margin-top:0;" for="scanLang">글 언어</label>
+      <select id="scanLang">
+        <option value="auto">자동으로 알아보기</option>
+        <option value="en">영어</option>
+        <option value="ja">일본어</option>
+      </select>
+      <div class="lookup-status">영어와 일본어를 지원해요. 사진을 찍거나 글을 붙여넣으면 한국어로 번역해 줘요. 모르면 “자동으로 알아보기”로 두세요.</div>
+    </div>
     <div class="card" id="scanPhotoCard" style="display:none;">
       <input type="file" id="scanFile" accept="image/*" style="display:none;">
       <button class="btn-main" id="scanPick" style="margin-top:0;">📷 사진 선택</button>
@@ -193,9 +204,9 @@ button:disabled{opacity:0.5;cursor:default;}
       <div id="scanStatus" class="lookup-status"></div>
     </div>
     <div class="card">
-      <label style="margin-top:0;">영어 본문 붙여넣기</label>
-      <textarea id="scanText" lang="en" style="min-height:120px;" placeholder="여기에 영어 본문을 붙여넣으세요 (한 번에 한 페이지 분량 정도)"></textarea>
-      <div class="lookup-status">팁: 아이폰·아이패드는 사진 앱에서 사진 속 글자를 길게 눌러 복사할 수 있어요 (텍스트 인식). 안드로이드는 Google 렌즈의 "텍스트 복사"를 쓰세요.</div>
+      <label style="margin-top:0;">원문 붙여넣기</label>
+      <textarea id="scanText" style="min-height:120px;" placeholder="여기에 본문을 붙여넣으세요 (한 번에 한 페이지 분량 정도)"></textarea>
+      <div class="lookup-status">팁: 사진 선택이 안 되면, 아이폰·아이패드는 사진 앱에서 사진 속 글자를 길게 눌러 복사하고(텍스트 인식), 안드로이드는 Google 렌즈의 "텍스트 복사"를 쓰세요.</div>
       <button class="btn-main" id="scanTextGo">🌐 붙여넣은 글 번역하기</button>
       <button type="button" class="lookup-btn" id="scanClear" style="margin-top:10px;">🗑️ 붙여넣은 글과 번역 지우기</button>
     </div>
@@ -214,13 +225,15 @@ let words = [];
 let dbCap = null, userCap = null, sampleCap = null, uid = null, wordsCol = null;
 const LS_KEY = 'vocab_words_v1'; // legacy local key, used for one-time migration
 
-function speakWord(text, times){
+const LANGS = { en:{name:'영어',bcp:'en-US'}, ja:{name:'일본어',bcp:'ja-JP'} };
+let addLang = 'en'; // 단어 추가 화면에서 다루는 단어의 언어 (사진번역에서 누른 단어는 그 글의 언어)
+function speakWord(text, times, lang){
   times = times || 5;
   if(!('speechSynthesis' in window)) { alert('이 브라우저는 음성 재생을 지원하지 않아요.'); return; }
   window.speechSynthesis.cancel();
   for(let i=0;i<times;i++){
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
+    u.lang = (LANGS[lang] || LANGS.en).bcp;
     u.rate = 0.9;
     window.speechSynthesis.speak(u);
   }
@@ -256,7 +269,10 @@ async function doLookup(opts){
   statusEl.textContent = '사전에서 찾는 중...';
   document.getElementById('lookupBtn').disabled = true;
   try{
-    const prompt = `너는 영어-한국어 사전이다. 다음 영어 단어 또는 짧은 표현을 분석해줘: "${w}"${opts.context ? '\n이 단어가 쓰인 문장: "' + opts.context.en + '"\n뜻은 이 문장에서 쓰인 의미를 우선으로 해라.' : ''}\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트, 설명, 마크다운 코드블록 없이 순수 JSON만 출력해라.\n{"meaning": "한국어 뜻. 단어가 동사의 변화형(과거형, 과거분사형, -ing형, 3인칭 단수형 등)이면 반드시 맨 앞에 '[원형 - 과거형 - 과거분사형]'을 적고(예: '[go - went - gone]', 규칙동사는 '[walk - walked - walked]'), 이어서 이 변화형이 이 문장에서 가지는 의미(예: '갔다')와 원형의 기본 뜻을 간결하게 적어라. 변화형이 아니면 간결한 한국어 뜻만 적어라(여러 의미면 쉼표로 구분).", "ipa": "국제음성기호(IPA) 발음 표기, 슬래시 포함 (예: /ɪˈfem.ər.əl/)", "etymology": "이 단어의 라틴어/그리스어 등 어원과, 그 어원을 이용해 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명 (예: '라틴어 ephemerus(하루살이의)에서 유래 — 하루밖에 못 사는 것처럼 덧없다는 의미로 기억하면 좋아요'). 어원이 불분명한 표현이면 빈 문자열.", "example": "이 단어를 사용한 짧고 자연스러운 원문 영어 예문 (직접 창작, 실제 책이나 저작물에서 인용하지 말 것)", "exampleKo": "위 예문의 자연스러운 한글 번역"}\n만약 이 단어를 모르거나 사전에 없는 표현이면 {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""}로 답해라.`;
+    const promptEn = `너는 영어-한국어 사전이다. 다음 영어 단어 또는 짧은 표현을 분석해줘: "${w}"${opts.context ? '\n이 단어가 쓰인 문장: "' + opts.context.en + '"\n뜻은 이 문장에서 쓰인 의미를 우선으로 해라.' : ''}\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트, 설명, 마크다운 코드블록 없이 순수 JSON만 출력해라.\n{"meaning": "한국어 뜻. 단어가 동사의 변화형(과거형, 과거분사형, -ing형, 3인칭 단수형 등)이면 반드시 맨 앞에 '[원형 - 과거형 - 과거분사형]'을 적고(예: '[go - went - gone]', 규칙동사는 '[walk - walked - walked]'), 이어서 이 변화형이 이 문장에서 가지는 의미(예: '갔다')와 원형의 기본 뜻을 간결하게 적어라. 변화형이 아니면 간결한 한국어 뜻만 적어라(여러 의미면 쉼표로 구분).", "ipa": "국제음성기호(IPA) 발음 표기, 슬래시 포함 (예: /ɪˈfem.ər.əl/)", "etymology": "이 단어의 라틴어/그리스어 등 어원과, 그 어원을 이용해 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명 (예: '라틴어 ephemerus(하루살이의)에서 유래 — 하루밖에 못 사는 것처럼 덧없다는 의미로 기억하면 좋아요'). 어원이 불분명한 표현이면 빈 문자열.", "example": "이 단어를 사용한 짧고 자연스러운 원문 영어 예문 (직접 창작, 실제 책이나 저작물에서 인용하지 말 것)", "exampleKo": "위 예문의 자연스러운 한글 번역"}\n만약 이 단어를 모르거나 사전에 없는 표현이면 {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""}로 답해라.`;
+    const ln = (LANGS[addLang]||LANGS.en).name;
+    const promptOther = `너는 ${ln}-한국어 사전이다. 다음 ${ln} 단어 또는 짧은 표현을 분석해줘: "${w}"${opts.context ? '\n이 단어가 쓰인 문장: "' + opts.context.en + '"\n뜻은 이 문장에서 쓰인 의미를 우선으로 해라.' : ''}\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트, 설명, 마크다운 코드블록 없이 순수 JSON만 출력해라.\n{"meaning": "한국어 뜻. 동사·형용사의 활용형이면 맨 앞에 '[기본형]'을 적고, 이어서 이 문장에서의 의미와 기본형의 뜻을 간결하게 적어라. 아니면 간결한 한국어 뜻만(여러 의미면 쉼표로 구분).", "ipa": "발음 표기. 일본어는 히라가나 읽기와 로마자", "etymology": "이 단어의 어원(한자 구성 등)과 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명. 불분명하면 빈 문자열.", "example": "이 단어를 사용한 짧고 자연스러운 ${ln} 예문 (직접 창작, 실제 저작물에서 인용하지 말 것)", "exampleKo": "위 예문의 자연스러운 한글 번역"}\n이 단어를 모르거나 없는 표현이면 {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""}로 답해라.`;
+    const prompt = addLang === 'en' ? promptEn : promptOther;
     const result = await sampleCap.json(prompt);
     lastLookupWord = w;
     if(result && result.meaning){
@@ -335,7 +351,7 @@ async function doTranslateExample(){
   statusEl.textContent = '해석하는 중...';
   document.getElementById('translateBtn').disabled = true;
   try{
-    const prompt = `다음 영어 문장을 자연스러운 한국어로 번역해줘.\n"${text}"\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"translation": "한국어 번역문"}`;
+    const prompt = `다음 ${(LANGS[addLang]||LANGS.en).name} 문장을 자연스러운 한국어로 번역해줘.\n"${text}"\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"translation": "한국어 번역문"}`;
     const result = await sampleCap.json(prompt);
     if(result && result.translation){
       koEl.value = result.translation.trim();
@@ -390,7 +406,7 @@ function switchTab(name){
     else window.scrollTo(0, 0);
   }
 }
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ returnToScan = false; switchTab(t.dataset.tab); }));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ returnToScan = false; if(!document.getElementById('inWord').value.trim()) addLang = 'en'; switchTab(t.dataset.tab); }));
 document.getElementById('lookupBtn').addEventListener('click', doLookup);
 document.getElementById('inWord').addEventListener('keydown', (e)=>{
   if(e.key !== 'Enter' || e.isComposing) return;
@@ -400,7 +416,7 @@ document.getElementById('inWord').addEventListener('keydown', (e)=>{
 });
 document.getElementById('speakPreviewBtn').addEventListener('click', ()=>{
   const w = document.getElementById('inWord').value.trim();
-  if(w) speakWord(w);
+  if(w) speakWord(w, 5, addLang);
 });
 document.getElementById('inWord').addEventListener('input', ()=>{
   currentIpa = '';
@@ -429,7 +445,7 @@ document.getElementById('spellBtn').addEventListener('click', doSpellCheck);
 document.getElementById('inExample').addEventListener('input', ()=>{
   const has = document.getElementById('inExample').value.trim().length > 0;
   document.getElementById('translateRow').style.display = (has && sampleCap) ? '' : 'none';
-  document.getElementById('spellRow').style.display = (has && sampleCap) ? '' : 'none';
+  document.getElementById('spellRow').style.display = (has && sampleCap && addLang==='en') ? '' : 'none';
   document.getElementById('spellSuggestions').innerHTML = '';
   document.getElementById('spellStatus').textContent = '';
 });
@@ -440,7 +456,7 @@ document.getElementById('inExample').addEventListener('blur', ()=>{
 });
 
 async function addWordEntry(w, m, etym, ex, exKo, ipa, page){
-  const data = { word: w, meaning: m, ipa: ipa || '', etymology: etym || '', example: ex || '', exampleKo: exKo || '', page: page || '', mastered: false, correctStreak: 0, addedAt: Date.now() };
+  const data = { lang: addLang, word: w, meaning: m, ipa: ipa || '', etymology: etym || '', example: ex || '', exampleKo: exKo || '', page: page || '', mastered: false, correctStreak: 0, addedAt: Date.now() };
   if(wordsCol){
     try{ await wordsCol.add(data); }catch(e){ alert('저장에 실패했어요. 잠시 후 다시 시도해주세요.'); }
   } else {
@@ -464,6 +480,7 @@ document.getElementById('addBtn').addEventListener('click', async ()=>{
     return;
   }
   await addWordEntry(w, m, etym, ex, exKo, currentIpa, page);
+  addLang = 'en';
   document.getElementById('inWord').value='';
   document.getElementById('inMeaning').value='';
   document.getElementById('inEtymology').value='';
@@ -536,10 +553,10 @@ function renderList(){
   el.innerHTML = shown.map(w=> w.id===editId ? editFormHtml(w) : `
     <div class="word-item">
       <div style="flex:1;min-width:0;">
-        <div class="w-word-row" data-speak="${escapeHtml(w.word)}">
-          <span class="w-word">${escapeHtml(w.word)}</span>
+        <div class="w-word-row" data-speak="${escapeHtml(w.word)}" data-lang="${w.lang||'en'}">
+          <span class="w-word">${escapeHtml(w.word)}</span>${w.lang && w.lang!=='en' && LANGS[w.lang] ? `<span class="badge" style="margin:0;">${LANGS[w.lang].name}</span>` : ''}
           ${w.ipa ? `<span class="w-ipa">${escapeHtml(w.ipa)}</span>` : ''}
-          <span class="speak-btn" data-speak="${escapeHtml(w.word)}">🔊</span>
+          <span class="speak-btn" data-speak="${escapeHtml(w.word)}" data-lang="${w.lang||'en'}">🔊</span>
         </div>
         <div class="w-meaning">${escapeHtml(w.meaning)}</div>
         ${w.etymology ? `<div class="w-etym">🏛️ ${escapeHtml(w.etymology)}</div>` : ''}
@@ -572,7 +589,7 @@ function renderList(){
     });
   }
   el.querySelectorAll('[data-speak]').forEach(elm=>{
-    elm.addEventListener('click', ()=>speakWord(elm.dataset.speak));
+    elm.addEventListener('click', ()=>speakWord(elm.dataset.speak, 5, elm.dataset.lang));
   });
   const cnt = { all: words.length, mastered: words.filter(w=>w.mastered).length, learning: words.filter(w=>!w.mastered).length };
   const chip = (k, label)=>`<button type="button" class="chip${listFilter===k?' on':''}" data-f="${k}">${label} ${cnt[k]}</button>`;
@@ -617,12 +634,20 @@ document.getElementById('fillEtymBtn').addEventListener('click', fillMissingEtym
 // --- Page scan: photo of a book page -> sentence-by-sentence translation, tap words to save ---
 let scanFile = null, scanSentences = [], scanImagesOk = null, returnToScan = false;
 
-function cleanToken(t){ return (t||'').replace(/^[^A-Za-z]+|[^A-Za-z]+$/g,''); }
+function cleanToken(t){ return (t||'').replace(/^[^\p{L}\p{M}]+|[^\p{L}\p{M}]+$/gu,''); }
+// 일본어는 띄어쓰기가 없어서 브라우저의 단어 나누기(Intl.Segmenter)로 나눠요.
+function splitTokens(text, lang){
+  if(lang==='ja' && window.Intl && Intl.Segmenter){
+    try{ const seg = new Intl.Segmenter(lang, {granularity:'word'}); return Array.from(seg.segment(text)).map(x=>({t:x.segment, w:!!x.isWordLike})); }catch(e){}
+  }
+  return text.split(/(\s+)/).map(t=>({t, w:/\S/.test(t)}));
+}
 function isKnownWord(w){ const l = w.toLowerCase(); return words.some(x=>(x.word||'').toLowerCase()===l); }
 // Tapping a word jumps to the add-word tab, pre-filled and looked up in the context of that sentence.
 function goAddWord(word, idx){
   const s = scanSentences[idx];
   ['inMeaning','inEtymology','inExample','inExampleKo','inPage'].forEach(id=>{ document.getElementById(id).value = ''; });
+  addLang = (s && LANGS[s.lang]) ? s.lang : 'en';
   document.getElementById('inWord').value = lowerFirst(word);
   document.getElementById('ipaRow').style.display = 'none';
   document.getElementById('spellRow').style.display = 'none';
@@ -641,7 +666,7 @@ function goAddWord(word, idx){
 const SCAN_KEY = 'vocab_scan_v1';
 function saveScan(){
   try{
-    localStorage.setItem(SCAN_KEY, JSON.stringify({ text: document.getElementById('scanText').value, sentences: scanSentences }));
+    localStorage.setItem(SCAN_KEY, JSON.stringify({ text: document.getElementById('scanText').value, sentences: scanSentences, sel: document.getElementById('scanLang').value }));
   }catch(e){}
 }
 function loadScan(){
@@ -651,6 +676,7 @@ function loadScan(){
     const d = JSON.parse(raw);
     if(d && typeof d.text === 'string') document.getElementById('scanText').value = d.text;
     if(d && Array.isArray(d.sentences)) scanSentences = d.sentences.filter(s=>s && s.en);
+    if(d && typeof d.sel === 'string' && document.getElementById('scanLang').querySelector('option[value="'+d.sel+'"]')) document.getElementById('scanLang').value = d.sel;
     renderScanResult();
   }catch(e){}
 }
@@ -669,18 +695,20 @@ function renderScanResult(){
   el.style.display = '';
   el.innerHTML = '<div class="qhint" style="text-align:left;margin-bottom:6px;">모르는 단어를 누르면 단어 추가 화면으로 가요. 저장하면 이 화면으로 돌아와요. 밑줄은 이미 저장한 단어예요.</div>' +
     scanSentences.map((s,i)=>{
-      const toks = s.en.split(/(\s+)/).map(t=>{
-        if(!/\S/.test(t)) return t;
-        const c = cleanToken(t);
-        return `<span class="tok${c && isKnownWord(c)?' known':''}" data-i="${i}">${escapeHtml(t)}</span>`;
+      const toks = splitTokens(s.en, s.lang).map(x=>{
+        if(!x.w) return escapeHtml(x.t);
+        const c = cleanToken(x.t);
+        if(!c) return escapeHtml(x.t);
+        return `<span class="tok${isKnownWord(c)?' known':''}" data-i="${i}">${escapeHtml(x.t)}</span>`;
       }).join('');
-      return `<div class="sent"><div class="en">${toks}</div><div class="ko">${escapeHtml(s.ko||'')}</div></div>`;
+      const rtl = '';
+      return `<div class="sent"><div class="en"${rtl}>${toks}</div>${s.read ? `<div class="rd">${escapeHtml(s.read)}</div>` : ''}<div class="ko">${escapeHtml(s.ko||'')}</div></div>`;
     }).join('');
 }
 
 document.getElementById('scanPick').addEventListener('click', ()=>{
   if(scanImagesOk === false){
-    document.getElementById('scanStatus').textContent = '이 화면에서는 Claude가 사진을 직접 읽을 수 없어요. 대신 아래 칸에 영어 본문을 붙여넣어 주세요.';
+    document.getElementById('scanStatus').textContent = '이 화면에서는 Claude가 사진을 직접 읽을 수 없어요. 대신 아래 칸에 본문을 붙여넣어 주세요.';
     document.getElementById('scanText').focus();
     return;
   }
@@ -698,6 +726,16 @@ document.getElementById('scanFile').addEventListener('change', (e)=>{
   scanSentences = []; renderScanResult();
 });
 
+function scanPrompt(sel, isPhoto){
+  const hint = sel==='auto' ? '글의 언어는 영어 또는 일본어이니 스스로 판별해라.' : '글의 언어는 ' + LANGS[sel].name + '이다.';
+  const head = isPhoto ? '이 사진은 사용자가 가지고 있는 외국어 책이나 문서의 한 페이지다. 사진 속 본문을 읽고' : '다음은 사용자가 가지고 있는 외국어 책이나 문서의 한 페이지 분량 글이다. 글을';
+  return head + ' 개인 학습용으로 문장 단위로 나눈 뒤 각 문장에 자연스러운 한국어 번역을 붙여라. ' + hint + ' 쪽번호, 머리글, 바닥글처럼 본문이 아닌 것은 제외해라. 줄바꿈이나 하이픈으로 끊긴 단어는 이어서 읽어라. 일본어는 한자 위주의 문장이라도 전체를 히라가나 읽기(필요하면 로마자 병기)로 "read"에 적어라. 영어는 read를 빈 문자열로 둬라. 글을 읽을 수 없으면 sentences를 빈 배열로 돌려줘라.\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"language": "en 또는 ja", "sentences": [{"en": "원문 문장 (원래 언어 그대로)", "ko": "한국어 번역", "read": "읽는 법 또는 빈 문자열"}]}';
+}
+function parseScan(result, sel){
+  const list = (result && Array.isArray(result.sentences)) ? result.sentences.filter(s=>s && s.en) : [];
+  const lang = LANGS[result && result.language] ? result.language : (LANGS[sel] ? sel : 'en');
+  return list.map(s=>({ en: String(s.en), ko: String(s.ko||''), read: String(s.read||''), lang }));
+}
 async function doScan(){
   if(!scanFile || !sampleCap) return;
   const statusEl = document.getElementById('scanStatus');
@@ -705,10 +743,10 @@ async function doScan(){
   btn.disabled = true;
   statusEl.textContent = '사진 속 글을 읽고 번역하는 중... (10~40초 걸려요)';
   try{
-    const prompt = '이 사진은 사용자가 가지고 있는 영어 원서의 한 페이지다. 개인 학습용으로, 사진 속 영어 본문을 읽고 문장 단위로 나눈 뒤 각 문장에 자연스러운 한국어 번역을 붙여라. 쪽번호, 머리글, 바닥글은 제외하고 본문만 다뤄라. 줄바꿈으로 끊긴 단어(하이픈)는 이어서 하나의 단어로 읽어라. 글을 읽을 수 없으면 빈 배열을 돌려줘라.\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"sentences": [{"en": "영어 문장", "ko": "한국어 번역"}]}';
+    const sel = document.getElementById('scanLang').value;
+    const prompt = scanPrompt(sel, true);
     const result = await sampleCap.json(prompt, { images: scanFile });
-    const list = (result && Array.isArray(result.sentences)) ? result.sentences.filter(s=>s && s.en) : [];
-    scanSentences = list.map(s=>({ en: String(s.en), ko: String(s.ko||'') }));
+    scanSentences = parseScan(result, sel);
     if(scanSentences.length===0) statusEl.textContent = '글을 읽지 못했어요. 더 밝고 선명하게, 글자가 화면에 꽉 차도록 다시 찍어보세요.';
     else statusEl.textContent = `✓ ${scanSentences.length}개 문장을 번역했어요.`;
     renderScanResult();
@@ -731,10 +769,10 @@ async function doScanText(){
   btn.disabled = true;
   statusEl.textContent = '문장별로 번역하는 중... (10~40초 걸려요)';
   try{
-    const prompt = '다음은 사용자가 가지고 있는 영어 원서의 한 페이지 분량 글이다. 개인 학습용으로, 글을 문장 단위로 나누고 각 문장에 자연스러운 한국어 번역을 붙여라. 줄바꿈이나 하이픈으로 끊긴 단어는 이어서 읽고, 쪽번호처럼 본문이 아닌 것은 제외해라.\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"sentences": [{"en": "영어 문장", "ko": "한국어 번역"}]}\n\n글:\n' + text.slice(0, 6000);
+    const sel = document.getElementById('scanLang').value;
+    const prompt = scanPrompt(sel, false) + '\n\n글:\n' + text.slice(0, 6000);
     const result = await sampleCap.json(prompt);
-    const list = (result && Array.isArray(result.sentences)) ? result.sentences.filter(s=>s && s.en) : [];
-    scanSentences = list.map(s=>({ en: String(s.en), ko: String(s.ko||'') }));
+    scanSentences = parseScan(result, sel);
     statusEl.textContent = scanSentences.length ? `✓ ${scanSentences.length}개 문장을 번역했어요.` : '번역할 문장을 찾지 못했어요.';
     renderScanResult();
   }catch(e){
@@ -744,10 +782,11 @@ async function doScanText(){
 }
 document.getElementById('scanTextGo').addEventListener('click', doScanText);
 document.getElementById('scanText').addEventListener('input', saveScan);
+document.getElementById('scanLang').addEventListener('change', saveScan);
 // 확인 없이 버튼을 누르면 바로 지워요.
 document.getElementById('scanClear').addEventListener('click', clearScan);
 // ---- 업데이트 확인: 링크로 나가지 않고 이 안에서 바로 알려줘요 ----
-const APP_VERSION = '20261036';
+const APP_VERSION = '20261037';
 (function(){ const v=document.getElementById('appVer'); if(v) v.textContent='단어장 버전 v'+APP_VERSION.slice(0,4)+'.'+APP_VERSION.slice(4,6)+'.'+APP_VERSION.slice(6,8); })();
 const NOTICE_URL = 'https://namyaksa.github.io/study/index.html?notice=1&v=' + APP_VERSION;
 function showUpdateBox(title, msg, withLink){
@@ -828,7 +867,7 @@ function renderQuizStep(){
     const distractors = shuffle(words.filter(w=>w.id!==cur.id)).slice(0,3).map(w=>w.meaning);
     const options = shuffle([cur.meaning, ...distractors]);
     el.innerHTML = progressHtml + `<div class="qcard"><div class="qword">${escapeHtml(cur.word)} <span class="speak-btn" id="qSpeak">🔊</span></div>${cur.ipa?`<div class="ipa-text" style="margin-bottom:10px;">${escapeHtml(cur.ipa)}</div>`:''}<div class="qhint">이 단어의 뜻은?</div><div id="qfeedback" class="qfeedback"></div><div id="opts">${options.map((o,i)=>`<button class="opt" data-val="${escapeHtml(o)}"><span class="optn">${i+1}</span>${escapeHtml(o)}</button>`).join('')}</div></div>`;
-    document.getElementById('qSpeak').addEventListener('click', ()=>speakWord(cur.word));
+    document.getElementById('qSpeak').addEventListener('click', ()=>speakWord(cur.word, 5, cur.lang));
     document.querySelectorAll('.opt').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const isCorrect = btn.dataset.val === cur.meaning;
@@ -844,7 +883,7 @@ function renderQuizStep(){
     });
   } else {
     el.innerHTML = progressHtml + `<div class="flash" id="flashCard"><div class="qword">${escapeHtml(cur.word)} <span class="speak-btn" id="qSpeak2">🔊</span></div>${cur.ipa?`<div class="ipa-text">${escapeHtml(cur.ipa)}</div>`:''}<div class="qhint" id="flashHint">탭해서 뜻 보기</div></div><div class="flashrow" id="flashBtns" style="display:none;"><button class="dontknow" id="btnNo">아직 몰라요</button><button class="know" id="btnYes">알아요!</button></div>`;
-    document.getElementById('qSpeak2').addEventListener('click', (e)=>{ e.stopPropagation(); speakWord(cur.word); });
+    document.getElementById('qSpeak2').addEventListener('click', (e)=>{ e.stopPropagation(); speakWord(cur.word, 5, cur.lang); });
     let flipped = false;
     document.getElementById('flashCard').addEventListener('click', ()=>{
       if(flipped) return; flipped = true;
