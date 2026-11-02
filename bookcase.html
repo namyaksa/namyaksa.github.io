@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>남약사 책장</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
+<link rel="stylesheet" href="style.css?v=20261073">
+<style>
+html,body{margin:0;padding:0;background:transparent;}
+body{padding:8px 10px 14px;}
+.bookcase-section{margin:0 auto;max-width:640px;}
+.bc-note{display:none;}
+</style>
+</head>
+<body>
+<div class="bookcase-section" id="bookcase">
+<div class="bc-wrap">
+<div class="bc-bar">
+<div class="bc-bar-title">남약사 책장</div>
+</div>
+<div class="bc" id="bcBody"></div>
+</div>
+<p class="bc-note" style="text-align:center;">새로 읽은 책이 생기면 하나씩 채워 갈게요. 📖</p>
+</div>
+
+</div>
+<script>
+(function(){
+  // 책 목록: 왼쪽 위부터 차례로 꽂혀요. year: 책 밑에 적히는 읽은 때. 책을 새로 꽂을 때 한 줄씩 추가하세요.
+  // title: 제목(표지 사진이 없을 때 표지에 적혀요) / cover: 표지 사진 경로 / url: 누르면 이동할 Wix 주소(비워 두면 연결 없음) / color: 표지 색
+  var BOOKS=[
+    {title:'Nothing Lasts Forever',year:'1995',cover:'books/nothing-lasts-forever.png',spread:'books/spread-nothing-lasts-forever.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#nothing',color:'#b5702a'},
+    {title:'Rising Sun',year:'2008.11.4',cover:'books/rising-sun.png',spread:'books/spread-rising-sun.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#rising',color:'#8c2f3d'},
+    {title:'Memoirs of a Geisha',year:'2020',cover:'books/memoirs-of-a-geisha.png',spread:'books/spread-memoirs-of-a-geisha.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#geisha',color:'#2f7a52'},
+    {title:'Airframe',year:'2024',cover:'books/airframe.png',spread:'books/spread-airframe.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#airframe',color:'#6b4a9c'},
+    {title:'Doctors',year:'2026.9.1~',cover:'books/doctors.png',spread:'books/spread-doctors.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#doctors',color:'#2f5d8c'}
+  ];
+  var ROWS=4, PER=6, body=document.getElementById('bcBody'), body=document.getElementById('bcBody');
+  if(!body) return;
+  // 책을 누르면 표지가 촤악 펼쳐진 뒤 Wix 설명으로 이동해요
+  body.addEventListener('click',function(e){
+    var bk=e.target.closest&&e.target.closest('a.bc-book'); if(!bk) return;
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
+    e.preventDefault();
+    if(bk.classList.contains('opening')) return;
+    var url=bk.href, idx=[].indexOf.call(body.querySelectorAll('.bc-book'),bk), bd=BOOKS[idx]||{};
+    (function(){ var rr=bk.getBoundingClientRect(), cc=body.getBoundingClientRect(), w=rr.width;
+      var lo=cc.left+6-rr.left+w, hi=cc.right-6-rr.left-w, sh=Math.min(Math.max(w/2,lo),Math.max(hi,lo));
+      bk.style.setProperty('--shift',sh+'px'); })();
+    bk.classList.add('opening');
+    setTimeout(function(){ try{ window.open(url,'_top'); }catch(err){ location.href=url; } },1300);
+  });
+  function resetOpen(){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) o[i].classList.remove('opening'); var v=document.querySelectorAll('.bk-ov'); for(var j=0;j<v.length;j++) v[j].remove(); }
+  window.addEventListener('pageshow',resetOpen);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) resetOpen(); });
+  for(var r=0;r<ROWS;r++){
+    var row=document.createElement('div'); row.className='bc-row';
+    var slots=document.createElement('div'); slots.className='bc-slots';
+    for(var c=0;c<PER;c++){
+      var slot=document.createElement('div'); slot.className='bc-slot';
+      var b=BOOKS[r*PER+c];
+      if(b){
+        var el=document.createElement(b.url?'a':'div'); el.className='bc-book';
+        if(b.spread){ el.classList.add('has-sp'); el.style.setProperty('--sp','url('+new URL(b.spread,location.href).href+')'); }
+        if(b.url){ el.href=b.url; el.target='_blank'; el.rel='noopener noreferrer'; el.title=b.title||'책 자세히 보기'; }
+        if(b.cover&&b.url){ var pg=document.createElement('div'); pg.className='bc-pages'; el.appendChild(pg); }
+        if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title||'책 표지'; im.loading='lazy';
+          var cv=document.createElement('div'); cv.className='bc-cover'; cv.appendChild(im);
+          if(b.url){ var bb=document.createElement('div'); bb.className='bc-back'; cv.appendChild(bb); }
+          el.appendChild(cv); }
+        else { el.style.background=b.color; var t=document.createElement('div'); t.className='bc-t'; t.textContent=b.title; el.appendChild(t); }
+        slot.appendChild(el);
+      }
+      slots.appendChild(slot);
+    }
+    row.appendChild(slots);
+    body.appendChild(row);
+    // 선반 널빤지 위에 읽은 때(연도)를 적어요
+    var plank=document.createElement('div'); plank.className='bc-plank';
+    for(var k=0;k<PER;k++){
+      var yr=document.createElement('div'); yr.className='bc-year';
+      var bk=BOOKS[r*PER+k]; yr.textContent=(bk&&bk.year)?bk.year:'';
+      plank.appendChild(yr);
+    }
+    body.appendChild(plank);
+  }
+})();
+</script>
+</body>
+</html>
