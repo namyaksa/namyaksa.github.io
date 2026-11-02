@@ -50,6 +50,7 @@ body{padding:8px 10px 14px;}
     if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
     e.preventDefault();
     if(bk.classList.contains('opening')) return;
+    var others=document.querySelectorAll('.bc-book.opening,.bc-book.closing'); for(var q=0;q<others.length;q++){ if(others[q]!==bk){ others[q].classList.remove('opening','closing'); } }
     var url=bk.href, idx=[].indexOf.call(body.querySelectorAll('.bc-book'),bk), bd=BOOKS[idx]||{};
     (function(){ var rr=bk.getBoundingClientRect(), cc=body.getBoundingClientRect(), w=rr.width;
       var lo=cc.left+6-rr.left+w, hi=cc.right-6-rr.left-w, sh=Math.min(Math.max(w/2,lo),Math.max(hi,lo));
