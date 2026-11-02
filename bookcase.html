@@ -11,6 +11,12 @@ html,body{margin:0;padding:0;background:transparent;}
 body{padding:8px 10px 14px;}
 .bookcase-section{margin:0 auto;max-width:640px;}
 .bc-note{display:none;}
+@keyframes bcShiftBack{from{transform:translateX(var(--shift,50%))}to{transform:translateX(0)}}
+@keyframes bcOpenBack{from{transform:rotateY(-180deg)}80%{transform:rotateY(0)}to{transform:rotateY(0)}}
+.bc-book.closing{z-index:20;animation:bcShiftBack .7s ease-in-out forwards;}
+.bc-book.closing .bc-pages{opacity:1;}
+.bc-book.closing .bc-cover{animation:bcOpenBack .7s ease-in-out forwards;}
+.bc-slot:has(.bc-book.closing){z-index:30;}
 </style>
 </head>
 <body>
@@ -49,7 +55,14 @@ body{padding:8px 10px 14px;}
       var lo=cc.left+6-rr.left+w, hi=cc.right-6-rr.left-w, sh=Math.min(Math.max(w/2,lo),Math.max(hi,lo));
       bk.style.setProperty('--shift',sh+'px'); })();
     bk.classList.add('opening');
-    setTimeout(function(){ try{ window.open(url,'_top'); }catch(err){ location.href=url; } },1300);
+    setTimeout(function(){
+      try{ window.open(url,'_top'); }catch(err){ location.href=url; }
+      // Wix 안에서는 같은 페이지의 앵커로만 이동해서 책장이 그대로 남아요 → 책을 다시 덮어 줘요
+      setTimeout(function(){
+        bk.classList.remove('opening'); bk.classList.add('closing');
+        setTimeout(function(){ bk.classList.remove('closing'); bk.style.removeProperty('--shift'); },800);
+      },700);
+    },1300);
   });
   function resetOpen(){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) o[i].classList.remove('opening'); var v=document.querySelectorAll('.bk-ov'); for(var j=0;j<v.length;j++) v[j].remove(); }
   window.addEventListener('pageshow',resetOpen);
