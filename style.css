@@ -395,3 +395,9 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 .vrow .bookcase-section{flex:1;min-width:0;max-width:640px;margin:0;scroll-margin-top:80px;container-type:inline-size;}
 @media(max-width:760px){.vrow{flex-direction:column;align-items:center;}.vrow .video-container{flex:none;margin:0 auto;}.vrow .bookcase-section{width:100%;}}
 @container (max-width:559px){.bc-slot{max-width:56px;}.bc-year{font-size:.78rem;}.bc-plank{min-height:20px;padding:2px 8px;}.bc-slots{min-height:96px;}}
+
+/* 영상 아래에 책장: 세로로 쌓기 */
+.vrow{flex-direction:column;align-items:center;gap:18px;}
+.vrow .video-container{flex:none;margin:0 auto;}
+.vrow .bookcase-section{width:100%;max-width:640px;}
+.envy{text-align:center;font-size:1.05rem;line-height:1.7;margin:22px 0 8px;color:var(--blue-dark);}
