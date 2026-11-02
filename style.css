@@ -382,7 +382,7 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 .bc-book.opening{z-index:20;animation:bcShift .9s ease-in-out forwards;}
 .bc-book.opening .bc-pages{opacity:1;}
 .bc-book.opening .bc-cover{animation:bcOpen .9s cubic-bezier(.45,.05,.3,1) forwards;}
-@keyframes bcShift{from{transform:translateX(0)}to{transform:translateX(50%)}}
+@keyframes bcShift{from{transform:translateX(0)}to{transform:translateX(var(--shift,50%))}}
 @keyframes bcOpen{0%{transform:rotateY(0)}20%{transform:rotateY(0)}100%{transform:rotateY(-180deg)}}
 @media (prefers-reduced-motion:reduce){.bc-book.opening,.bc-book.opening .bc-cover{animation-duration:.01s}}
 
@@ -401,3 +401,7 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 .vrow .video-container{flex:none;margin:0 auto;}
 .vrow .bookcase-section{width:100%;max-width:640px;}
 .envy{text-align:center;font-size:1.05rem;line-height:1.7;margin:22px 0 8px;color:var(--blue-dark);}
+
+/* 펼쳐진 책이 옆 책 위로 오도록 */
+.bc-slot{position:relative;}
+.bc-slot:has(.bc-book.opening){z-index:30;}

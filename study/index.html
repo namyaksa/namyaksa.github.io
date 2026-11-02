@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261071">
+<link rel="stylesheet" href="../style.css?v=20261072">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -448,6 +448,9 @@
     e.preventDefault();
     if(bk.classList.contains('opening')) return;
     var url=bk.href, idx=[].indexOf.call(body.querySelectorAll('.bc-book'),bk), bd=BOOKS[idx]||{};
+    (function(){ var rr=bk.getBoundingClientRect(), cc=body.getBoundingClientRect(), w=rr.width;
+      var lo=cc.left+6-rr.left+w, hi=cc.right-6-rr.left-w, sh=Math.min(Math.max(w/2,lo),Math.max(hi,lo));
+      bk.style.setProperty('--shift',sh+'px'); })();
     bk.classList.add('opening');
     setTimeout(function(){ location.href=url; },1300);
   });
