@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261070">
+<link rel="stylesheet" href="../style.css?v=20261071">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -437,7 +437,7 @@
     {title:'Rising Sun',year:'2008.11.4',cover:'../books/rising-sun.png',spread:'../books/spread-rising-sun.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#rising',color:'#8c2f3d'},
     {title:'Memoirs of a Geisha',year:'2020',cover:'../books/memoirs-of-a-geisha.png',spread:'../books/spread-memoirs-of-a-geisha.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#geisha',color:'#2f7a52'},
     {title:'Airframe',year:'2024',cover:'../books/airframe.png',spread:'../books/spread-airframe.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#airframe',color:'#6b4a9c'},
-    {title:'Doctors',year:'2026.9.1~',cover:'../books/doctors.png',url:'https://namyaksa.wixsite.com/paran/blank-4#doctors',color:'#2f5d8c'}
+    {title:'Doctors',year:'2026.9.1~',cover:'../books/doctors.png',spread:'../books/spread-doctors.jpg',url:'https://namyaksa.wixsite.com/paran/blank-4#doctors',color:'#2f5d8c'}
   ];
   var ROWS=4, PER=6, body=document.getElementById('bcBody'), body=document.getElementById('bcBody');
   if(!body) return;
@@ -462,7 +462,7 @@
       var b=BOOKS[r*PER+c];
       if(b){
         var el=document.createElement(b.url?'a':'div'); el.className='bc-book';
-        if(b.spread){ el.classList.add('has-sp'); el.style.setProperty('--sp','url('+b.spread+')'); }
+        if(b.spread){ el.classList.add('has-sp'); el.style.setProperty('--sp','url('+new URL(b.spread,location.href).href+')'); }
         if(b.url){ el.href=b.url; el.target='_blank'; el.rel='noopener noreferrer'; el.title=b.title||'책 자세히 보기'; }
         if(b.cover&&b.url){ var pg=document.createElement('div'); pg.className='bc-pages'; el.appendChild(pg); }
         if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title||'책 표지'; im.loading='lazy';
