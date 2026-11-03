@@ -696,13 +696,16 @@
 <script>
 // 검색 기능
 const search=document.getElementById("search");
-search.addEventListener("keyup",function(){
-const keyword=this.value.toLowerCase();
+function runSearch(){
+const keyword=search.value.trim().toLowerCase();
 document.querySelectorAll(".post").forEach(post=>{
-const text=post.innerText.toLowerCase();
+const text=post.textContent.toLowerCase();
 post.style.display=text.includes(keyword)?"block":"none";
 });
-});
+if(window.boardSearch) window.boardSearch(keyword);
+}
+search.addEventListener("input",runSearch);
+search.addEventListener("keyup",runSearch);
 
 // BGM 토글 기능
 const audio = document.getElementById("bgmAudio");
@@ -879,7 +882,9 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
   function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
   function $(id){return document.getElementById(id);}
 
-  var PAGE=5, shown=0, allItems=[];
+  var PAGE=5, shown=0, allItems=[], q='';
+  function plain(i){ var t=document.createElement('template'); t.innerHTML=i.body_html||''; return ((i.title||'')+' '+t.content.textContent).toLowerCase(); }
+  function view(){ return q? allItems.filter(function(i){ return plain(i).indexOf(q)>=0; }) : allItems; }
   function postHtml(i){
     // 사진은 처음에 불러오지 않고, 보고 싶은 사람이 누를 때만 불러와요 (홈페이지 속도를 위해)
     var tpl=document.createElement('template'); tpl.innerHTML=i.body_html||'';
@@ -915,21 +920,21 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
   }
   function showMore(count){
     var old=document.getElementById('boardMore'); if(old) old.remove();
-    var next=allItems.slice(shown,shown+count); shown+=next.length;
+    var V=view(); var next=V.slice(shown,shown+count); shown+=next.length;
     var chunk=document.createElement('div'); chunk.className='board-chunk';
     chunk.innerHTML=next.map(postHtml).join('');
     list.appendChild(chunk); bindPosts(chunk);
-    if(shown<allItems.length){
+    if(shown<V.length){
       var b=document.createElement('button'); b.type='button'; b.id='boardMore'; b.className='board-morebtn';
-      b.textContent='더 보기 ('+(allItems.length-shown)+'개 남음)';
+      b.textContent='더 보기 ('+(V.length-shown)+'개 남음)';
       b.addEventListener('click',function(){ showMore(PAGE); });
       list.appendChild(b);
     }
   }
   function render(items){
     allItems=items.filter(function(i){return !i.pull_request;});
-    var keep=Math.max(PAGE,shown); shown=0;
-    if(!allItems.length){list.innerHTML='<div class="board-msg">아직 올라온 글이 없어요.</div>';return;}
+    var keep=Math.max(PAGE,shown); shown=0; if(q) keep=Math.max(keep,view().length);
+    if(!view().length){list.innerHTML='<div class="board-msg">'+(q?'검색 결과가 없어요.':'아직 올라온 글이 없어요.')+'</div>';return;}
     list.innerHTML='';
     showMore(keep);
   }
@@ -939,6 +944,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
       .then(render)
       .catch(function(){list.innerHTML='<div class="board-msg">게시글을 불러오지 못했어요. 잠시 후 다시 열어 주세요.</div>';});
   }
+  window.boardSearch=function(k){ q=k||''; shown=0; if(allItems.length) render(allItems.concat()); };
   load();
 
   // ---- 삭제: 글을 닫아서(Close) 게시판에서 없애고, 올린 사진 파일도 지워요 ----
