@@ -156,8 +156,8 @@ select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--bor
       </div>
       <label>뜻</label>
       <textarea id="inMeaning" style="min-height:66px;" placeholder="예: 덧없는, 순간적인"></textarea>
-      <label>어원 (선택)</label>
-      <textarea id="inEtymology" style="min-height:176px;" placeholder="라틴어/그리스어 어원 등 기억에 도움이 되는 유래"></textarea>
+      <label>어원·기억 힌트 (선택)</label>
+      <textarea id="inEtymology" style="min-height:176px;" placeholder="영어: 라틴어/그리스어 어원 · 일본어: 한자 구성, 한국 한자음 등 기억 힌트"></textarea>
       <label>예문 — 책에서 직접 옮겨 적기 (선택)</label>
       <textarea id="inExample" placeholder="본인이 읽던 책에서 이 단어가 나온 문장을 직접 옮겨 적어보세요" spellcheck="true" lang="en"></textarea>
       <div id="spellRow" style="display:none;margin-top:6px;">
@@ -271,7 +271,7 @@ async function doLookup(opts){
   try{
     const promptEn = `너는 영어-한국어 사전이다. 다음 영어 단어 또는 짧은 표현을 분석해줘: "${w}"${opts.context ? '\n이 단어가 쓰인 문장: "' + opts.context.en + '"\n뜻은 이 문장에서 쓰인 의미를 우선으로 해라.' : ''}\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트, 설명, 마크다운 코드블록 없이 순수 JSON만 출력해라.\n{"meaning": "한국어 뜻. 단어가 동사의 변화형(과거형, 과거분사형, -ing형, 3인칭 단수형 등)이면 반드시 맨 앞에 '[원형 - 과거형 - 과거분사형]'을 적고(예: '[go - went - gone]', 규칙동사는 '[walk - walked - walked]'), 이어서 이 변화형이 이 문장에서 가지는 의미(예: '갔다')와 원형의 기본 뜻을 간결하게 적어라. 변화형이 아니면 간결한 한국어 뜻만 적어라(여러 의미면 쉼표로 구분).", "ipa": "국제음성기호(IPA) 발음 표기, 슬래시 포함 (예: /ɪˈfem.ər.əl/)", "etymology": "이 단어의 라틴어/그리스어 등 어원과, 그 어원을 이용해 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명 (예: '라틴어 ephemerus(하루살이의)에서 유래 — 하루밖에 못 사는 것처럼 덧없다는 의미로 기억하면 좋아요'). 어원이 불분명한 표현이면 빈 문자열.", "example": "이 단어를 사용한 짧고 자연스러운 원문 영어 예문 (직접 창작, 실제 책이나 저작물에서 인용하지 말 것)", "exampleKo": "위 예문의 자연스러운 한글 번역"}\n만약 이 단어를 모르거나 사전에 없는 표현이면 {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""}로 답해라.`;
     const ln = (LANGS[addLang]||LANGS.en).name;
-    const promptOther = `너는 ${ln}-한국어 사전이다. 다음 ${ln} 단어 또는 짧은 표현을 분석해줘: "${w}"${opts.context ? '\n이 단어가 쓰인 문장: "' + opts.context.en + '"\n뜻은 이 문장에서 쓰인 의미를 우선으로 해라.' : ''}\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트, 설명, 마크다운 코드블록 없이 순수 JSON만 출력해라.\n{"meaning": "한국어 뜻. 동사·형용사의 활용형이면 맨 앞에 '[기본형]'을 적고, 이어서 이 문장에서의 의미와 기본형의 뜻을 간결하게 적어라. 아니면 간결한 한국어 뜻만(여러 의미면 쉼표로 구분).", "ipa": "발음 표기. 일본어는 히라가나 읽기와 로마자", "etymology": "이 단어의 어원(한자 구성 등)과 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명. 불분명하면 빈 문자열.", "example": "이 단어를 사용한 짧고 자연스러운 ${ln} 예문 (직접 창작, 실제 저작물에서 인용하지 말 것)", "exampleKo": "위 예문의 자연스러운 한글 번역"}\n이 단어를 모르거나 없는 표현이면 {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""}로 답해라.`;
+    const promptOther = `너는 ${ln}-한국어 사전이다. 다음 ${ln} 단어 또는 짧은 표현을 분석해줘: "${w}"${opts.context ? '\n이 단어가 쓰인 문장: "' + opts.context.en + '"\n뜻은 이 문장에서 쓰인 의미를 우선으로 해라.' : ''}\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트, 설명, 마크다운 코드블록 없이 순수 JSON만 출력해라.\n{"meaning": "한국어 뜻. 동사·형용사의 활용형이면 맨 앞에 '[기본형]'을 적고, 이어서 이 문장에서의 의미와 기본형의 뜻을 간결하게 적어라. 아니면 간결한 한국어 뜻만(여러 의미면 쉼표로 구분).", "ipa": "발음 표기. 일본어는 히라가나 읽기와 로마자", "etymology": "일본어 단어를 기억하는 데 도움이 되는 짧은 한국어 힌트. 한자어면 한자 구성(각 한자의 뜻)과 한국 한자음·한국어 한자어와의 연결(예: 같은 한자를 쓰는 한국어 단어)을 풀어주고, 순수 일본어(와고)면 훈독의 뜻 풀이나 연상 팁, 외래어면 원어(예: 영어)를 알려줘라. 불분명하면 빈 문자열.", "example": "이 단어를 사용한 짧고 자연스러운 ${ln} 예문 (직접 창작, 실제 저작물에서 인용하지 말 것)", "exampleKo": "위 예문의 자연스러운 한글 번역"}\n이 단어를 모르거나 없는 표현이면 {"meaning": "", "ipa": "", "etymology": "", "example": "", "exampleKo": ""}로 답해라.`;
     const prompt = addLang === 'en' ? promptEn : promptOther;
     const result = await sampleCap.json(prompt);
     lastLookupWord = w;
@@ -525,9 +525,11 @@ async function fillMissingEtymology(){
   btn.disabled = true;
   let done = 0;
   for(const w of missing){
-    statusEl.textContent = `${w.word} 어원 찾는 중... (${done+1}/${missing.length})`;
+    statusEl.textContent = `${w.word} 어원·힌트 찾는 중... (${done+1}/${missing.length})`;
     try{
-      const prompt = `너는 영어 어원 사전이다. 다음 영어 단어의 라틴어/그리스어 등 어원을 알려줘: "${w.word}"\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"etymology": "이 단어의 어원과, 그 어원을 이용해 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명. 어원이 불분명하면 빈 문자열."}`;
+      const prompt = w.lang==='ja'
+        ? `너는 일본어-한국어 사전이다. 다음 일본어 단어를 기억하기 쉽게 도와줘: "${w.word}"\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"etymology": "한자어면 한자 구성(각 한자의 뜻)과 한국 한자음·한국어 한자어와의 연결, 순수 일본어면 훈독 뜻풀이나 연상 팁, 외래어면 원어를 알려주는 짧은 한국어 힌트. 불분명하면 빈 문자열."}`
+        : `너는 영어 어원 사전이다. 다음 영어 단어의 라틴어/그리스어 등 어원을 알려줘: "${w.word}"\n반드시 아래 JSON 형식으로만 답해라. 다른 텍스트 없이 순수 JSON만 출력해라.\n{"etymology": "이 단어의 어원과, 그 어원을 이용해 뜻을 기억하기 쉽게 풀어주는 짧은 한국어 설명. 어원이 불분명하면 빈 문자열."}`;
       const result = await sampleCap.json(prompt);
       if(result && result.etymology){
         await updateWord(w.id, { etymology: result.etymology });
@@ -559,7 +561,7 @@ function renderList(){
           <span class="speak-btn" data-speak="${escapeHtml(w.word)}" data-lang="${w.lang||'en'}">🔊</span>
         </div>
         <div class="w-meaning">${escapeHtml(w.meaning)}</div>
-        ${w.etymology ? `<div class="w-etym">🏛️ ${escapeHtml(w.etymology)}</div>` : ''}
+        ${w.etymology ? `<div class="w-etym">${w.lang==='ja'?'🧠':'🏛️'} ${escapeHtml(w.etymology)}</div>` : ''}
         ${w.example ? `<div class="w-ex">"${escapeHtml(w.example)}"${w.page ? ` <span style="opacity:0.7;">(${escapeHtml(w.page)})</span>` : ''}</div>` : ''}
         ${w.exampleKo ? `<div class="w-ex">→ ${escapeHtml(w.exampleKo)}</div>` : ''}
         <span class="badge">${w.mastered ? '✓ 외움' : '복습 중'}</span>
@@ -616,7 +618,7 @@ function editFormHtml(w){
   return `<div class="edit-form" id="editForm">
     <label>영어 단어</label><input type="text" id="efWord" value="${escapeHtml(w.word||'')}">
     <label>뜻</label><textarea id="efMeaning" style="min-height:56px;">${escapeHtml(w.meaning||'')}</textarea>
-    <label>어원</label><textarea id="efEtym" style="min-height:110px;">${escapeHtml(w.etymology||'')}</textarea>
+    <label>어원·기억 힌트</label><textarea id="efEtym" style="min-height:110px;">${escapeHtml(w.etymology||'')}</textarea>
     <label>예문</label><textarea id="efEx" lang="en">${escapeHtml(w.example||'')}</textarea>
     <label>예문 해석</label><textarea id="efExKo">${escapeHtml(w.exampleKo||'')}</textarea>
     <label>페이지</label><input type="text" id="efPage" value="${escapeHtml(w.page||'')}">
@@ -786,7 +788,7 @@ document.getElementById('scanLang').addEventListener('change', saveScan);
 // 확인 없이 버튼을 누르면 바로 지워요.
 document.getElementById('scanClear').addEventListener('click', clearScan);
 // ---- 업데이트 확인: 링크로 나가지 않고 이 안에서 바로 알려줘요 ----
-const APP_VERSION = '20261037';
+const APP_VERSION = '20261104';
 (function(){ const v=document.getElementById('appVer'); if(v) v.textContent='단어장 버전 v'+APP_VERSION.slice(0,4)+'.'+APP_VERSION.slice(4,6)+'.'+APP_VERSION.slice(6,8); })();
 const NOTICE_URL = 'https://namyaksa.github.io/study/index.html?notice=1&v=' + APP_VERSION;
 function showUpdateBox(title, msg, withLink){
@@ -887,7 +889,7 @@ function renderQuizStep(){
     let flipped = false;
     document.getElementById('flashCard').addEventListener('click', ()=>{
       if(flipped) return; flipped = true;
-      document.getElementById('flashCard').innerHTML = `<div class="w-meaning" style="font-size:1.1rem;">${escapeHtml(cur.meaning)}</div>${cur.etymology?`<div class="w-etym">🏛️ ${escapeHtml(cur.etymology)}</div>`:''}${cur.example?`<div class="w-ex" style="margin-top:8px;">"${escapeHtml(cur.example)}"</div>`:''}${cur.exampleKo?`<div class="w-ex">→ ${escapeHtml(cur.exampleKo)}</div>`:''}`;
+      document.getElementById('flashCard').innerHTML = `<div class="w-meaning" style="font-size:1.1rem;">${escapeHtml(cur.meaning)}</div>${cur.etymology?`<div class="w-etym">${cur.lang==='ja'?'🧠':'🏛️'} ${escapeHtml(cur.etymology)}</div>`:''}${cur.example?`<div class="w-ex" style="margin-top:8px;">"${escapeHtml(cur.example)}"</div>`:''}${cur.exampleKo?`<div class="w-ex">→ ${escapeHtml(cur.exampleKo)}</div>`:''}`;
       document.getElementById('flashBtns').style.display = 'flex';
     });
     document.getElementById('btnYes').addEventListener('click', ()=>{ handleAnswer(cur, true); quizIndex++; renderQuizStep(); });
