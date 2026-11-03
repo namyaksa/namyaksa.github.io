@@ -415,3 +415,13 @@ a.bc-book{cursor:pointer;transition:transform .15s;}a.bc-book:hover{transform:tr
 .ja-box .ja-body{padding:2px 16px 16px;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;line-height:1.75;}
 .ja-box h4{margin:16px 0 6px;color:var(--blue-dark);}
 .ja-box .download-btn{display:inline-block;}
+
+/* 더보기 */
+details.more{margin:10px 0;}
+details.more>summary{display:inline-block;cursor:pointer;list-style:none;padding:8px 18px;border:1px solid var(--blue-line);border-radius:999px;background:#fff;color:var(--blue-dark);font-weight:700;font-size:.92rem;}
+details.more>summary::-webkit-details-marker{display:none;}
+details.more>summary:hover{background:var(--blue-soft,#eef6ff);}
+details.more .m-open{display:none;}
+details.more[open]>summary .m-open{display:inline;}
+details.more[open]>summary .m-closed{display:none;}
+details.more[open]>summary{margin-bottom:10px;}
