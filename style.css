@@ -425,3 +425,6 @@ details.more .m-open{display:none;}
 details.more[open]>summary .m-open{display:inline;}
 details.more[open]>summary .m-closed{display:none;}
 details.more[open]>summary{margin-bottom:10px;}
+
+.jp-flag{width:20px;height:14px;vertical-align:-2px;margin-right:2px;}
+.ja-box[hidden]{display:none;}

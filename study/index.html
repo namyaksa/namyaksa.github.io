@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261075">
+<link rel="stylesheet" href="../style.css?v=20261076">
 <style>
 .study-header{
     background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
@@ -505,7 +505,7 @@
         📥 HTML 파일 다운로드 (voca-app.html)
     </a>
 </div>
-<p style="font-size:.85rem;margin:6px 2px 0;"><a href="#ja" id="jaHint">🇯🇵 日本の方はこちら（日本語版）</a></p>
+<p style="font-size:.85rem;margin:6px 2px 0;"><a href="#ja" id="jaHint"><img class="jp-flag" src="img/jp-flag.svg" alt="日本" width="20" height="14"> 日本の方はこちら（日本語版）</a></p>
 
 <h3>🛠 설치 방법 (3분)</h3>
 <details class="more"><summary><span class="m-closed">더보기 ▾</span><span class="m-open">접기 ▴</span></summary>
@@ -578,8 +578,8 @@
 <li><strong>퀴즈:</strong> 같은 단어를 5번 연속 맞히면 "외운 단어"가 돼요. 위쪽 숫자 카드를 누르면 외운 단어, 복습 중인 단어를 따로 볼 수 있어요.</li>
 </ul>
 
-<details class="ja-box" id="ja">
-<summary>🇯🇵 日本の方へ — 韓国語・英語の勉強に（日本語版）</summary>
+<details class="ja-box" id="ja" hidden>
+<summary><img class="jp-flag" src="img/jp-flag.svg" alt="日本" width="20" height="14"> 日本の方へ — 韓国語・英語の勉強に（日本語版）</summary>
 <div class="ja-body" lang="ja">
 <p>韓国語や英語の本を読むときに、わからない単語を<strong>写真を撮るだけ</strong>で日本語に翻訳し、単語帳にためてクイズで覚えられる、Claude 用のアプリ（アーティファクト）です。</p>
 <ul>
@@ -729,9 +729,9 @@ function toggleBgm() {
 <script>
 (function(){
   var d=document.getElementById('ja'); if(!d) return;
-  function openIfHash(){ if(location.hash==='#ja'){ d.open=true; setTimeout(function(){ d.scrollIntoView({block:'start'}); },60); } }
+  function openIfHash(){ if(location.hash==='#ja'){ d.hidden=false; d.open=true; setTimeout(function(){ d.scrollIntoView({block:'start'}); },60); } }
   openIfHash(); window.addEventListener('hashchange',openIfHash);
-  var h=document.getElementById('jaHint'); if(h) h.addEventListener('click',function(){ d.open=true; });
+  var h=document.getElementById('jaHint'); if(h) h.addEventListener('click',function(){ d.hidden=false; d.open=true; });
   var btn=d.querySelector('.ja-copy'); if(!btn) return;
   btn.addEventListener('click',function(){
     var text=btn.parentElement.querySelector('code').textContent.trim().replace(/^[「"“]|[」"”]$/g,'');
