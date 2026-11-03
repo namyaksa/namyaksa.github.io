@@ -12,17 +12,23 @@
 <link rel="stylesheet" href="../style.css?v=20261078">
 <style>
 .study-header{
-    background:linear-gradient(135deg,var(--hero-from),var(--hero-to));
-    padding:50px 20px;
-    text-align:center;
+    background:#1d2559;
+    padding:34px 20px 30px;
+    text-align:left;
 }
+.study-header .sh-in{max-width:1000px;margin:0 auto;}
+.sh-logo{font-family:'Pacifico','Brush Script MT',cursive;font-weight:400;font-size:2.8rem;line-height:1.15;margin:0 0 2px!important;letter-spacing:0;}
+.sh-logo .lg-d{background:linear-gradient(180deg,#bfe0ff 0%,#6aaeff 55%,#3f86e8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 6px rgba(80,150,255,.35));}
+.sh-logo .lg-1{margin-left:.18em;font-size:1.15em;color:#e8f3ff;-webkit-text-fill-color:#e8f3ff;text-shadow:0 0 14px rgba(120,180,255,.55);}
+.sh-hanja{font-size:1.1rem;color:#d4af37;letter-spacing:.35em;font-weight:700;margin:2px 0 6px;}
+.sh-credit{font-size:.98rem;color:#e4e7f8;line-height:1.6;}
 .study-header h1{
     color:var(--blue-dark);
     font-size:42px;
     margin-bottom:10px;
 }
 .study-header h1{word-break:keep-all;}
-@media(max-width:768px){.study-header h1{font-size:30px;}}
+@media(max-width:768px){.sh-logo{font-size:2.3rem;}}
 .study-header p{
     color:var(--sub);
 }
@@ -411,8 +417,11 @@
 </div>
 </section>
 <section class="study-header">
-<h1>📚 <span class="daily-font">Daily 1</span></h1>
-<p>죽기전까지 100권 읽기</p>
+<div class="sh-in">
+<h1 class="sh-logo" aria-label="Daily 1"><span class="lg-d">Daily</span><span class="lg-1">1</span></h1>
+<div class="sh-hanja">日新又日新</div>
+<div class="sh-credit">하루에 한 장,<br>어제와 다른 오늘, 오늘보다 더 나은 내일을 위해...</div>
+</div>
 </section>
 
 <div class="search-box">
