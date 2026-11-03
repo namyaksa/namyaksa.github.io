@@ -1104,6 +1104,10 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
   // 이 기기에서 마지막으로 확인한 버전: 다음번엔 그 뒤에 새로 생긴 항목만 보여요
   var SEEN='notice_seen_ver', seen='';
   try{ seen=localStorage.getItem(SEEN)||''; if(!seen && localStorage.getItem(KEY)) seen='20261035'; }catch(e){}
+  // 앱의 업데이트 버튼으로 들어온 경우: 같은 버전으로 하루 안에 이미 확인했으면 다시 띄우지 않아요
+  var ACK='notice_ack_'+(mine||'x'), ackAt=0;
+  try{ ackAt=parseInt(localStorage.getItem(ACK)||'0',10)||0; }catch(e){}
+  if(force && ackAt && ackAt>=Date.now()-24*3600*1000) return;
   var base=mine||(!force?seen:'');
   var shown=ITEMS.filter(function(i){ return !base || i.v>base; });
   if(!force && seen && seen>=LATEST) return;
@@ -1119,7 +1123,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
     document.getElementById('noticeItems').innerHTML=shown.map(function(i,n){ return (n+1)+'. '+i.t; }).join('<br>');
     document.getElementById('noticeHow').textContent= (many||again) ? '업데이트하려면 이 페이지의 단어장 파일(voca-app.html)을 새로 내려받아 다시 게시하세요. 저장한 단어는 그대로 유지돼요.' : '이미 단어장을 만들어 쓰고 계신 분은, 이 페이지의 단어장 파일(voca-app.html)을 새로 내려받아 다시 게시하면 새 기능이 적용돼요.';
   }
-  function close(){ back.hidden=true; try{localStorage.setItem(KEY,'1'); if(!force) localStorage.setItem(SEEN,LATEST);}catch(e){} }
+  function close(){ back.hidden=true; try{localStorage.setItem(KEY,'1'); if(!force) localStorage.setItem(SEEN,LATEST); else localStorage.setItem(ACK,String(Date.now()));}catch(e){} }
   document.getElementById('noticeOk').addEventListener('click',close);
   back.addEventListener('click',function(e){ if(e.target===back) close(); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!back.hidden) close(); });
