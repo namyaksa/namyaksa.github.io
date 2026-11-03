@@ -144,8 +144,8 @@ select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--bor
 
   <div id="panel-add">
     <div class="card">
-      <label>영어 단어</label>
-      <input type="text" id="inWord" placeholder="예: ephemeral" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false">
+      <label>단어 (영어·일본어)</label>
+      <input type="text" id="inWord" placeholder="예: ephemeral · 例: 儚い" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false">
       <div id="ipaRow" class="ipa-row" style="display:none;">
         <span id="ipaDisplay" class="ipa-text"></span>
         <button type="button" class="speak-btn" id="speakPreviewBtn">🔊 발음 듣기</button>
@@ -251,6 +251,8 @@ document.getElementById('inMeaning').addEventListener('input', ()=>autoGrow(docu
 document.getElementById('inEtymology').addEventListener('input', ()=>autoGrow(document.getElementById('inEtymology'), 176));
 
 // 첫 글자만 대문자인 일반 단어(Ephemeral)는 소문자로 바꿔요. NASA처럼 여러 대문자가 있는 말은 그대로 둬요.
+// 직접 입력한 단어에 일본어(가나·한자)가 있으면 일본어로, 영문뿐이면 영어로 다뤄요
+function autoLang(w){ if(/[\u3040-\u30ff\u3400-\u9fff]/.test(w)) addLang='ja'; else if(/[A-Za-z]/.test(w)) addLang='en'; }
 function lowerFirst(w){ return /^[A-Z][a-z'’-]*$/.test(w) ? w.charAt(0).toLowerCase()+w.slice(1) : w; }
 let currentIpa = '';
 let lastLookupWord = '';
@@ -265,6 +267,7 @@ async function doLookup(opts){
   const statusEl = document.getElementById('lookupStatus');
   wordEl.value = lowerFirst(wordEl.value.trim());
   const w = wordEl.value;
+  autoLang(w);
   if(!w || !sampleCap) return;
   statusEl.textContent = '사전에서 찾는 중...';
   document.getElementById('lookupBtn').disabled = true;
@@ -416,7 +419,7 @@ document.getElementById('inWord').addEventListener('keydown', (e)=>{
 });
 document.getElementById('speakPreviewBtn').addEventListener('click', ()=>{
   const w = document.getElementById('inWord').value.trim();
-  if(w) speakWord(w, 5, addLang);
+  if(w){ autoLang(w); speakWord(w, 5, addLang); }
 });
 document.getElementById('inWord').addEventListener('input', ()=>{
   currentIpa = '';
@@ -472,6 +475,7 @@ document.getElementById('addBtn').addEventListener('click', async ()=>{
   const ex = document.getElementById('inExample').value.trim();
   const exKo = document.getElementById('inExampleKo').value.trim();
   const page = document.getElementById('inPage').value.trim();
+  autoLang(w);
   if(!w || !m){
     const st = document.getElementById('lookupStatus');
     st.textContent = '단어와 뜻을 입력해주세요.';
@@ -616,7 +620,7 @@ let searchFocus = false;
 let editId = null;
 function editFormHtml(w){
   return `<div class="edit-form" id="editForm">
-    <label>영어 단어</label><input type="text" id="efWord" value="${escapeHtml(w.word||'')}">
+    <label>단어</label><input type="text" id="efWord" value="${escapeHtml(w.word||'')}">
     <label>뜻</label><textarea id="efMeaning" style="min-height:56px;">${escapeHtml(w.meaning||'')}</textarea>
     <label>어원·기억 힌트</label><textarea id="efEtym" style="min-height:110px;">${escapeHtml(w.etymology||'')}</textarea>
     <label>예문</label><textarea id="efEx" lang="en">${escapeHtml(w.example||'')}</textarea>
@@ -788,7 +792,7 @@ document.getElementById('scanLang').addEventListener('change', saveScan);
 // 확인 없이 버튼을 누르면 바로 지워요.
 document.getElementById('scanClear').addEventListener('click', clearScan);
 // ---- 업데이트 확인: 링크로 나가지 않고 이 안에서 바로 알려줘요 ----
-const APP_VERSION = '20261104';
+const APP_VERSION = '20261105';
 (function(){ const v=document.getElementById('appVer'); if(v) v.textContent='단어장 버전 v'+APP_VERSION.slice(0,4)+'.'+APP_VERSION.slice(4,6)+'.'+APP_VERSION.slice(6,8); })();
 const NOTICE_URL = 'https://namyaksa.github.io/study/index.html?notice=1&v=' + APP_VERSION;
 function showUpdateBox(title, msg, withLink){
