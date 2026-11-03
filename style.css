@@ -428,3 +428,17 @@ details.more[open]>summary{margin-bottom:10px;}
 
 .jp-flag{width:20px;height:14px;vertical-align:-2px;margin-right:2px;}
 .ja-box[hidden]{display:none;}
+
+/* 日本語モード */
+body.ja-mode .study-header,body.ja-mode .search-box,body.ja-mode .toolbar,body.ja-mode #posts,body.ja-mode #board,body.ja-mode .header .menu,body.ja-mode header .menu,body.ja-mode .notice-back{display:none!important;}
+#jaPage{max-width:860px;margin:0 auto;padding:18px 16px 40px;}
+#jaPage[hidden]{display:none;}
+#jaPage .ja-top{text-align:center;margin-bottom:14px;}
+#jaPage .ja-top h1{margin:6px 0;}
+#jaPage .ja-top p{color:var(--sub);margin:4px 0 12px;}
+.lang-btn{cursor:pointer;border:1px solid var(--blue-line);background:#fff;color:var(--blue-dark);font-weight:800;padding:9px 18px;border-radius:999px;font-size:.95rem;}
+.lang-btn:hover{background:#eef6ff;}
+.lang-btn .jp-flag{vertical-align:-3px;}
+#jaPage .ja-box{margin-top:0;}
+#jaPage .download-btn{display:inline-block;background:var(--blue-dark);color:#fff!important;text-decoration:none;font-weight:800;padding:11px 18px;border-radius:10px;}
+#jaPage .ja-box{border:none;background:transparent;}
