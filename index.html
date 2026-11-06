@@ -171,9 +171,9 @@ AI 활용법,
 (function(){
   // 원서가 아닌, 남약사가 읽은 책. 새로 읽은 책은 한 줄씩 추가하세요. (title, year=읽은 때, cover, spread=펼친 쪽 사진, color)
   var BOOKS=[
-    {title:'악령이 출몰하는 세상',year:'2026',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',color:'#4a3358'}
+    {title:'악령이 출몰하는 세상',year:'2026.11.06~',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',color:'#4a3358'}
   ];
-  var ROWS=2, PER=6, body=document.getElementById('readBody'); if(!body) return;
+  var ROWS=4, PER=6, body=document.getElementById('readBody'); if(!body) return;
   function closeAll(except){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) if(o[i]!==except) o[i].classList.remove('opening'); }
   body.addEventListener('click',function(e){
     var bk=e.target.closest&&e.target.closest('.bc-book'); if(!bk){ closeAll(); return; }
