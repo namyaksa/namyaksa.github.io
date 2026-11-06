@@ -30,18 +30,21 @@ body{padding:8px 10px 14px;}
 (function(){
   // 원서가 아닌, 남약사가 읽은 책. 새로 읽은 책은 한 줄씩 추가하세요. (title, year=읽은 때, cover, spread=펼친 쪽 사진, color)
   var BOOKS=[
-    {title:'악령이 출몰하는 세상',year:'2026.11.06~',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',color:'#4a3358'}
+    {title:'악령이 출몰하는 세상',year:'2026.11.06~',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#demon',color:'#4a3358'}
   ];
   var ROWS=4, PER=6, body=document.getElementById('readBody'); if(!body) return;
   function closeAll(except){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) if(o[i]!==except) o[i].classList.remove('opening'); }
   body.addEventListener('click',function(e){
     var bk=e.target.closest&&e.target.closest('.bc-book'); if(!bk){ closeAll(); return; }
+    var bd=BOOKS[[].indexOf.call(body.querySelectorAll('.bc-book'),bk)]||{};
     if(bk.classList.contains('opening')){ bk.classList.remove('opening'); return; }
     closeAll(bk);
     var rr=bk.getBoundingClientRect(), cc=body.getBoundingClientRect(), w=rr.width;
     var lo=cc.left+6-rr.left+w, hi=cc.right-6-rr.left-w, sh=Math.min(Math.max(w/2,lo),Math.max(hi,lo));
     bk.style.setProperty('--shift',sh+'px'); bk.classList.add('opening');
+    if(bd.url){ setTimeout(function(){ try{ window.open(bd.url,'_top'); }catch(e){ location.href=bd.url; } setTimeout(function(){ bk.classList.remove('opening'); },2500); },1300); }
   });
+  window.addEventListener('pageshow',function(){ closeAll(); });
   for(var r=0;r<ROWS;r++){
     var row=document.createElement('div'); row.className='bc-row';
     var slots=document.createElement('div'); slots.className='bc-slots';
@@ -49,7 +52,7 @@ body{padding:8px 10px 14px;}
       var slot=document.createElement('div'); slot.className='bc-slot';
       var b=BOOKS[r*PER+c];
       if(b){
-        var el=document.createElement('div'); el.className='bc-book'; el.style.cursor='pointer'; el.title=b.title;
+        var el=document.createElement('div'); el.className='bc-book'; el.style.cursor='pointer'; el.title=b.title+(b.url?' — 누르면 책 소개로 이동':'');
         if(b.spread){ el.classList.add('has-sp'); el.style.setProperty('--sp','url('+new URL(b.spread,location.href).href+')'); var pg=document.createElement('div'); pg.className='bc-pages'; el.appendChild(pg); }
         if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title; im.loading='lazy';
           var cv=document.createElement('div'); cv.className='bc-cover'; cv.appendChild(im);
