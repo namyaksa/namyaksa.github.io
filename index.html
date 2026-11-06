@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261078">
+<link rel="stylesheet" href="style.css?v=20261079">
 
 </head>
 
@@ -159,6 +159,55 @@ AI 활용법,
 </div>
 
 
+
+<div class="bookcase-section home-case" id="readCase">
+<div class="bc-wrap">
+<div class="bc-bar"><div class="bc-bar-title">남약사가 읽은 책</div></div>
+<div class="bc" id="readBody"></div>
+</div>
+<p class="bc-note" style="text-align:center;">책을 누르면 펼쳐져요. 다시 누르면 덮여요. 📖</p>
+</div>
+<script>
+(function(){
+  // 원서가 아닌, 남약사가 읽은 책. 새로 읽은 책은 한 줄씩 추가하세요. (title, year=읽은 때, cover, spread=펼친 쪽 사진, color)
+  var BOOKS=[
+    {title:'악령이 출몰하는 세상',year:'2026',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',color:'#4a3358'}
+  ];
+  var ROWS=2, PER=6, body=document.getElementById('readBody'); if(!body) return;
+  function closeAll(except){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) if(o[i]!==except) o[i].classList.remove('opening'); }
+  body.addEventListener('click',function(e){
+    var bk=e.target.closest&&e.target.closest('.bc-book'); if(!bk){ closeAll(); return; }
+    if(bk.classList.contains('opening')){ bk.classList.remove('opening'); return; }
+    closeAll(bk);
+    var rr=bk.getBoundingClientRect(), cc=body.getBoundingClientRect(), w=rr.width;
+    var lo=cc.left+6-rr.left+w, hi=cc.right-6-rr.left-w, sh=Math.min(Math.max(w/2,lo),Math.max(hi,lo));
+    bk.style.setProperty('--shift',sh+'px'); bk.classList.add('opening');
+  });
+  for(var r=0;r<ROWS;r++){
+    var row=document.createElement('div'); row.className='bc-row';
+    var slots=document.createElement('div'); slots.className='bc-slots';
+    for(var c=0;c<PER;c++){
+      var slot=document.createElement('div'); slot.className='bc-slot';
+      var b=BOOKS[r*PER+c];
+      if(b){
+        var el=document.createElement('div'); el.className='bc-book'; el.style.cursor='pointer'; el.title=b.title;
+        if(b.spread){ el.classList.add('has-sp'); el.style.setProperty('--sp','url('+new URL(b.spread,location.href).href+')'); var pg=document.createElement('div'); pg.className='bc-pages'; el.appendChild(pg); }
+        if(b.cover){ var im=document.createElement('img'); im.src=b.cover; im.alt=b.title; im.loading='lazy';
+          var cv=document.createElement('div'); cv.className='bc-cover'; cv.appendChild(im);
+          if(b.spread){ var bb=document.createElement('div'); bb.className='bc-back'; cv.appendChild(bb); }
+          el.appendChild(cv); }
+        else { el.style.background=b.color; var t=document.createElement('div'); t.className='bc-t'; t.textContent=b.title; el.appendChild(t); }
+        slot.appendChild(el);
+      }
+      slots.appendChild(slot);
+    }
+    row.appendChild(slots); body.appendChild(row);
+    var plank=document.createElement('div'); plank.className='bc-plank';
+    for(var k=0;k<PER;k++){ var yr=document.createElement('div'); yr.className='bc-year'; var bk2=BOOKS[r*PER+k]; yr.textContent=(bk2&&bk2.year)?bk2.year:''; plank.appendChild(yr); }
+    body.appendChild(plank);
+  }
+})();
+</script>
 
 </div>
 

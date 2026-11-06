@@ -442,3 +442,6 @@ body.ja-mode .study-header,body.ja-mode .search-box,body.ja-mode .toolbar,body.j
 #jaPage .ja-box{margin-top:0;}
 #jaPage .download-btn{display:inline-block;background:var(--blue-dark);color:#fff!important;text-decoration:none;font-weight:800;padding:11px 18px;border-radius:10px;}
 #jaPage .ja-box{border:none;background:transparent;}
+
+.home-case{max-width:760px;margin:34px auto 10px;}
+.home-case .bc-note{margin:10px 0 0;color:var(--sub);font-size:.9rem;}
