@@ -234,14 +234,14 @@ function speakWord(text, times, lang){
   window.speechSynthesis.cancel();
   const my = ++speakToken;
   let i = 0;
-  // 천천히(0.7배속), 한 번 들려준 뒤 0.9초 쉬었다가 다시 들려줘요
+  // 한 번 들려준 뒤 0.8초 쉬었다가 다시 들려줘요 (속도는 기존 그대로)
   const next = ()=>{
     if(my !== speakToken || i >= times) return;
     i++;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = (LANGS[lang] || LANGS.en).bcp;
-    u.rate = 0.7;
-    u.onend = ()=>{ setTimeout(next, 900); };
+    u.rate = 0.9;
+    u.onend = ()=>{ setTimeout(next, 800); };
     u.onerror = ()=>{};
     window.speechSynthesis.speak(u);
   };
