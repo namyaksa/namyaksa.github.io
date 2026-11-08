@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="style.css?v=20261079">
+<link rel="stylesheet" href="style.css?v=20261080">
 
 </head>
 
@@ -178,9 +178,9 @@ AI 활용법,
     {title:'만들어진 신',year:'',cover:'books/god-delusion.jpg',spread:'books/spread-god-delusion.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#delusion',color:'#555'},
     {title:'호모 데우스',year:'',cover:'books/homo-deus.jpg',spread:'books/spread-homo-deus.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#homodeus',color:'#555'},
     {title:'넥서스',year:'',cover:'books/nexus.jpg',spread:'books/spread-nexus.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#nexus',color:'#555'},
-    {title:'퀴즈쇼',year:'',cover:'books/quiz-show.jpg',spread:'books/spread-quiz-show.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#quizshow',color:'#555'},
-    {title:'죽음 1',year:'',cover:'books/death-1.jpg',spread:'books/spread-death-1.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#death',color:'#555'},
-    {title:'도시와 그 불확실한 벽',year:'',cover:'books/uncertain-wall.jpg',spread:'books/spread-uncertain-wall.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#uncertain',color:'#555'},
+    {title:'퀴즈쇼',author:'김영하',year:'',cover:'books/quiz-show.jpg',spread:'books/spread-quiz-show.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#quizshow',color:'#555'},
+    {title:'죽음 1',author:'베르나르 베르베르',year:'',cover:'books/death-1.jpg',spread:'books/spread-death-1.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#death',color:'#555'},
+    {title:'도시와 그 불확실한 벽',author:'무라카미 하루키',year:'',cover:'books/uncertain-wall.jpg',spread:'books/spread-uncertain-wall.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#uncertain',color:'#555'},
     {title:'직지 1',year:'',cover:'books/jikji-1.jpg',spread:'books/spread-jikji-1.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#jikji',color:'#555'},
     {title:'용의자 X의 헌신',year:'',cover:'books/suspect-x.jpg',spread:'books/spread-suspect-x.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#suspectx',color:'#555'}
   ];
@@ -217,7 +217,7 @@ AI 활용법,
     }
     row.appendChild(slots); body.appendChild(row);
     var plank=document.createElement('div'); plank.className='bc-plank';
-    for(var k=0;k<PER;k++){ var yr=document.createElement('div'); yr.className='bc-year'; var bk2=BOOKS[r*PER+k]; yr.textContent=(bk2&&bk2.year)?bk2.year:''; plank.appendChild(yr); }
+    for(var k=0;k<PER;k++){ var yr=document.createElement('div'); yr.className='bc-year'; var bk2=BOOKS[r*PER+k]; yr.textContent=(bk2&&bk2.year)?bk2.year:''; if(bk2&&!bk2.year&&bk2.author){ yr.className='bc-author'; yr.textContent=bk2.author; } plank.appendChild(yr); }
     body.appendChild(plank);
   }
 })();
