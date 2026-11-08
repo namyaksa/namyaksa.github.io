@@ -171,7 +171,15 @@ AI 활용법,
 (function(){
   // 원서가 아닌, 남약사가 읽은 책. 새로 읽은 책은 한 줄씩 추가하세요. (title, year=읽은 때, cover, spread=펼친 쪽 사진, color)
   var BOOKS=[
-    {title:'악령이 출몰하는 세상',year:'2026.11.06~',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#demon',color:'#4a3358'}
+    {title:'악령이 출몰하는 세상',year:'2026.11.06~',cover:'books/demon-haunted-world.jpg',spread:'books/spread-demon-haunted-world.jpg',url:'https://namyaksa.wixsite.com/paran/%EB%B3%B5%EC%A0%9C-%EC%9B%90%EC%84%9C-%EC%9D%BD%EA%B8%B0#demon',color:'#4a3358'},
+    {title:'논리의 기술',year:'',cover:'books/logic-art.jpg',spread:'books/spread-logic-art.jpg',color:'#555'},
+    {title:'문명의 붕괴',year:'',cover:'books/collapse.jpg',spread:'books/spread-collapse.jpg',color:'#555'},
+    {title:'국가는 왜 실패하는가',year:'',cover:'books/why-nations-fail.jpg',spread:'books/spread-why-nations-fail.jpg',color:'#555'},
+    {title:'만들어진 신',year:'',cover:'books/god-delusion.jpg',spread:'books/spread-god-delusion.jpg',color:'#555'},
+    {title:'호모 데우스',year:'',cover:'books/homo-deus.jpg',spread:'books/spread-homo-deus.jpg',color:'#555'},
+    {title:'넥서스',year:'',cover:'books/nexus.jpg',spread:'books/spread-nexus.jpg',color:'#555'},
+    {title:'퀴즈쇼',year:'',cover:'books/quiz-show.jpg',spread:'books/spread-quiz-show.jpg',color:'#555'},
+    {title:'죽음 1',year:'',cover:'books/death-1.jpg',spread:'books/spread-death-1.jpg',color:'#555'}
   ];
   var ROWS=4, PER=6, body=document.getElementById('readBody'); if(!body) return;
   function closeAll(except){ var o=body.querySelectorAll('.opening'); for(var i=0;i<o.length;i++) if(o[i]!==except) o[i].classList.remove('opening'); }
