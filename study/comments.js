@@ -90,16 +90,22 @@
         panel.querySelectorAll('.vc-no').forEach(function(x){x.addEventListener('click',function(){ if(confirm('이 댓글을 삭제할까요?')) db.collection('comments').doc(x.dataset.id).delete().then(loadPending).catch(function(e){alert('실패: '+e.message);}); });});
       }).catch(function(e){ panel.innerHTML='<div class="vc-note">불러오지 못했어요: '+esc(e.message||'')+'</div>'; });
     }
+    // 로그인 창이 팝업으로 막히지 않도록, 필요한 것을 미리 불러 두고 누르는 즉시 창을 열어요
+    var authReady=false;
+    init().then(function(){ return loadJs(SDK+'firebase-auth-compat.js'); }).then(function(){ authReady=true; }).catch(function(){});
+    function afterLogin(u){
+      if(!u||u.email!==OWNER_EMAIL){ panel.innerHTML='<div class="vc-note">남약사님 계정이 아니에요.</div>'; return; }
+      loadPending();
+    }
     b.addEventListener('click',function(){
       panel.hidden=!panel.hidden; if(panel.hidden) return;
+      if(!authReady){ panel.innerHTML='<div class="vc-note">준비 중이에요. 잠시 후 버튼을 다시 눌러 주세요.</div>'; panel.hidden=false; return; }
+      var u=firebase.auth().currentUser;
+      if(u){ afterLogin(u); return; }
       panel.innerHTML='<div class="vc-note">로그인 중...</div>';
-      init().then(function(){ return loadJs(SDK+'firebase-auth-compat.js'); }).then(function(){
-        var u=firebase.auth().currentUser;
-        return u?u:firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(r){return r.user;});
-      }).then(function(u){
-        if(!u||u.email!==OWNER_EMAIL){ panel.innerHTML='<div class="vc-note">남약사님 계정이 아니에요.</div>'; return; }
-        loadPending();
-      }).catch(function(e){ panel.innerHTML='<div class="vc-note">로그인하지 못했어요: '+esc(e.message||'')+'</div>'; });
+      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then(function(r){ afterLogin(r.user); })
+        .catch(function(e){ panel.innerHTML='<div class="vc-note">로그인하지 못했어요: '+esc(e.message||'')+'</div>'; });
     });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',adminInit); else adminInit();
