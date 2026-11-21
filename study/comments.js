@@ -1,7 +1,14 @@
 /* 방문자 댓글 (Firebase Firestore). 남약사님이 승인한 댓글만 보여요.
    FB_CONFIG 가 비어 있으면 아무것도 나타나지 않아요. */
 (function(){
-  var FB_CONFIG = null;   // ← Firebase 설정값(firebaseConfig)을 여기에 넣어요
+  var FB_CONFIG = {
+    apiKey: "AIzaSyA-f-HbY5S78myxBH_tLD2x5iP3UH-BicU",
+    authDomain: "postcsript.firebaseapp.com",
+    projectId: "postcsript",
+    storageBucket: "postcsript.firebasestorage.app",
+    messagingSenderId: "1047308815027",
+    appId: "1:1047308815027:web:8a94501d11e9733361fec6"
+  };
   var OWNER_EMAIL = 'namyaksa@gmail.com';
   if(!FB_CONFIG) { window.vcBind=function(){}; return; }
 
