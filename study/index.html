@@ -918,7 +918,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
     var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
     return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
       photoBtn+'<div class="board-body'+(imgs.length?' photos-hidden':'')+'">'+tpl.innerHTML+'</div>'+
-      '<div><button type="button" class="board-cbtn" data-n="'+i.number+'">💬 댓글'+(i.comments?' ('+i.comments+')':'')+'</button></div><div class="board-cbox" hidden></div>'+
+      ((getTok()||i.comments)?'<div><button type="button" class="board-cbtn" data-n="'+i.number+'">💬 댓글'+(i.comments?' ('+i.comments+')':'')+'</button></div><div class="board-cbox" hidden></div>':'<div hidden></div><div hidden></div>')+
       (getTok()?'<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
       '<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
   }
@@ -951,7 +951,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
         var wrap=box.querySelector('.bc-list'); wrap.innerHTML='<div class="board-cnote">불러오는 중...</div>';
         fetch(API+'/repos/'+OWNER+'/'+REPO+'/issues/'+n+'/comments?per_page=100&_='+Date.now(),{headers:{'Accept':'application/vnd.github.html+json'}})
           .then(function(r){if(!r.ok) throw new Error(r.status);return r.json();})
-          .then(function(a){ wrap.innerHTML=a.length?a.map(cmHtml).join(''):'<div class="board-cnote">아직 댓글이 없어요.</div>'; setCount(a.length);
+          .then(function(a){ a=a.filter(function(c){return c.user&&c.user.login===OWNER;}); wrap.innerHTML=a.length?a.map(cmHtml).join(''):'<div class="board-cnote">아직 댓글이 없어요.</div>'; setCount(a.length);
             wrap.querySelectorAll('a').forEach(function(x){x.target='_blank';x.rel='noopener noreferrer';});
             wrap.querySelectorAll('.bc-cm-del').forEach(function(d){ d.addEventListener('click',function(){
               if(!confirm('이 댓글을 삭제할까요?')) return;
@@ -963,7 +963,6 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
       function build(){
         var w='<div class="bc-list"></div>';
         if(getTok()) w+='<textarea class="bc-ta" placeholder="댓글을 남겨 주세요"></textarea><button type="button" class="board-csend">댓글 달기</button><span class="board-cnote bc-st" style="margin-left:8px;"></span>';
-        else w+='<p class="board-cnote">댓글은 <a href="'+esc(it.html_url||'#')+'#new_comment_field" target="_blank" rel="noopener noreferrer">GitHub에서 쓸 수 있어요</a> (GitHub 계정이 필요해요).</p>';
         box.innerHTML=w;
         var send=box.querySelector('.board-csend');
         if(send) send.addEventListener('click',function(){
