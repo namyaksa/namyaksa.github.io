@@ -27,9 +27,10 @@
   function ms(c){ return c.ts&&c.ts.toMillis?c.ts.toMillis():Date.now(); }
   function snapList(s){ return s.docs.map(function(d){var o=d.data();o.id=d.id;return o;}); }
 
-  function cmHtml(c,admin,title){
+  var ownerOn=false;
+  function cmHtml(c,admin,title,delOnly){
     return '<div class="vc-cm"><div class="vc-h">'+esc(c.name)+' · '+ds(c)+(admin?' · <b>'+esc(title||('#'+c.post))+'</b>':'')+'</div><div class="vc-t">'+esc(c.text)+'</div>'+
-      (admin?'<div class="vc-ad"><button type="button" class="vc-ok" data-id="'+c.id+'">승인</button><button type="button" class="vc-no" data-id="'+c.id+'">삭제</button></div>':'')+'</div>';
+      (admin?'<div class="vc-ad">'+(delOnly?'':'<button type="button" class="vc-ok" data-id="'+c.id+'">승인</button>')+'<button type="button" class="vc-no" data-id="'+c.id+'">삭제</button></div>':'')+'</div>';
   }
 
   function bindWrap(w){
@@ -40,8 +41,9 @@
       var list=box.querySelector('.vc-list'); list.innerHTML='<div class="vc-note">불러오는 중...</div>';
       init().then(function(){ return db.collection('comments').where('post','==',n).where('approved','==',true).get(); }).then(function(s){
         var a=snapList(s).sort(function(x,y){return ms(x)-ms(y);});
-        list.innerHTML=a.length?a.map(function(c){return cmHtml(c);}).join(''):'<div class="vc-note">아직 댓글이 없어요. 첫 댓글을 남겨 보세요.</div>';
+        list.innerHTML=a.length?a.map(function(c){return cmHtml(c,ownerOn,null,true);}).join(''):'<div class="vc-note">아직 댓글이 없어요. 첫 댓글을 남겨 보세요.</div>';
         btn.textContent='💬 방문자 댓글'+(a.length?' ('+a.length+')':'');
+        list.querySelectorAll('.vc-no').forEach(function(x){x.addEventListener('click',function(){ if(confirm('이 댓글을 삭제할까요?')) db.collection('comments').doc(x.dataset.id).delete().then(show).catch(function(e){alert('삭제하지 못했어요: '+e.message);}); });});
       }).catch(function(){ list.innerHTML='<div class="vc-note">댓글을 불러오지 못했어요. 잠시 후 다시 눌러 주세요.</div>'; });
     }
     function build(){
@@ -82,10 +84,12 @@
     b.textContent='💬 댓글 관리'; head.appendChild(b);
     var panel=document.createElement('div'); panel.className='board-form'; panel.hidden=true; head.parentNode.insertBefore(panel,head.nextSibling);
     function loadPending(){
+      ownerOn=true;
       panel.innerHTML='<div class="vc-note">불러오는 중...</div>';
-      db.collection('comments').where('approved','==',false).get().then(function(s){
-        var a=snapList(s).sort(function(x,y){return ms(x)-ms(y);});
-        panel.innerHTML='<b>승인 대기 댓글 '+a.length+'개</b>'+(a.length?'':'<div class="vc-note">대기 중인 댓글이 없어요.</div>')+a.map(function(c){return cmHtml(c,true,titleOf(c.post));}).join('');
+      Promise.all([db.collection('comments').where('approved','==',false).get(), db.collection('comments').where('approved','==',true).get()]).then(function(r){
+        var p=snapList(r[0]).sort(function(x,y){return ms(x)-ms(y);}), ap=snapList(r[1]).sort(function(x,y){return ms(y)-ms(x);});
+        panel.innerHTML='<b>승인 대기 댓글 '+p.length+'개</b>'+(p.length?'':'<div class="vc-note">대기 중인 댓글이 없어요.</div>')+p.map(function(c){return cmHtml(c,true,titleOf(c.post));}).join('')+
+          '<div style="margin-top:14px;"><b>이미 올라간 댓글 '+ap.length+'개</b></div>'+(ap.length?'':'<div class="vc-note">없어요.</div>')+ap.map(function(c){return cmHtml(c,true,titleOf(c.post),true);}).join('');
         panel.querySelectorAll('.vc-ok').forEach(function(x){x.addEventListener('click',function(){ db.collection('comments').doc(x.dataset.id).update({approved:true}).then(loadPending).catch(function(e){alert('실패: '+e.message);}); });});
         panel.querySelectorAll('.vc-no').forEach(function(x){x.addEventListener('click',function(){ if(confirm('이 댓글을 삭제할까요?')) db.collection('comments').doc(x.dataset.id).delete().then(loadPending).catch(function(e){alert('실패: '+e.message);}); });});
       }).catch(function(e){ panel.innerHTML='<div class="vc-note">불러오지 못했어요: '+esc(e.message||'')+'</div>'; });
