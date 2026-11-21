@@ -918,7 +918,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
     var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
     return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
       photoBtn+'<div class="board-body'+(imgs.length?' photos-hidden':'')+'">'+tpl.innerHTML+'</div>'+
-      ((getTok()||i.comments)?'<div><button type="button" class="board-cbtn" data-n="'+i.number+'">💬 댓글'+(i.comments?' ('+i.comments+')':'')+'</button></div><div class="board-cbox" hidden></div>':'<div hidden></div><div hidden></div>')+
+      ((getTok()||i.comments)?'<div><button type="button" class="board-cbtn" data-n="'+i.number+'">✍️ P.S.'+(i.comments?' ('+i.comments+')':'')+'</button></div><div class="board-cbox" hidden></div>':'<div hidden></div><div hidden></div>')+
       (getTok()?'<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
       '<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
   }
@@ -946,23 +946,23 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
         return '<div class="bc-cm"><div class="bc-cm-h">'+esc(c.user&&c.user.login||'')+' · '+d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+
           (getTok()?'<button type="button" class="bc-cm-del" data-id="'+c.id+'">삭제</button>':'')+'</div>'+(c.body_html||esc(c.body||''))+'</div>';
       }
-      function setCount(k){ b.textContent='💬 댓글'+(k?' ('+k+')':''); }
+      function setCount(k){ b.textContent='✍️ P.S.'+(k?' ('+k+')':''); }
       function loadC(){
         var wrap=box.querySelector('.bc-list'); wrap.innerHTML='<div class="board-cnote">불러오는 중...</div>';
         fetch(API+'/repos/'+OWNER+'/'+REPO+'/issues/'+n+'/comments?per_page=100&_='+Date.now(),{headers:{'Accept':'application/vnd.github.html+json'}})
           .then(function(r){if(!r.ok) throw new Error(r.status);return r.json();})
-          .then(function(a){ a=a.filter(function(c){return c.user&&c.user.login===OWNER;}); wrap.innerHTML=a.length?a.map(cmHtml).join(''):'<div class="board-cnote">아직 댓글이 없어요.</div>'; setCount(a.length);
+          .then(function(a){ a=a.filter(function(c){return c.user&&c.user.login===OWNER;}); wrap.innerHTML=a.length?a.map(cmHtml).join(''):'<div class="board-cnote">아직 P.S.가 없어요.</div>'; setCount(a.length);
             wrap.querySelectorAll('a').forEach(function(x){x.target='_blank';x.rel='noopener noreferrer';});
             wrap.querySelectorAll('.bc-cm-del').forEach(function(d){ d.addEventListener('click',function(){
-              if(!confirm('이 댓글을 삭제할까요?')) return;
+              if(!confirm('이 P.S.를 삭제할까요?')) return;
               ghTok('DELETE','/repos/'+OWNER+'/'+REPO+'/issues/comments/'+d.dataset.id).then(loadC).catch(function(e){alert('삭제하지 못했어요: '+(e&&e.message||'오류'));});
             }); });
           })
-          .catch(function(){ wrap.innerHTML='<div class="board-cnote">댓글을 불러오지 못했어요. 잠시 후 다시 눌러 주세요.</div>'; });
+          .catch(function(){ wrap.innerHTML='<div class="board-cnote">P.S.를 불러오지 못했어요. 잠시 후 다시 눌러 주세요.</div>'; });
       }
       function build(){
         var w='<div class="bc-list"></div>';
-        if(getTok()) w+='<textarea class="bc-ta" placeholder="댓글을 남겨 주세요"></textarea><button type="button" class="board-csend">댓글 달기</button><span class="board-cnote bc-st" style="margin-left:8px;"></span>';
+        if(getTok()) w+='<textarea class="bc-ta" placeholder="첨삭하거나 덧붙일 말을 남겨 주세요"></textarea><button type="button" class="board-csend">P.S. 달기</button><span class="board-cnote bc-st" style="margin-left:8px;"></span>';
         box.innerHTML=w;
         var send=box.querySelector('.board-csend');
         if(send) send.addEventListener('click',function(){
