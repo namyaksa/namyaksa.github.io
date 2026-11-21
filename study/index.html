@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="favicon-daily1-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
-<link rel="stylesheet" href="../style.css?v=20261081">
+<link rel="stylesheet" href="../style.css?v=20261082">
 <style>
 .study-header{
     background:#1d2559;
@@ -830,25 +830,13 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
 .board-morebtn{display:block;width:100%;background:#fff;color:var(--blue-dark);border:1px solid var(--blue);border-radius:24px;padding:12px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;margin:4px 0 14px;}
 .board-photo-btn{background:#eaf3fc;color:var(--blue-dark);border:1px solid var(--blue-line);border-radius:20px;padding:8px 14px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;margin:2px 0 10px;}
 .board-body img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--blue-line);}
+.board-body ul,.board-body ol{margin:.5em 0;padding-left:1.5em;}
+.board-body li{margin:.2em 0;padding-left:.1em;}
 .board-body p{margin:.5em 0;}
 .board-body pre,.board-body .highlight pre,.board-body code,.board-body tt{font-family:inherit;font-size:inherit;line-height:inherit;}
 .board-body pre,.board-body .highlight pre{overflow:visible;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere;background:#f3f7fb;padding:10px 12px;border-radius:8px;margin:.6em 0;}
 .board-body pre code{background:none;padding:0;white-space:inherit;}
 .board-body :not(pre)>code{background:none;padding:0;font-weight:inherit;}
-.board-body ul,.board-body ol{margin:.5em 0;padding-left:1.5em;}
-.board-body li{margin:.2em 0;padding-left:.1em;}
-.board-cbtn{display:inline-block;margin-top:10px;background:#fff;color:var(--blue-dark);border:1px solid var(--blue-line);border-radius:20px;padding:6px 14px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;}
-.board-cbox{margin-top:10px;border-top:1px dashed var(--blue-line);padding-top:10px;}
-.board-cbox[hidden]{display:none;}
-.bc-cm{background:#f3f8fd;border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:.9rem;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;}
-.bc-cm .bc-cm-h{font-size:.76rem;color:var(--sub);margin-bottom:2px;}
-.bc-cm p{margin:.3em 0;}
-.bc-cm img{max-width:100%;height:auto;}
-.bc-cm-del{background:none;border:none;color:#b3261e;font-size:.76rem;cursor:pointer;font-family:inherit;text-decoration:underline;margin-left:10px;}
-.board-cbox textarea{width:100%;box-sizing:border-box;border:1px solid var(--blue-line);border-radius:10px;padding:9px 12px;font:inherit;font-size:.92rem;min-height:70px;resize:vertical;}
-.board-csend{margin-top:6px;background:var(--blue);color:#fff;border:none;border-radius:20px;padding:8px 16px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;}
-.board-csend:disabled{opacity:.6;}
-.board-cnote{font-size:.8rem;color:var(--sub);margin:6px 0 0;}
 .board-more{display:inline-block;margin-top:8px;font-size:.8rem;color:var(--blue);}
 .board-msg{text-align:center;color:var(--sub);padding:24px 8px;font-size:.92rem;}
 .board-form{background:#f3f8fd;border:1px solid var(--blue-line);border-radius:14px;padding:14px;margin-bottom:16px;}
@@ -918,7 +906,6 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
     var ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
     return '<article class="board-post"><h3>'+esc(i.title)+'</h3><div class="board-date">'+ds+'</div>'+
       photoBtn+'<div class="board-body'+(imgs.length?' photos-hidden':'')+'">'+tpl.innerHTML+'</div>'+
-      '<div><button type="button" class="board-cbtn" data-n="'+i.number+'">💬 댓글'+(i.comments?' ('+i.comments+')':'')+'</button></div><div class="board-cbox" hidden></div>'+
       (getTok()?'<a class="board-more" href="'+esc(i.html_url)+'" target="_blank" rel="noopener noreferrer">원문 보기</a>'+
       '<button type="button" class="board-del" data-n="'+i.number+'">🗑 삭제</button>':'')+'</article>';
   }
@@ -936,47 +923,6 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
       // 사진을 누르면 다시 닫혀요
       body.addEventListener('click',function(e){
         if(e.target.tagName==='IMG'){ e.preventDefault(); setShown(false); b.scrollIntoView({block:'nearest'}); }
-      });
-    });
-    root.querySelectorAll('.board-cbtn').forEach(function(b){
-      var box=b.parentNode.nextElementSibling, n=Number(b.dataset.n), loaded=false;
-      var it=allItems.filter(function(x){return x.number===n;})[0]||{};
-      function cmHtml(c){
-        var d=new Date(c.created_at);
-        return '<div class="bc-cm"><div class="bc-cm-h">'+esc(c.user&&c.user.login||'')+' · '+d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+
-          (getTok()?'<button type="button" class="bc-cm-del" data-id="'+c.id+'">삭제</button>':'')+'</div>'+(c.body_html||esc(c.body||''))+'</div>';
-      }
-      function setCount(k){ b.textContent='💬 댓글'+(k?' ('+k+')':''); }
-      function loadC(){
-        var wrap=box.querySelector('.bc-list'); wrap.innerHTML='<div class="board-cnote">불러오는 중...</div>';
-        fetch(API+'/repos/'+OWNER+'/'+REPO+'/issues/'+n+'/comments?per_page=100&_='+Date.now(),{headers:{'Accept':'application/vnd.github.html+json'}})
-          .then(function(r){if(!r.ok) throw new Error(r.status);return r.json();})
-          .then(function(a){ wrap.innerHTML=a.length?a.map(cmHtml).join(''):'<div class="board-cnote">아직 댓글이 없어요.</div>'; setCount(a.length);
-            wrap.querySelectorAll('a').forEach(function(x){x.target='_blank';x.rel='noopener noreferrer';});
-            wrap.querySelectorAll('.bc-cm-del').forEach(function(d){ d.addEventListener('click',function(){
-              if(!confirm('이 댓글을 삭제할까요?')) return;
-              ghTok('DELETE','/repos/'+OWNER+'/'+REPO+'/issues/comments/'+d.dataset.id).then(loadC).catch(function(e){alert('삭제하지 못했어요: '+(e&&e.message||'오류'));});
-            }); });
-          })
-          .catch(function(){ wrap.innerHTML='<div class="board-cnote">댓글을 불러오지 못했어요. 잠시 후 다시 눌러 주세요.</div>'; });
-      }
-      function build(){
-        var w='<div class="bc-list"></div>';
-        if(getTok()) w+='<textarea class="bc-ta" placeholder="댓글을 남겨 주세요"></textarea><button type="button" class="board-csend">댓글 달기</button><span class="board-cnote bc-st" style="margin-left:8px;"></span>';
-        else w+='<p class="board-cnote">댓글은 <a href="'+esc(it.html_url||'#')+'#new_comment_field" target="_blank" rel="noopener noreferrer">GitHub에서 쓸 수 있어요</a> (GitHub 계정이 필요해요).</p>';
-        box.innerHTML=w;
-        var send=box.querySelector('.board-csend');
-        if(send) send.addEventListener('click',function(){
-          var ta=box.querySelector('.bc-ta'), t=ta.value.trim(), st=box.querySelector('.bc-st');
-          if(!t){ ta.focus(); return; }
-          send.disabled=true; st.textContent='올리는 중...';
-          ghTok('POST','/repos/'+OWNER+'/'+REPO+'/issues/'+n+'/comments',{body:t}).then(function(){ ta.value=''; st.textContent=''; loadC(); })
-            .catch(function(e){ st.textContent='올리지 못했어요: '+(e&&e.message||'오류'); }).then(function(){ send.disabled=false; });
-        });
-      }
-      b.addEventListener('click',function(){
-        box.hidden=!box.hidden;
-        if(!box.hidden && !loaded){ loaded=true; build(); loadC(); }
       });
     });
     root.querySelectorAll('.board-del').forEach(function(b){
@@ -1015,7 +961,7 @@ document.querySelectorAll('.highlight-prompt .copy-btn:not(.ja-copy)').forEach(f
   // ---- 삭제: 글을 닫아서(Close) 게시판에서 없애고, 올린 사진 파일도 지워요 ----
   function ghTok(method,path,body){
     return fetch(API+path,{method:method,headers:{'Authorization':'Bearer '+getTok(),'Accept':'application/vnd.github+json','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined})
-      .then(function(r){if(r.status===204) return {}; return r.json().then(function(j){if(!r.ok) throw new Error((j&&j.message)||r.status);return j;});});
+      .then(function(r){return r.json().then(function(j){if(!r.ok) throw new Error((j&&j.message)||r.status);return j;});});
   }
   function delPost(n, items){
     var it=items.filter(function(x){return x.number===n;})[0];
